@@ -1,0 +1,45 @@
+--- 
+title: "Biostatistics in Public Health"
+author: "Ralph Trane"
+date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: ../misc/refs.bib
+biblio-style: apalike
+link-citations: yes
+---
+
+\newcommand{\Var}{\text{Var}}
+\newcommand{\var}{\text{var}}
+\newcommand{\SD}{\text{SD}}
+
+# Welcome! {-}
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(ggthemes)
+
+project_folder <- str_split(getwd(), pattern = 'PUBLHLTH783', simplify = TRUE)[,1] %>% 
+  paste0("PUBLHLTH783")
+
+create_path <- function(sub_folder, proj_folder = project_folder){
+  paste(proj_folder, sub_folder, sep = '/')
+}
+
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+```
+
+* Introduction to the biostatistics part of the course
+* Expectations and structure
+* Explanation of notes
+* ...

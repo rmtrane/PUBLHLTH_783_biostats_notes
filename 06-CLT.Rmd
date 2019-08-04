@@ -1,0 +1,5 @@
+# Central Limit Theorem.
+
+- Probability Sampling (Simple random/Systematic/Stratified Sampling)
+- Non-probability Sampling (Convenience/Quota Sampling)
+- Basic Concepts

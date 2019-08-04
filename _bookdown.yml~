@@ -1,0 +1,6 @@
+book_filename: "783_biostats"
+output_dir: "../_book"
+language:
+  ui:
+    chapter_name: ""
+delete_merged_file: true

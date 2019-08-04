@@ -1,0 +1,4 @@
+# Estimators and their distributions
+
+- simulations for explanation
+- as concrete and intuitive as possible

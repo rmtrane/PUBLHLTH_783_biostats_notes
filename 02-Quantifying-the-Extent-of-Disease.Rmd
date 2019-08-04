@@ -1,0 +1,139 @@
+# Quantifying the Extent of Diseases
+
+Follows chapter 3 in @ls
+
+In this topic, we will define and discuss some of the most popular metrics used to quantify the extent of a disease, and ways to compare the extent of a disease between groups.
+
+## Prevalence
+
+An important question to ask is how widespread a specific disease is. This is exactly what the prevalence tries to anser: at any given point in time, how many people of a given population have a specific disease? Similarly, we can ask how many people have a risk factor, or any other attribute we might find interesting. 
+
+### Definition
+
+The *point prevalence* (PP) is the proportion of a population with a specific attribute (think disease or risk factor) at a particular point in time. 
+
+$$
+  \text{Point Prevalence} = \frac{\text{Number of persons with attribute}}{\text{Number of persons examined}}
+$$
+
+### Example: Measles
+
+```{r}
+health <- read_csv(create_path("data/health.csv"))
+
+measles <- health %>% filter(disease == 'MEASLES') %>% 
+  mutate(number = number) %>% 
+  rename(Population = population,
+         `With measles` = number) %>% 
+  group_by(year) %>% 
+  summarise_at(vars(`With measles`, Population),
+               sum) %>% 
+  mutate(Prevalence = `With measles`/Population)
+```
+
+Below is the number of recorded measles cases in the U.S. in 1961 along with the population size broken down by state^[source: https://think.cs.vt.edu/corgis/csv/health/health.html]. This is a subset of a bigger dataset that includes similar numbers for every year from `r min(health$year)` to `r max(health$year)`. 
+
+```{r}
+set.seed(10101)
+health %>% 
+  filter(disease == 'MEASLES', year == 1961) %>% 
+  #sample_n(size = 10) %>% 
+  select(-c(disease:increase, year), State = loc, `With measles` = number, Population = population) %>% 
+  #knitr::kable()
+  DT::datatable(extensions = 'Scroller', 
+                width = '600px',
+                options = list(scrollY = 210,
+                               scroller = TRUE))
+```
+
+
+If we summarise this so we can consider all of the U.S., we can calculate the point prevalence for different years, here presented through the 60s:
+
+```{r}
+measles %>% filter(str_sub(year, 1, 3) == 196) %>% knitr::kable()
+```
+
+If we go even further, and plot the prevalence over time (with an added trend line for convenience), a clear pattern emerges. The prevalence of measles seem to fluctuate quite a bit in the first half of the centery, the consistently drop through the 1960s, and stay at a much lower level thereafter.
+
+```{r fig.margin = F}
+measles %>% 
+  mutate(ma = zoo::rollmean(Prevalence, k = 10, fill = NA)) %>%
+  ggplot(aes(x = year, y = Prevalence)) + 
+    geom_line() + 
+    geom_smooth(span = 0.5, alpha = 0.25) + 
+    #geom_vline(xintercept = 1963, linetype = 'dashed', color = 'blue') + 
+    theme_minimal() +
+    theme(panel.background = element_rect(fill = "#fffff8", color = NA),
+          plot.background = element_rect(fill = "#fffff8", color = NA))
+```
+
+What happened in the 1960s Answer: we started vaccinating against measles!^[https://www.cdc.gov/measles/about/history.html]
+
+### Example: SHOW data
+
+Below is a subset of the SHOW data set presented. 
+
+```{r}
+SHOW <- readxl::read_excel(create_path('data/SHOW_PHS783.xls'))%>% 
+  mutate(obesity = as.numeric(bmi >= 30))
+
+knitr::kable(SHOW)
+```
+
+One thing one could be interested in is the prevalence of obesity (defined as BMI greater than or equal to 30) across different age groups.
+
+```{r out.width='200px'}
+SHOW %>% 
+  mutate(`Age Group` = cut(age, c(20, 40, 60, 80, 100), right = F)) %>% 
+  janitor::tabyl(`Age Group`, obesity) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  rename(Obese = `1`,
+         `Not Obese` = `0`) %>% 
+  mutate(Prevalence = Obese/Total) %>% 
+  knitr::kable()
+```
+
+## Incidence
+
+Where prevalence has to do with the state of a disease at a given point in time, *incidence* has to with the development of a disease over time. A question that the incidence tries to answer is what is the likelihood that a patient develops a particular disease over a given period of time. 
+
+### Example: SHOW
+
+* Want to estimate the incidence. 
+* Calculate *cumulative incidence* over X years. 
+
+### Definition: Cumulative Incidence
+
+The *cumulative incidence* is defined as the proportion of persons that develop a disease over a specified period of time out of the total number of persons at risk at baseline:
+
+$$
+  \text{Cumulative incidence} = \frac{\text{number of persons that develop a disease during a specified period of time}}{\text{total number of persons at risk at baseline}}
+$$
+
+At first, the cumulative incidence seems like a very reasonable way to estimate the incidence of a disease -- we can interpret this as the probability that an individual at risk develops the disease over the specified period of time. But in practice, things are not so straight forward...
+
+### Example: SHOW
+
+* Discuss limitations
+    - only included complete data
+    - show how many subjects/how much data is thrown away
+* How do we take full advantage of all the data? 
+    - person-time!
+
+
+### Definition: Incidence Rate
+
+The *incidence rate* is defined as 
+
+$$
+  \text{incidence rate} = \frac{\text{Number of persons who develop disease during a specified period}}{\text{Sum of the lengths of time during which persons are disease-free}}
+$$
+
+The difference between the cumulative incidence and the incidence rate ... 
+
+
+### Example: SHOW
+
+
+
+## References

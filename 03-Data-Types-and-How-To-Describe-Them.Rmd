@@ -1,0 +1,138 @@
+# (PART) Data Types and Descriptives/Summary Statistics {-}
+
+[Chapter 4 in @ls.]
+
+* The overall idea: 
+    - on one hand, a population with some "true" parameter/"thing" we're interested in
+        - examples: mean attribute, true incidence rate, true prevalence, true median, true proportion, variance, quantiles, etc. 
+    - on the other, a sample we can use to estimate the "true" parameters
+        - examples: average, proportions, sample median, sample variance, etc
+
+There are fundamentally two kinds of variables: categorical variables, and continuous variables. These variables serve different purposes, have different strengths and weaknesses, and are often handled in different ways. 
+
+# Discrete
+
+A variable is called a *discrete* variable if the possible values of the variable are countable, that is if you can count them. Note that a discrete variable can technically have an infinite number of possible outcomes. 
+
+A discrete variable is of one of two subtypes: *categorical* or *ordinal*.
+
+## Categorical data
+
+Categorical variables are discrete variables with no particular ordering of the categories.
+
+### Examples -- categorical data
+
+The classical example of a categorical variable is sex. For each subject, the value of this variable is one of two possible values: male or female. 
+
+Other examples:
+
+* color. We generally work with a set number of categories. 
+* race
+* blood type
+* country of origin
+* political orientation
+
+
+
+
+## How to describe categorical data
+
+Categorical variables are often described using *frequency counts* and *relative frequencies*. 
+
+*Frequency counts* (or simply *frequency*) are found simply by counting how many times each possible value of an outcome is present in the data. *Relative frequencies* are found by dividing the frequency by the total number of observations. 
+
+### Examples
+
+Below are the frequencies for some categorical variables in the SHOW data set. 
+
+```{r}
+library(janitor)
+SHOW_cat_freqs <- SHOW %>% 
+  select(gender, edu, marital, RACE) %>% 
+  gather(key = "Variable", value = "Value") %>% 
+  split(.$Variable) %>% 
+  map(~ .x %>% 
+        tabyl(Value) %>% 
+        rename(Frequency = n,
+               `Relative Frequency` = percent))
+
+SHOW_cat_freqs %>% 
+  map(~ .x %>% select(-`Relative Frequency`)) %>% 
+  pander::pander()
+```
+
+We can add relative frequencies to this simply by dividing each frequency by the total number of observations. 
+
+```{r}
+SHOW_cat_freqs %>% 
+  pander::pander()
+```
+
+
+Relative frequencies are useful when trying to compare the values of a specific variable across groups. Say we want to investigate if there are any differences in the marital status between genders in this cohort. We could consider the frequency of marital status stratified by gender:
+
+```{r}
+SHOW %>% 
+  tabyl(gender, marital) %>% 
+  adorn_percentages() %>% 
+  adorn_totals(where = "col") %>% 
+  adorn_ns()
+```
+
+The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the same proportion of...
+
+
+## Ordinal Data
+
+An *ordinal variable* is a discrete variable where the groups can easily be ordered in a meaningful sense. 
+
+### Examples 
+
+
+
+## How to visualize discrete data
+
+Categorical data is often best presented using a bar chart of either frequency counts or relative frequencies. 
+
+### Bar Charts
+
+Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data. 
+
+```{r}
+ggplot(SHOW, aes(x = marital)) + 
+  geom_bar(width = 0.75) + 
+  labs(x = 'Martial Status', y = "Frequency Counts") +
+  scale_y_continuous(limits = c(0, max(table(SHOW$marital))) + c(0,3), 
+                     expand = c(0,0)) + 
+  theme_bw()
+```
+
+This can easily be turned into a bar chart of the relative frequencies. 
+
+```{r}
+ggplot(SHOW, aes(x = marital)) + 
+  geom_bar(aes(y = ..count../sum(..count..)), 
+           width = 0.75) + 
+  scale_y_continuous(limits = c(0,1), 
+                     expand = c(0,0)) +
+  labs(x = 'Martial Status', y = "Relative Frequency") + 
+  theme_bw()
+```
+
+
+# Continuous
+
+A *continuous variable* is a numerical variable that can take on an infinite and uncountable number of possible values. 
+
+## How to describe continuous data
+
+## How to visualize continuous data
+
+# Grey areas
+
+An example of a variable that could easily be mistaken as categorical is age. Often when we think about age, we think about this in terms of years, or months, or even days. In that sense, age is a variable with a number of possible values that we could technically count -- start with 0, 1, 2, 3, ..., 55, 56, 57, ... . However, this is NOT the natural structure of the variable, but rather a limitation of the way it is measured and recorded. Technically, age is the time from birth till now. 
+
+
+
+This manuscript was prepared using the PECARN Core Data Project (PCDP) 2002-2014 (STUDY) Data Set obtained from UTAH, and does not necessarily reflect the opinions or views of the STUDY investigators or the Health Resources Services Administration (HRSA) Maternal Child Health Bureau (MCHB) Emergency Medical Services for Children (EMSC). The PECARN was funded by the HRSA/MCHB/EMSC.
+

@@ -1,0 +1,3 @@
+# Introduction to Biostatistics {#intro}
+
+Words about biostats.
