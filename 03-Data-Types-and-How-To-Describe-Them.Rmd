@@ -2,6 +2,12 @@
 
 [Chapter 4 in @ls.]
 
+```{r}
+SHOW <- readxl::read_excel(create_path('data/SHOW_PHS783.xls'))%>% 
+  mutate(obesity = as.numeric(bmi >= 30))
+```
+
+
 * The overall idea: 
     - on one hand, a population with some "true" parameter/"thing" we're interested in
         - examples: mean attribute, true incidence rate, true prevalence, true median, true proportion, variance, quantiles, etc. 
