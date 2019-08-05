@@ -10,15 +10,7 @@ SHOW <- readxl::read_excel('data/SHOW_PHS783.xls') %>%
 ```
 
 
-* The overall idea: 
-    - on one hand, a population with some "true" parameter/"thing" we're interested in
-        - examples: mean attribute, true incidence rate, true prevalence, true median, true proportion, variance, quantiles, etc. 
-    - on the other, a sample we can use to estimate the "true" parameters
-        - examples: average, proportions, sample median, sample variance, etc
-
-There are fundamentally two kinds of variables: categorical variables, and continuous variables. These variables serve different purposes, have different strengths and weaknesses, and are often handled in different ways. 
-
-# Discrete
+# Discrete Data {#discrete}
 
 A variable is called a *discrete* variable if the possible values of the variable are countable, that is if you can count them. Note that a discrete variable can technically have an infinite number of possible outcomes. 
 
