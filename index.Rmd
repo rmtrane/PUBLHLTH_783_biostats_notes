@@ -32,8 +32,8 @@ create_path <- function(sub_folder, proj_folder = project_folder){
 theme_set(theme_bw())
 
 library(viridis)
-scale_color_continuous <- function(...) scale_color_viridis_c(...)
-scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
 
 scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
 scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
