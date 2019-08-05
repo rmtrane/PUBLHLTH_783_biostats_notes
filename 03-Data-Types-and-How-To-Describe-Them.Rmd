@@ -1,6 +1,8 @@
-# (PART) Data Types and Descriptives/Summary Statistics {-}
+# (PART) Data Types, Descriptives, and Summary Statistics {-}
 
-[Chapter 4 in @ls.]
+\label{PARTI}
+
+[Chapter 4 in @ls.] 
 
 ```{r}
 SHOW <- readxl::read_excel('data/SHOW_PHS783.xls') %>% 

@@ -1,4 +1,11 @@
 # Estimators and their distributions
 
-- simulations for explanation
-- as concrete and intuitive as possible
+In [Part I](#discrete), we discussed how we can describe and summarize collected data. Different research questions lead you to collect different types of data, and depending on the type of data, there are different ways to present it. 
+
+So far in this part, we've talked about this super abstract concepts, such as probability [random variables](#random-variables) and [distributions](#a-few-important-distributions) that at have nothing to do with the real world. So why did we spent so much time talking about these things? 
+
+In this section, we will see how random variables and distributions can help us answer questions about the data we collect in the real world. With a few assumptions we will be able to talk about probabilities of real world events, and later on we will use these probabilities to answer questions such as "is it likely that the mean heights of adult men and women in the US are the same?" 
+
+## What is an Estimator?
+
+
