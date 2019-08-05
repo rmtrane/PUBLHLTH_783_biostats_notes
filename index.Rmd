@@ -23,7 +23,7 @@ library(tidyverse)
 library(ggthemes)
 
 project_folder <- str_split(getwd(), pattern = '783_biostat_notes', simplify = TRUE)[,1] %>% 
-  paste0("783_biostat_notes")
+  paste0("/783_biostat_notes")
 
 create_path <- function(sub_folder, proj_folder = project_folder){
   paste(proj_folder, sub_folder, sep = '/')
