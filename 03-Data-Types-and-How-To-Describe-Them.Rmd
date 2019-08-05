@@ -3,7 +3,7 @@
 [Chapter 4 in @ls.]
 
 ```{r}
-SHOW <- readxl::read_excel(create_path('data/SHOW_PHS783.xls'))%>% 
+SHOW <- readxl::read_excel('data/SHOW_PHS783.xls') %>% 
   mutate(obesity = as.numeric(bmi >= 30))
 ```
 

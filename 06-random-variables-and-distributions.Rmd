@@ -38,7 +38,7 @@ The examples above all consider discrete random variables. As already mentioned,
 ### Examples: continuous distributions 
 
 ```{r}
-full_SHOW <- read_csv(create_path("data/SHOW.csv")) %>% 
+full_SHOW <- read_csv("data/SHOW.csv") %>% 
   rename(marital = "DMQ040")
 
 ggplot(full_SHOW, 
