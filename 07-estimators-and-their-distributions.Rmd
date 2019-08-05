@@ -8,4 +8,4 @@ In this section, we will see how random variables and distributions can help us 
 
 ## What is an Estimator?
 
-
+Recall the setup: on one hand, we have a population that we are interested in. In this population, there's some feature that we would like to learn more about
