@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>2 Discrete | Biostatistics in Public Health</title>
+  <meta name="description" content="2 Discrete | Biostatistics in Public Health">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="2 Discrete | Biostatistics in Public Health" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Discrete | Biostatistics in Public Health" />
+  
+  
+  
+
+<meta name="author" content="Ralph Trane">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="intro.html">
+<link rel="next" href="continuous.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.7/datatables.js"></script>
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><b>Public Health 783: Biostatistics</b></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome!</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction to Biostatistics</a></li>
+<li class="part"><span><b>I Data Types and Descriptives/Summary Statistics</b></span></li>
+<li class="chapter" data-level="2" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>2</b> Discrete</a><ul>
+<li class="chapter" data-level="2.1" data-path="discrete.html"><a href="discrete.html#categorical-data"><i class="fa fa-check"></i><b>2.1</b> Categorical data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>2.1.1</b> Examples – categorical data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>2.2</b> How to describe categorical data</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>2.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>2.3</b> Ordinal Data</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>2.3.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>2.4</b> How to visualize discrete data</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>2.4.1</b> Bar Charts</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>3</b> Continuous</a><ul>
+<li class="chapter" data-level="3.1" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>3.1</b> How to describe continuous data</a></li>
+<li class="chapter" data-level="3.2" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>3.2</b> How to visualize continuous data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>4</b> Grey areas</a></li>
+<li class="part"><span><b>II Introduction to Probability</b></span></li>
+<li class="chapter" data-level="5" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>5</b> What is “probability”?</a><ul>
+<li class="chapter" data-level="5.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>5.1</b> Definitions</a><ul>
+<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip"><i class="fa fa-check"></i>Example: coin flip</a></li>
+<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die"><i class="fa fa-check"></i>Example: roll of a die</a></li>
+<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i>Example: disease status</a></li>
+<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i>Example: coin flip (revisited)</a></li>
+<li class="chapter" data-level="5.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die-revisited"><i class="fa fa-check"></i><b>5.1.1</b> Example: roll of a die (revisited)</a></li>
+<li class="chapter" data-level="5.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>5.1.2</b> Example: disease status</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>6</b> Conditional Probability</a><ul>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i>Example: roll a die</a></li>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i>Example: disease status</a></li>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i>Example: Sensitivity/specificity</a></li>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i>Example: positive/negative predictive value</a></li>
+<li class="chapter" data-level="6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>6.1</b> Bayes’ Theorem</a><ul>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i>Example: positive predictive value from sensitivity</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>6.2</b> Independence</a><ul>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i>Example: independent events</a></li>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i>Example: dependent events</a></li>
+<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>7</b> Random Variables and Distributions</a><ul>
+<li class="chapter" data-level="7.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>7.1</b> Random Variables</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-random-variables"><i class="fa fa-check"></i><b>7.1.1</b> Examples: random variables</a></li>
+<li class="chapter" data-level="7.1.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-discrete-distributions"><i class="fa fa-check"></i><b>7.1.2</b> Examples: discrete distributions</a></li>
+<li class="chapter" data-level="7.1.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-continuous-distributions"><i class="fa fa-check"></i><b>7.1.3</b> Examples: continuous distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#properties-of-random-variables"><i class="fa fa-check"></i><b>7.2</b> Properties of Random Variables</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#expected-value-of-random-variables"><i class="fa fa-check"></i><b>7.2.1</b> Expected Value of Random Variables</a></li>
+<li class="chapter" data-level="7.2.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#variancestandard-deviation-of-random-variables"><i class="fa fa-check"></i><b>7.2.2</b> Variance/Standard Deviation of Random Variables</a></li>
+<li class="chapter" data-level="7.2.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#things-to-remember-when-working-with-random-variables"><i class="fa fa-check"></i><b>7.2.3</b> Things to remember when working with random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>7.3</b> A Few Important Distributions</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-bernoulli-distribution"><i class="fa fa-check"></i><b>7.3.1</b> The Bernoulli Distribution</a></li>
+<li class="chapter" data-level="7.3.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-binomial-distribution"><i class="fa fa-check"></i><b>7.3.2</b> The Binomial Distribution</a></li>
+<li class="chapter" data-level="7.3.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#normal-distribution"><i class="fa fa-check"></i><b>7.3.3</b> Normal Distribution</a></li>
+<li class="chapter" data-level="7.3.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#t-distribution"><i class="fa fa-check"></i><b>7.3.4</b> t-distribution</a></li>
+<li class="chapter" data-level="7.3.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>7.3.5</b> Other Distribution</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a></li>
+<li class="chapter" data-level="9" data-path="central-limit-theorem-.html"><a href="central-limit-theorem-.html"><i class="fa fa-check"></i><b>9</b> Central Limit Theorem.</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="about-assumptions.html"><a href="about-assumptions.html"><i class="fa fa-check"></i><b>A</b> About Assumptions</a></li>
+<li class="chapter" data-level="B" data-path="simulating-data.html"><a href="simulating-data.html"><i class="fa fa-check"></i><b>B</b> Simulating Data</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biostatistics in Public Health</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="discrete" class="section level1">
+<h1><span class="header-section-number">2</span> Discrete</h1>
+<p>A variable is called a <em>discrete</em> variable if the possible values of the variable are countable, that is if you can count them. Note that a discrete variable can technically have an infinite number of possible outcomes.</p>
+<p>A discrete variable is of one of two subtypes: <em>categorical</em> or <em>ordinal</em>.</p>
+<div id="categorical-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Categorical data</h2>
+<p>Categorical variables are discrete variables with no particular ordering of the categories.</p>
+<div id="examples-categorical-data" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Examples – categorical data</h3>
+<p>The classical example of a categorical variable is sex. For each subject, the value of this variable is one of two possible values: male or female.</p>
+<p>Other examples:</p>
+<ul>
+<li>color. We generally work with a set number of categories.</li>
+<li>race</li>
+<li>blood type</li>
+<li>country of origin</li>
+<li>political orientation</li>
+</ul>
+</div>
+</div>
+<div id="how-to-describe-categorical-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> How to describe categorical data</h2>
+<p>Categorical variables are often described using <em>frequency counts</em> and <em>relative frequencies</em>.</p>
+<p><em>Frequency counts</em> (or simply <em>frequency</em>) are found simply by counting how many times each possible value of an outcome is present in the data. <em>Relative frequencies</em> are found by dividing the frequency by the total number of observations.</p>
+<div id="examples" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Examples</h3>
+<p>Below are the frequencies for some categorical variables in the SHOW data set.</p>
+<ul>
+<li><p><strong>edu</strong>:</p>
+<table style="width:28%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">11</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">12</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">13</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">14</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">15</td>
+<td align="center">7</td>
+</tr>
+<tr class="even">
+<td align="center">16</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">18</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">19</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">21</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>gender</strong>:</p>
+<table style="width:28%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">10</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">10</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>marital</strong>:</p>
+<table style="width:28%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">12</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">5</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>RACE</strong>:</p>
+<table style="width:28%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">18</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<!-- end of list -->
+<p>We can add relative frequencies to this simply by dividing each frequency by the total number of observations.</p>
+<ul>
+<li><p><strong>edu</strong>:</p>
+<table style="width:57%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+<th align="center">Relative Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">11</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="even">
+<td align="center">12</td>
+<td align="center">2</td>
+<td align="center">0.1</td>
+</tr>
+<tr class="odd">
+<td align="center">13</td>
+<td align="center">3</td>
+<td align="center">0.15</td>
+</tr>
+<tr class="even">
+<td align="center">14</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="odd">
+<td align="center">15</td>
+<td align="center">7</td>
+<td align="center">0.35</td>
+</tr>
+<tr class="even">
+<td align="center">16</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="odd">
+<td align="center">18</td>
+<td align="center">3</td>
+<td align="center">0.15</td>
+</tr>
+<tr class="even">
+<td align="center">19</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="odd">
+<td align="center">21</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>gender</strong>:</p>
+<table style="width:57%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+<th align="center">Relative Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">10</td>
+<td align="center">0.5</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">10</td>
+<td align="center">0.5</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>marital</strong>:</p>
+<table style="width:57%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+<th align="center">Relative Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">12</td>
+<td align="center">0.6</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">5</td>
+<td align="center">0.25</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">1</td>
+<td align="center">0.05</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><strong>RACE</strong>:</p>
+<table style="width:57%;">
+<colgroup>
+<col width="11%" />
+<col width="16%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Value</th>
+<th align="center">Frequency</th>
+<th align="center">Relative Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">18</td>
+<td align="center">0.9</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">0.1</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<!-- end of list -->
+<p>Relative frequencies are useful when trying to compare the values of a specific variable across groups. Say we want to investigate if there are any differences in the marital status between genders in this cohort. We could consider the frequency of marital status stratified by gender:</p>
+<pre><code>##  gender       1       2       3       5       6  Total
+##       1 0.6 (6) 0.1 (1) 0.1 (1) 0.2 (2)   0 (0) 1 (10)
+##       2 0.6 (6)   0 (0)   0 (0) 0.3 (3) 0.1 (1) 1 (10)</code></pre>
+<p>The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the same proportion of…</p>
+</div>
+</div>
+<div id="ordinal-data" class="section level2">
+<h2><span class="header-section-number">2.3</span> Ordinal Data</h2>
+<p>An <em>ordinal variable</em> is a discrete variable where the groups can easily be ordered in a meaningful sense.</p>
+<div id="examples-1" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Examples</h3>
+</div>
+</div>
+<div id="how-to-visualize-discrete-data" class="section level2">
+<h2><span class="header-section-number">2.4</span> How to visualize discrete data</h2>
+<p>Categorical data is often best presented using a bar chart of either frequency counts or relative frequencies.</p>
+<div id="bar-charts" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Bar Charts</h3>
+<p>Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This can easily be turned into a bar chart of the relative frequencies.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="continuous.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
