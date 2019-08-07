@@ -8,4 +8,4 @@ In this section, we will see how random variables and distributions can help us 
 
 ## What is an Estimator?
 
-Recall the setup: on one hand, we have a population that we are interested in. In this population, there's some feature that we would like to learn more about
+Recall the setup: on one hand, we have a population that we are interested in. In this population, there's some feature that we would like to learn more about. This could be either a continuous measurement (such as height, blood pressure, glucose level, etc), or discrete (marital status, disease status, etc). If we could go out and simply inspect every individual in this population, we could learn the truth. We could find out exactly what proportion of the population have a certain disease, what is the mean glucose level among non-diabetics, and so on. Unfortunately, this is not feasible. 
