@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="random-variables-and-distributions.html">
-<link rel="next" href="central-limit-theorem-.html">
+<link rel="next" href="central-limit-theorem.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -48,7 +48,7 @@
 
 <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.7/datatables.js"></script>
+<script src="libs/datatables-binding-0.8/datatables.js"></script>
 <link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
@@ -75,8 +75,8 @@
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome!</a></li>
 <li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction to Biostatistics</a></li>
-<li class="part"><span><b>I Data Types and Descriptives/Summary Statistics</b></span></li>
-<li class="chapter" data-level="2" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>2</b> Discrete</a><ul>
+<li class="part"><span><b>I Data Types, Descriptives, and Summary Statistics</b></span></li>
+<li class="chapter" data-level="2" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>2</b> Discrete Data</a><ul>
 <li class="chapter" data-level="2.1" data-path="discrete.html"><a href="discrete.html#categorical-data"><i class="fa fa-check"></i><b>2.1</b> Categorical data</a><ul>
 <li class="chapter" data-level="2.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>2.1.1</b> Examples – categorical data</a></li>
 </ul></li>
@@ -139,8 +139,10 @@
 <li class="chapter" data-level="7.3.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>7.3.5</b> Other Distribution</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a></li>
-<li class="chapter" data-level="9" data-path="central-limit-theorem-.html"><a href="central-limit-theorem-.html"><i class="fa fa-check"></i><b>9</b> Central Limit Theorem.</a></li>
+<li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a><ul>
+<li class="chapter" data-level="8.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>8.1</b> What is an Estimator?</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="central-limit-theorem.html"><a href="central-limit-theorem.html"><i class="fa fa-check"></i><b>9</b> Central Limit Theorem</a></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="about-assumptions.html"><a href="about-assumptions.html"><i class="fa fa-check"></i><b>A</b> About Assumptions</a></li>
 <li class="chapter" data-level="B" data-path="simulating-data.html"><a href="simulating-data.html"><i class="fa fa-check"></i><b>B</b> Simulating Data</a></li>
@@ -166,11 +168,14 @@
             <section class="normal" id="section-">
 <div id="estimators-and-their-distributions" class="section level1">
 <h1><span class="header-section-number">8</span> Estimators and their distributions</h1>
-<ul>
-<li>simulations for explanation</li>
-<li>as concrete and intuitive as possible</li>
-</ul>
+<p>In <a href="discrete.html#discrete">Part I</a>, we discussed how we can describe and summarize collected data. Different research questions lead you to collect different types of data, and depending on the type of data, there are different ways to present it.</p>
+<p>So far in this part, we’ve talked about this super abstract concepts, such as probability <a href="random-variables-and-distributions.html#random-variables">random variables</a> and <a href="random-variables-and-distributions.html#a-few-important-distributions">distributions</a> that at have nothing to do with the real world. So why did we spent so much time talking about these things?</p>
+<p>In this section, we will see how random variables and distributions can help us answer questions about the data we collect in the real world. With a few assumptions we will be able to talk about probabilities of real world events, and later on we will use these probabilities to answer questions such as “is it likely that the mean heights of adult men and women in the US are the same?”</p>
+<div id="what-is-an-estimator" class="section level2">
+<h2><span class="header-section-number">8.1</span> What is an Estimator?</h2>
+<p>Recall the setup: on one hand, we have a population that we are interested in. In this population, there’s some feature that we would like to learn more about. This could be either a continuous measurement (such as height, blood pressure, glucose level, etc), or discrete (marital status, disease status, etc). If we could go out and simply inspect every individual in this population, we could learn the truth. We could find out exactly what proportion of the population have a certain disease, what is the mean glucose level among non-diabetics, and so on. Unfortunately, this is not feasible.</p>
 
+</div>
 </div>
             </section>
 
@@ -178,7 +183,7 @@
         </div>
       </div>
 <a href="random-variables-and-distributions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="central-limit-theorem-.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="central-limit-theorem.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
