@@ -38,16 +38,13 @@ The examples above all consider discrete random variables. As already mentioned,
 ### Examples: continuous distributions 
 
 ```{r}
-full_SHOW <- read_csv("data/SHOW.csv") %>% 
-  rename(marital = "DMQ040")
-
-ggplot(full_SHOW, 
-       aes(x = ANT_MEAS_HEIGHT_CM)) + 
+ggplot(full_show, 
+       aes(x = height)) + 
   geom_histogram(aes(y = ..density..),
                  bins = 35) + 
   stat_function(fun = dnorm, 
-                args = list(mean = mean(full_SHOW$ANT_MEAS_HEIGHT_CM, na.rm = T),
-                            sd = sd(full_SHOW$ANT_MEAS_HEIGHT_CM, na.rm = T)))
+                args = list(mean = mean(full_show$height, na.rm = T),
+                            sd = sd(full_show$height, na.rm = T)))
 ```
 
 ## Properties of Random Variables
@@ -139,7 +136,7 @@ So far we've talked about the variance, a bit about how to interpret it, and how
 
 The standard deviation of a random variable is simply the square root of the variance: $\SD(X) = \sqrt{\Var(X)}$. As we saw above, the variance has some nice mathematical properties, such as the fact that it is basically an expected value, and that (when $X$ and $Y$ are independent) $\Var(X + Y) = \Var(X) + \Var(Y)$. Neither of these two things are true for the standard deviation, and we lose both because of the square root. However, it is also because of an effect of the square root that we like using the standard deviation in certain situation.
 
-As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r mean(SHOW$height*0.39)` inches, and the variance is `r var(SHOW$height*0.39)`... $\text{inches}^2$? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 $\text{inches}^2$ a lot? We can't even really compare it to the mean because of the different units! However, the standard deviation fixes just that. It is still a measure of the expected variation, but this has been brought by to the original scale by taking the square root. So when we report a mean height of `r mean(SHOW$height*0.39)` inches with a standard deviation of `r sd(SHOW$height*0.39)` inches, this all of a sudden makes much more sense intuitively. 
+As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r mean(full_show$height*0.39)` inches, and the variance is `r var(full_show$height*0.39)`... $\text{inches}^2$? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 $\text{inches}^2$ a lot? We can't even really compare it to the mean because of the different units! However, the standard deviation fixes just that. It is still a measure of the expected variation, but this has been brought by to the original scale by taking the square root. So when we report a mean height of `r mean(full_show$height*0.39)` inches with a standard deviation of `r sd(full_show$height*0.39)` inches, this all of a sudden makes much more sense intuitively. 
 
 The moral of the story: both the variance and the standard deviation have a role in the world of statistics, but at different stages. The variance is very useful in the more mathematical parts of the field, while the standard deviation is easier to interpret. Luckily, going from one to the other is simple: $\Var(X) = \SD(X)^2$ and $\SD(X) = \sqrt{\Var(X)}$. Therefore, if you ever have one, you practically have both. Don't forget this, as it is a common mistake to plug in the variance to equations where it should have been the standard deviation. 
 
@@ -358,8 +355,6 @@ Combining this with the rules stated above, we get that $X - Y$ is normally dist
 #### Some Exploration through Simulations
 
 ```{r}
-library(distributions)
-
 set.seed(1010101)
 
 mean_x <- -0.5

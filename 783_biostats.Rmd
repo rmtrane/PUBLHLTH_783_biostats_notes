@@ -1,0 +1,1654 @@
+--- 
+title: "Biostatistics in Public Health"
+author: "Ralph Trane"
+date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: refs.bib
+biblio-style: apalike
+link-citations: yes
+---
+
+\newcommand{\Var}{\text{Var}}
+\newcommand{\var}{\text{var}}
+\newcommand{\SD}{\text{SD}}
+
+# Welcome! {-}
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(ggthemes)
+library(distributions)
+
+
+project_folder <- str_split(getwd(), pattern = '783_biostat_notes', simplify = TRUE)[,1] %>% 
+  paste0("/783_biostat_notes")
+
+create_path <- function(sub_folder, proj_folder = project_folder){
+  paste(proj_folder, sub_folder, sep = '/')
+}
+
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+## Load data sets used
+full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
+```
+
+* Introduction to the biostatistics part of the course
+* Expectations and structure
+* Explanation of notes
+* ...
+
+<!--chapter:end:index.Rmd-->
+
+# Introduction to Biostatistics {#intro}
+
+Words about biostats.
+
+<!--chapter:end:01-intro.Rmd-->
+
+# (PART) Data Types, Descriptives, and Summary Statistics {-}
+
+\label{PARTI}
+
+[Chapter 4 in @ls.]
+
+# Discrete Data {#discrete}
+
+A variable is called a *discrete* variable if the possible values of the variable are countable, that is if you can count them. Note that a discrete variable can technically have an infinite number of possible outcomes. 
+
+A discrete variable is of one of two subtypes: *categorical* or *ordinal*.
+
+## Categorical data
+
+Categorical variables are discrete variables with no particular ordering of the categories.
+
+### Examples -- categorical data
+
+The classical example of a categorical variable is sex. For each subject, the value of this variable is one of two possible values: male or female. 
+
+Other examples:
+
+* color. We generally work with a set number of categories. 
+* race
+* blood type
+* country of origin
+* political orientation
+
+
+## How to describe categorical data
+
+Categorical variables are often described using *frequency counts* and *relative frequencies*. 
+
+*Frequency counts* (or simply *frequency*) are found simply by counting how many times each possible value of an outcome is present in the data. *Relative frequencies* are found by dividing the frequency by the total number of observations. 
+
+### Examples
+
+Below are the frequencies for some categorical variables in the SHOW data set. 
+
+```{r}
+library(janitor)
+SHOW_cat_freqs <- full_show %>% 
+  select(gender, edu, marital, race) %>% 
+  gather(key = "Variable", value = "Value") %>% 
+  split(.$Variable) %>% 
+  map(~ .x %>% 
+        tabyl(Value) %>% 
+        rename(Frequency = n,
+               `Relative Frequency` = percent))
+
+SHOW_cat_freqs %>% 
+  map(~ .x %>% select(-`Relative Frequency`)) %>% 
+  pander::pander()
+```
+
+We can add relative frequencies to this simply by dividing each frequency by the total number of observations. 
+
+```{r}
+SHOW_cat_freqs %>% 
+  pander::pander()
+```
+
+
+Relative frequencies are useful when trying to compare the values of a specific variable across groups. Say we want to investigate if there are any differences in the marital status between genders in this cohort. We could consider the frequency of marital status stratified by gender:
+
+```{r}
+full_show %>% 
+  tabyl(gender, marital) %>% 
+  adorn_percentages() %>% 
+  adorn_totals(where = "col") %>% 
+  adorn_ns()
+```
+
+The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the same proportion of...
+
+
+## Ordinal Data
+
+An *ordinal variable* is a discrete variable where the groups can easily be ordered in a meaningful sense. 
+
+### Examples 
+
+
+
+## How to visualize discrete data
+
+Categorical data is often best presented using a bar chart of either frequency counts or relative frequencies. 
+
+### Bar Charts
+
+Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data. 
+
+```{r}
+ggplot(full_show, aes(x = marital)) + 
+  geom_bar(width = 0.75) + 
+  labs(x = 'Martial Status', y = "Frequency Counts") +
+  scale_y_continuous(limits = c(0, max(table(full_show$marital))) + c(0,3), 
+                     expand = c(0,0)) + 
+  theme_bw()
+```
+
+This can easily be turned into a bar chart of the relative frequencies. 
+
+```{r}
+ggplot(full_show, aes(x = marital)) + 
+  geom_bar(aes(y = ..count../sum(..count..)), 
+           width = 0.75) + 
+  scale_y_continuous(limits = c(0,1), 
+                     expand = c(0,0)) +
+  labs(x = 'Martial Status', y = "Relative Frequency") + 
+  theme_bw()
+```
+
+
+# Continuous
+
+A *continuous variable* is a numerical variable that can take on an infinite and uncountable number of possible values. 
+
+## How to describe continuous data
+
+## How to visualize continuous data
+
+# Grey areas
+
+An example of a variable that could easily be mistaken as categorical is age. Often when we think about age, we think about this in terms of years, or months, or even days. In that sense, age is a variable with a number of possible values that we could technically count -- start with 0, 1, 2, 3, ..., 55, 56, 57, ... . However, this is NOT the natural structure of the variable, but rather a limitation of the way it is measured and recorded. Technically, age is the time from birth till now. 
+
+
+
+This manuscript was prepared using the PECARN Core Data Project (PCDP) 2002-2014 (STUDY) Data Set obtained from UTAH, and does not necessarily reflect the opinions or views of the STUDY investigators or the Health Resources Services Administration (HRSA) Maternal Child Health Bureau (MCHB) Emergency Medical Services for Children (EMSC). The PECARN was funded by the HRSA/MCHB/EMSC.
+
+
+<!--chapter:end:03-Data-Types-and-How-To-Describe-Them.Rmd-->
+
+# (PART) Introduction to Probability {-}
+
+Loosely based on @ls chapter 5.
+
+# What is "probability"? 
+
+A *probability* is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 **always** occurs, while an event with probability of 0 **never** occurs. Every number in between are a bit harder to interpret. 
+
+For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there's a 0.5 (i.e. 50\%) chance of rain tomorrow? We can only observe if it rains tomorrow or not once, so the probability surely must be 0 (it doesn't rain) or 1 (it rains), right?
+
+## Definitions
+
+As hinted at above, the concept of "probability" can be a bit challenging to wrap your head around. There are generally two ways that the term is introduced. Though they are very similar once you understand the concepts, they can seem radically different at first. 
+
+```{definition, prob-def-1, echo = TRUE}
+The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, **IF** all outcomes are equally likely:
+
+$$
+  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}.
+$$
+```
+
+We often refer to the numerator in this fraction as the number of favorable outcomes. 
+
+I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: "IF all outcomes are equally likely". We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption. 
+
+The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and by far most boring, examples in the history of statistics. However, they are super useful for two reasons: 
+
+1. They are so simple that it is possible to better grasp what's going on
+2. A lot of more complicated examples can be simplified by comparing them to these two
+
+### Example: coin flip {-}
+
+We want to find the probability $P(\text{coin comes up heads})$. A natural assumption is that when flipping a coin, heads and tails are the only outcomes^[i.e. it is NOT possible for the coin to land on the side], and they are equally likely. Therefore, 
+
+\begin{align}
+  P(\text{coin comes up heads}) &= \frac{\text{# possible outcomes that come up heads}}{\text{# possible outcomes}} \\
+  &= \frac{1}{2} \\
+  &= 0.5.
+\end{align}
+
+Similarly, one can find the probability that the coin comes up tails:
+
+\begin{align}
+  P(\text{coin comes up tails}) &= \frac{\text{# possible outcomes that come up tails}}{\text{# possible outcomes}} \\
+  &= \frac{1}{2} \\
+  &= 0.5.
+\end{align}
+
+### Example: roll of a die {-}
+
+--- 
+
+The two examples above show situations where all possible outcomes are equally likely. What if that is not the case? 
+
+### Example: disease status {-}
+
+Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might  conclude that the probability of a subject being obese if $\frac{1}{2}$, i.e. $0.5$. 
+
+This is obviously not the case. The problem with this approach is that the two outcomes -- those being "the subject is obese", and "the subject is NOT obese" -- are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good. 
+
+--- 
+
+To find a more satisfying answer to the question asked in the last example, we need to consider a different approach to probabilities.
+
+```{definition, echo = TRUE, label = prob-def-2}
+The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an *infinite number of times*.
+```
+
+Repeating an experiment an infinite number of times is obviously not possible, so in practice "an infinite number of times" becomes "a very large number of times". 
+
+When introducing this different approach to probabilities, first we need to make sure it doesn't contradict our previous approach. 
+
+### Example: coin flip (revisited) {-}
+
+We previously established that when flipping a coin, the probability of heads is $0.5$. Hopefully this new definition will yield a similar answer. 
+
+To find out if that is actually the case, we would have to flip a coin "an infinite number of times". Obviously, this is not possible, so we will have to settle for "a very large number of times". So, imagine we flip a coin `r n_flips <- 100000; format(n_flips, scientific = FALSE)` times. Every time it is flipped, we write down the result, and count how many times we've seen heads, and how many times we've seen tails so far. If the probability of seeing heads is $0.5$, we should eventually see about as many heads as tails. 
+
+Below is an animation that shows the results of such an experiment. The bars show you the proportion of heads and tails, which in the end (by the definition above) will converge to the probability. The first 100 flips are all shown, then only the results after every 100 flips, and finally results after every 1000 flips are shown. Note how at the very end the two bars are both very close to $0.5$.
+
+```{r}
+set.seed(1010101)
+coin_flip <- tibble(outcome = rbinom(n = n_flips, size = 1, prob = 0.5)) %>% 
+  mutate(n = row_number(),
+         HT = if_else(outcome == 1, 'heads', 'tails'),
+         heads = cumsum(outcome),
+         tails = n - heads) %>%
+  gather(key = 'outcome', value = 'count', heads, tails) %>%
+  mutate(props = count/n) %>% 
+  filter(n < 101 | (n %% 100 == 0 & n < 10000) | n %% 1000 == 0)
+```
+
+```{r eval = FALSE, include = FALSE}
+library(gganimate)
+
+coin_flip_anim <- coin_flip %>% 
+  ggplot(aes(x = outcome, y = props, 
+             label = paste0("Number of ", outcome, ":\n", count))) + 
+    geom_bar(stat = 'identity') + 
+    scale_y_continuous(expand = expand_scale(0,0)) + 
+    geom_text(size = 6, aes(y = 0.1), fontface = "bold", color = 'black') +
+    geom_hline(yintercept = 1/2, linetype = 'dashed', color = 'red') + 
+    labs(title = "Number of total coin flips: {unique(coin_flip$n)[frame]}") + 
+    theme_bw() + 
+    theme(title = element_text(size = 20)) +
+    transition_manual(frames = n)
+
+anim_save(filename = "coin_flip.mp4", 
+          animation = coin_flip_anim, 
+          nframes = nrow(coin_flip_anim$data)/2,
+          renderer = ffmpeg_renderer(format = ".mp4"))
+```
+
+<video controls>
+  <source src="coin_flip.mp4" type="video/mp4">
+</video>
+
+### Example: roll of a die (revisited)
+
+`r n_rolls <- 100000; format(n_rolls, scientific = FALSE)`
+
+```{r}
+die <- tibble(roll = sample(1:6, size = n_rolls, replace = TRUE)) %>% 
+  transmute(n = row_number(),
+            `1` = cumsum(roll == 1),
+            `2` = cumsum(roll == 2),
+            `3` = cumsum(roll == 3),
+            `4` = cumsum(roll == 4),
+            `5` = cumsum(roll == 5),
+            `6` = cumsum(roll == 6)) %>% 
+  gather(key = 'n eyes', value = 'count', -n) %>% 
+  mutate(props = count/n) %>% 
+  filter(n < 101 | (n %% 100 == 0 & n < 10000) | n %% 1000 == 0)
+```
+
+```{r include = FALSE, eval = FALSE}
+die_roll_anim <- die %>% 
+  ggplot(aes(x = `n eyes`, y = props, label = paste0("# of ", `n eyes`, "'s:\n", count))) + 
+    geom_bar(stat = 'identity') + 
+    scale_y_continuous(limits = c(0,1), expand = expand_scale(0,0))  +
+    geom_text(size = 4, aes(y = 0.1), fontface = "bold", color = 'black') +
+    geom_hline(yintercept = 1/6, linetype = 'dashed', color = 'red') + 
+    labs(title = "Number of total rolls: {unique(die$n)[frame]}") + 
+    theme_bw() + 
+    theme(title = element_text(size = 20)) +
+    transition_manual(frames = n)
+
+anim_save(filename = "die_roll.mp4", 
+          animation = die_roll_anim, 
+          nframes = nrow(die_roll_anim$data)/6,
+          renderer = ffmpeg_renderer(format = ".mp4"))
+```
+
+<video controls>
+  <source src="die_roll.mp4" type="video/mp4">
+</video>
+
+### Example: disease status
+
+Okay, so both when flipping a coin and rolling a die, the second definition agrees with the first one. But how can we use this way of thinking in the disease status example? What does it even mean to "repeat the experiment", let alone "repeat an infinite number of times"?!
+
+In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are "similar enough" that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease. 
+
+
+
+<!--chapter:end:04-Introduction-to-Probability.Rmd-->
+
+# Conditional Probability
+
+So far, we have talked about probabilities in a context where no additional information is available about the experiment. This is of course not always the case, and also not always what we are interested in. 
+
+A useful concept in these cases is the concept of *conditional probabilities*. In a nutshell, conditional probabilities deal with the chances of something happening given something else has already happened. If we consider two events, $A$ and $B$, then we write $P(A | B)$ for the conditional probability of $A$ given that $B$ has happened.
+
+## Example: roll a die {-}
+
+Previously, we considered the probabilities associated with the roll of a die. We found that the probability of rolling a six is $\frac{1}{6}$. What if we somehow knew that the outcome turned out to be an even number, but simply didn't know which even number? Well, using this information, we know there are only three possible outcomes, namely $2,4,6$. They are all equally likely, so using the probability of rolling a six given the roll comes up even is 
+
+$$\left .P(\text{roll a } 6\ \right|\ \text{roll is even}) = \frac{1}{3}.$$
+
+## Example: disease status {-}
+
+
+
+## Example: Sensitivity/specificity {-}
+
+Two important examples of conditional probabilities are the so-called sensitivity and specificity. These are particularly useful when discussing the accuracy of screening tests. 
+
+The *sensitivity* of a test is the *true positive rate* (or fraction). That is, out of the tests performed on individuals with the disease of interest, how many come out positive. I.e. $\text{sensitivity} = P(\text{test positive}\ |\ \text{individual diseased})$. 
+
+Similarly, the *specificity* of a test is the *true negative rate* (or fraction), i.e. the proportion of tests performed on healthy individuals that come out negative: $\text{specificity} = P(\text{test negative}\ |\ \text{individual healthy})$. 
+
+It is also often useful to consider the *false positive rate* (FPR) and *false negative rate* (FNR). These are defined as follows:
+
+\begin{align*}
+  \text{FPR} &= P(\text{test positive}\ |\ \text{individual healthy}), \\
+  \text{FNR} &= P(\text{test negative}\ |\ \text{individual diseased}). \\
+\end{align*}
+
+Let's consider a concrete example. Below is table 5-5 from @ls. This table shows the results of screenings of 4810 pregnant women to assess if their fetus is likely to have Down Syndrome. After birth, it is determined if the child actually has Down Syndrome, provided a ground truth that we can check our screening method against. Ideally, the test is positive for all kids with Down Syndrome, and negative for alld kids without Down Syndrome. 
+
+```{r}
+prenatal_screening <- tibble(`Fetus Status` = c('Affected', 'Affected', 'Unaffected', 'Unaffected'),
+                             `Screening Test Result` = factor(c('Positive', 'Negative', 'Positive', 'Negative'),
+                                                              levels = c('Positive', 'Negative')),
+                             n = c(9, 1, 351, 4449)) %>% 
+  spread(`Fetus Status`, n)
+
+prenatal_screening_DT <- prenatal_screening %>% 
+  janitor::as_tabyl() %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  DT::datatable(options = list(dom = "t", ordering = FALSE), 
+                rownames = FALSE,
+                width = 10)
+
+prenatal_screening_DT
+```
+
+Let us calculate the specificity, sensitivity, FNR, and FPR:
+
+$$
+\begin{align*}
+  \text{specificity} &= P(\text{test negative}\ |\ \text{child healthy}) \\
+                     &= \frac{\text{# negative tests among healthy children}}{\text{# healthy children}} \\
+                     &= \frac{4449}{4800} = 0.927 \\
+                     & \\
+  \text{sensitivity} &= P(\text{test positive}\ |\ \text{child has Down Syndrome}) \\
+                     &= \frac{\text{# positive tests among children with Down Syndrome}}{\text{# children with Down Syndrome}} \\
+                     &= \frac{9}{10} = 0.9 \\
+                     & \\
+  \text{FPR} &= P(\text{test positive}\ |\ \text{individual healthy}) \\
+             &= \frac{\text{# positive tests among healthy children}}{\text{# healthy children}} \\
+             &= \frac{351}{4800} = 0.073 \\
+             & \\
+  \text{FNR} &= P(\text{test negative}\ |\ \text{individual diseased}) \\
+             &= \frac{\text{# negative tests among children with Down Syndrome}}{\text{# children with Down Syndrome}} \\
+             &= \frac{1}{10} = 0.1.
+\end{align*}
+$$
+
+We see that the test has some very desirable attributes, in high specificity AND high sensitivity. At this point, some might stop and wonder for a second: the end goal is to determine if the test is accurate, so why don't we just calculate the accuracy of the test? I.e. what's wrong at simply looking at the number of corret test results out of the total number of tests? Let's take a look.
+
+$$
+\begin{align}
+  \text{test accuracy} &= \frac{\text{# correct results}}{\text{# tests performed}} \\
+                       &= \frac{9 + 4449}{4810} \\
+                       &= \frac{4458}{4810} = 0.927
+\end{align}
+$$
+
+That's pretty impressive. The test has an accuracy rate of almost $93\%$, i.e. almost $93\%$ of tests yield the correct result. Now, let us consider a different test for the same disease. Tested on the same 4810 women, let's pretend it yields the following results:
+
+```{r}
+prenatal_screening %>% 
+  mutate(`Screening Test Result` = factor(c('Negative', 'Positive'), 
+                                          levels = c('Positive', 'Negative'))) %>% 
+  arrange(`Screening Test Result`) %>% 
+  janitor::as_tabyl() %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  DT::datatable(options = list(dom = "t", ordering = FALSE), 
+                rownames = FALSE,
+                width = 10)
+```
+
+
+Now, the accuracy rate of this test is $\frac{1 + 4449}{4810} = 0.925$, i.e. almost the same as the first test. That's, again, really impressive! But upon further investigation, something is off. The sensitivity is way off. Out of 10 children with Down Syndrome, the test only came back positive for 1, which yields a sensitivity of only only $0.1$. In other words, if a fetus actually is a affected, the test only has a $10\%$ chance of detecting it. That's not very comforting. 
+
+This is a common problem with rare diseases. Since by far most individuals will not be diseased, a test that is good at predicting healthy individuals, but awful at predicting diseased individuals, will have a high accuracy, but such a test is not very desirable. Consider this last test for Down Syndrome: no test is performed, and we just always say the fetus is unaffected. Since 4800 out of 4810 fetuses were unaffected, we have an accuracy of $\frac{4800}{4810} = 0.998$. Pretty impressive accuracy rate, absolutely useless test...
+
+## Example: positive/negative predictive value {-}
+
+The specificity is the answer to the question "what is the probability the test will be correct when the patient is actually healthy?" This is of course a very important thing to know, and if this probability is very low, the test might not be particularly useful. However, a just as important, and sometimes more relevant, measure is the *negative predictive value*. This relates to the question "what is the probability the patient is actually healthy when the test comes back negative?" 
+
+Similarly, we can talk about the *positive predictive value*. Where the sensitivity is the probability that the test is positive if the patient has the disease, the positive predictive value is the probability that a patient has the disease if the test comes back positive. 
+
+Let us again consider the Down Syndrome data. Since the negative predictive value is the probability a child is healthy given the test was negative, it calculated as the proportion of children with negative tests that actually were healthy. So,
+
+$$
+\begin{align}
+  \text{Positive Predictive Value} &= P(\text{child healthy } | \text{ test negative}) \\
+                                   &= \frac{4449}{4450} \\
+                                   &= 0.999.
+\end{align}
+$$
+
+Similarly, since the negative positive predictive value is the probability a child has Down Syndrome given the test was positive, it is calculated as the proportion of children with positive tests that actually has Down Syndrome. So, 
+
+$$
+\begin{align}
+  \text{Negative Predictive Value} &= P(\text{child diseased } | \text{ test positive}) \\
+                                   &= \frac{9}{360} \\
+                                   &= 0.025.
+\end{align}
+$$
+
+## Bayes' Theorem
+
+We have seen a few examples of some very useful and meaningful quantities that are actually conditional probabilities. We've seen how we, in general, calculate these conditional probabilities, but only in a setting where we know everything. The following theorem (i.e. very big and important result) provides a powerful way of finding conditional probabilities, and it also provides a very useful connection between conditional probabilities, and marginal probabilities (i.e. probabilities that are not conditional).
+
+```{theorem, name = "Bayes' Theorem", label = bayes, echo = TRUE}
+Bayes' Theorem simply states that $P(A | B) = \frac{P(A \text{ and } B)}{P(B)}$. Since $P(A \text{ and } B) = P(B \text{ and } A)$, this gives us that $P(B | A)P(A) = P(A \text{ and } B)$, so $P(A | B) = \frac{P(B | A)P(A)}{P(B)}$. Especially the latter formulation is very powerful, as we shall see in this next example.
+```
+
+### Example: positive predictive value from sensitivity{-} 
+
+This allows us to calculate the positive predictive value using the sensitivity of a test, the prevalence of the disease we're testing for, and how often the test itself is positive (regardless of patient status). 
+
+
+## Independence 
+
+One of the big ones in statistics in general is the concept of independence. When things are independent, all the math simplifies a great deal, which is the main reason why a lot of the methods we will consider later on are based on the assumption that observations are independent of one another. 
+
+Loosely speaking, two events are said to be *independent* if knowledge about one of the events does not provide any information about the other. I.e. if I ask you what the probabilitity of event A happening is before and after I tell you whether event B happened or not, your answers should be the same. 
+
+### Example: independent events {-}
+
+Event A: I walk around Madison one day, stop a random stranger, and ask: "are you taller than 6ft?"
+
+Event B: I flip a coin, and it comes up tails.
+
+Events A and B are independent. The probability that a random person is taller than 6ft is not altered by the fact that a coin flip comes up tails. 
+
+### Example: dependent events {-}
+
+Event A: I walk around Madison one day, stop a random stranger, and ask: "are you taller than 6ft?"
+
+Event B: The random stranger I stop is male. 
+
+Events A and B are NOT independent. The probability a random stranger is taller than 6ft is about 0.16 if the person is male, but less than 0.01 if the person is female.^[loosely based on data from https://dqydj.com/height-percentile-calculator-for-men-and-women/] So the probability of event A being 'yes' depends on the outcome of event B. Therefore, they are not independent. 
+
+---
+
+We will work with two definitions of independence. (Fortunately, they are equivalent, i.e. if one holds, the other holds.)
+
+```{definition, echo = TRUE}
+Two events are independent if and only if $P(A \text{ and } B) = P(A) P(B)$.
+```
+
+```{definition, echo = TRUE}
+Two events are independent if and only if $P(A | B) = P(A)$ AND $P(B | A) = P(B)$. 
+```
+
+### Example {-}
+
+
+
+
+<!--chapter:end:05-conditional-probability.Rmd-->
+
+# Random Variables and Distributions
+
+So far in this section, we've talked about probabilities, different ways of thinking about probabilities, and a bit about how to work with probabilities. In this section we will introduce a more formal framework for how to think about and handle uncertain events. By making a few assumptions about how things behave, we can calculate probabilities of events without observing them.
+
+## Random Variables
+
+A *random variable* is a variable where the value is not guarenteed in advance, but can take different values. 
+
+### Examples: random variables 
+
+Define a variable $X$ to be the outcome of a coin flip. Now, before we flip the coin, we do not know what value $X$ will take on -- it could be "heads" or it could be "tails". Once we flip the coin and observe the outcome, we say that we have a *realization* of the random variable $X$. 
+
+Another example would be if we let $Y$ be the height of a randomly chosen US adult. We don't know exactly what value it is, but we do know a few things about it. For example, it is much more likely to be around 5.5ft than it is to be around 7ft or below 4ft. When we do finally randomly select a US adult, and measure their height, we get a realization of this random variable. 
+
+A third example is if we let $Z$ denote the diabetes status of a randomly chosen US adult. This could take the values healthy, type I, or type II, and each will happen with some probability. 
+
+--- 
+
+As the example above was meant to illustrate, a random variable can really be anything you'd like. And whenever we talk about a random variable, we also talk about the probability of certain outcomes. If we can define a way to calculate probabilities of different outcomes of the random variable, we call this the *distribution* of the random variable. 
+
+Recall previously we talked about two kinds of variables: discrete and continuous variables. Likewise, we can consider both discrete and continuous *random* variables. Depending on the kind of random variable we're discussing, defining it's distribution is handled slightly differently. When we consider discrete random variables, its distribution is defined by specifying the probability of every single possible outcome. There are two things that are important to remember:
+
+1. all probabilities must be between $0$ and $1$,
+2. the sum of all probabilities must add up to $1$. 
+
+The second point above is important, and is sometimes super handy when trying to calculate probabilities of certain complicated events. The intuition behind it is pretty simple: something must happen. So the probability that something happens is $1$. 
+
+### Examples: discrete distributions 
+
+Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes. 
+
+Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data. 
+
+---
+
+The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve.
+
+### Examples: continuous distributions 
+
+```{r}
+ggplot(full_show, 
+       aes(x = height)) + 
+  geom_histogram(aes(y = ..density..),
+                 bins = 35) + 
+  stat_function(fun = dnorm, 
+                args = list(mean = mean(full_show$height, na.rm = T),
+                            sd = sd(full_show$height, na.rm = T)))
+```
+
+## Properties of Random Variables
+
+When we talk about random variables, there is a great deal of uncertainty involved, since (by design) we do not know exactly what values the random variables will take after a conducted experiment. Similarly, we cannot be sure that repeating an experiment results in the same outcomes of the random variables simply since they are, as the name strongly implies, random. However, if we have some information about the random variable we're interested in, we can talk about some very important features of the random variable. The two we will talk about here are the *expected value* and *variance/standard deviation* of random variables. 
+
+These two concepts can be a bit hard to wrap ones head around at first, but as we talk about them over and over agian, hopefully you will realize that they are not as abstract as they might first seem.
+
+### Expected Value of Random Variables 
+
+The expected value of a random variable is, intuitively, the long run average. I.e. if we repeat an experiment **an infinite number of times**, we can determine the expected value of a random variable as the average of all the realizations of said random variable. As an example, if we consider the random variable $X$ that is $0$ if a coin flip comes up heads, and $1$ if it comes up tails, we can imagine flipping a coin an infinite number of times, and calculating the average. The result would be that the expected value of $X$ is $0.5$. We write $E(X) = 0.5$. 
+
+Since the expected value can be thought of as the long run average, it is in some sense the value that the outcomes of the random variable are going to be centered around. 
+
+Note: the expected value is also often referred to as the *mean* value. 
+
+For any discrete random variable where we know the distribution, we can find the expected value in the following way: $E(X) = x_1 \cdot P(X = x_1) + ... + x_n P(X = x_n) = \sum_{i=1}^n x_i P(X = x_i)$.^[**Note**: the symbol $\sum$ simply means "sum". So, when we write $\sum_{i=1}^n ...$ it simply means "take the expression ..., plug in the value when $i=1,2,3,...,n$, and then add them up". Example: $\sum_{i=1}^5 i = 1 + 2 + 3 + 4 + 5 = 15$. Example 2: if $x_1 = 1, x_2 = 6, x_3 = -2.9$, then $\sum_{i = 1}^3 x_i = 1 + 6 - 2.9 = 4.1$.]
+
+
+#### Example: expected value of discrete random variable 
+
+Let $X$ be a discrete random variable the can take the values $1,2,6$, and $12$. Let the probabilities of each outcome be as follows:
+
+```{r}
+mean_discrete_example <- tibble(x = c(1,2,6,12), `P(X = x)` = c(0.2, 0.1, 0.6, 0.1))
+pander::pander(mean_discrete_example)
+```
+
+Then we can calculate the expected value of $X$: 
+
+$$
+\begin{align}
+  E(X) &= \sum_{i = 1}^4 x_i P(X = x_i) \\
+       &= 1 \cdot P(X = 1) + 2 \cdot P(X = 2) + 6 \cdot P(X = 6) + 12 \cdot P(X = 12) \\
+       &= 1\cdot 0.2 + 2\cdot 0.1 + 6 \cdot 0.6 + 12 \cdot 0.1 \\
+       &= 5.2.
+\end{align}
+$$
+
+So what does this mean? It means that if we perform an experiment that results in a realization of the random variable $X$ many, many, many times, the average of all outcomes is going to be close to $5.2$.  
+
+---
+
+#### Example: expected value of a continuous random variable 
+
+In the continuous case, actually calculating the expected value isn't as easy as in the discrete case. Remember, when we specify a discrete distribution, we specify the probability of each possible outcome. When we specify a continuous distribution, we specify a curve over all the possible outcomes, and probabilities of specific events correspond to areas under the curve. This also means that it is impossible to use a formula like the one introduced for the discrete case above. Fortunately, the intuition is the same. The expected it the long run average. 
+
+
+---
+
+#### Rules for working with expected values 
+
+Sometimes, it is very beneficial to be able to transform a random variable, or combine several random variables, into a new one, and work with that new random variable. Fortunately, dealing with the expected value of a large number of such transformations is pretty simple. 
+
+First, let's imagine we have a random variable $X$ with mean $E(X)$, and another random variable $Y$ with mean $E(Y)$. Perhaps we are interested in the sum of the two, so we construct a new random variable $Z = X + Y$.^[Example: maybe we sent out a survey to a bunch of households asking for the income of each adult in the household ($X$ and $Y$), and now we want to combine the two into a single total household income ($Z = X + Y$).] Finding the expected value of $Z$ is really simple: $E(Z) = E(X + Y) = E(X) + E(Y)$. In words: the expected value of a sum of random variables is simply the sum of expected values. 
+
+Another example: maybe we want to scale the outcome of the random variable $X$ by a constant $a$, and then consider the new random variable $Y = a\cdot X$.^[Example: maybe $X$ is the total household income found from a survey in Europe where the currency is Euro. We want to compare this to our study of household incomes in the U.S., but to do so we have to convert from Euro to US Dollars. Here, $X$ is the household income in Euro, $a$ the exchange rate from Euro to US Dollars, and $Y$ the household income in US Dollars.] Again, finding the expected value of the new random variable $Y$ is really simple: $E(Y) = E(aX) = a\cdot E(X)$. 
+
+One final thing I want to mention here: the expected value of a constant will always be the constant itself. Hopefully, this doesn't come as too much of a shock. The expected value is what we would *expect* from a random variable. If something is constant, it means it never changes, so we *expect* it to stay the same. So, if $a$ is a constant, $E(a) = a$. This can be combined with the first rule we talked about to give us that $E(X + a) = E(X) + E(a) = E(X) + a$. 
+
+
+### Variance/Standard Deviation of Random Variables 
+
+Where the expected value of a random variable tells us something about where the outcomes of the random variable tend to be located, the next measures we'll be looking at tell us something about how spread out the outcomes will be around the expected value.
+
+**Note**: most textbooks handle the variance and standard deviations as two distinct things. I don't like that. They are virtually two sides of the same coin, and I will deliberately handle the two at the same time. My reasoning for this is that, at least in my head, these two measures try to convey the same message, but to two different audiences. I will elaborate on this later, but try to keep in mind that these two measures are almost the same. 
+
+The *variance* of a random variable is a measure that tells us how much we expect the outcome of said random variable to vary from the expected value. As with the expected value, it is relatively simple to calculate this when we are dealing with simple discrete random variables. Let $X$ be a discrete random variable with possible outcomes $x_1, ..., x_n$, and the probability of $x_i$ is $P(X = x_i)$. Then the variance of $X$ is $\Var(X) = \sum_{i=1}^n P(X = x_i)(x_i - E(X))^2$. At first glance, this can look a bit intimidating, so let's try to break it down to better understand what's going on:
+
+1. It actually has the form of an expected value, i.e. it is a sum of where each term is the product of the value of an outcome and the probability of that outcome. So, intuitively, this is not much different than an expected value, it's just an expected value of something else.
+2. That "something else" is $(x_i - E(X))^2$. This is representative of the distance from the outcome $x_i$ to the expected value...
+3. ... except, we square the distance. We do this because we want this measure to be representative of the variation of the data, and so we cannot allow positive and negative differences to cancel. Example: if we didn't square the differences, a random variable with possible outcomes $1,2,3$ each with probability $1/3$ would have variance $0$, but clearly there is some variation in the sample -- not all observations are the same. 
+
+So, loosely speaking, the variance is "a measure of averaged distances from observations to the sample average". 
+
+#### Rules for working with variance 
+
+Working with the variance of random variables is not quite as simple as working with the expected value. This is due to the fact that the expected value is a simple average, whereas the variance is an average of squared differences. The result is the following set of rules: if $X$ and $Y$ are random variables, and $a$ is some fixed constant, then 
+
+1. $\Var(a\cdot X) = a^2 \Var(X)$,
+2. $\Var(a) = 0$,
+3. if $X$ and $Y$ are independent: $\Var(X+Y) = \Var(X) + \Var(Y)$.
+
+Combining (1) and (2) above tells us that, if $X$ and $Y$ are independent, then $\Var(X - Y) = \Var(X + (-Y)) = \Var(X) + \Var(-Y) = \Var(X) + (-1)^2 \Var(Y) = \Var(X) + \Var(Y)$. Don't forget this!!
+
+#### So what about that standard deviation? 
+
+So far we've talked about the variance, a bit about how to interpret it, and how to work with it for multiple random variables. But what about that other thing mentioned above, the standard deviation? 
+
+The standard deviation of a random variable is simply the square root of the variance: $\SD(X) = \sqrt{\Var(X)}$. As we saw above, the variance has some nice mathematical properties, such as the fact that it is basically an expected value, and that (when $X$ and $Y$ are independent) $\Var(X + Y) = \Var(X) + \Var(Y)$. Neither of these two things are true for the standard deviation, and we lose both because of the square root. However, it is also because of an effect of the square root that we like using the standard deviation in certain situation.
+
+As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r mean(full_show$height*0.39)` inches, and the variance is `r var(full_show$height*0.39)`... $\text{inches}^2$? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 $\text{inches}^2$ a lot? We can't even really compare it to the mean because of the different units! However, the standard deviation fixes just that. It is still a measure of the expected variation, but this has been brought by to the original scale by taking the square root. So when we report a mean height of `r mean(full_show$height*0.39)` inches with a standard deviation of `r sd(full_show$height*0.39)` inches, this all of a sudden makes much more sense intuitively. 
+
+The moral of the story: both the variance and the standard deviation have a role in the world of statistics, but at different stages. The variance is very useful in the more mathematical parts of the field, while the standard deviation is easier to interpret. Luckily, going from one to the other is simple: $\Var(X) = \SD(X)^2$ and $\SD(X) = \sqrt{\Var(X)}$. Therefore, if you ever have one, you practically have both. Don't forget this, as it is a common mistake to plug in the variance to equations where it should have been the standard deviation. 
+
+### Things to remember when working with random variables 
+
+When working with random variables, $X$ and $Y$, these are the important rules:
+
+1. $E(X + Y) = E(X) + E(Y)$,
+2. if $a$ is some fixed number, $E(a\cdot X) = a\cdot E(X)$,
+3. if $a$ is some fixed number, $\Var(a \cdot X) = a^2 \Var(X)$,
+4. **IF** $X$ and $Y$ are independent, $\Var(X + Y) = \Var(X) + \Var(Y)$,
+5. **IF** $X$ and $Y$ are independent, $\Var(X - Y) = \Var(X) + \Var(Y)$. 
+
+Things people often forget:
+
+1. $E(X\cdot Y) \neq E(X)E(Y)$,
+2. $E\left(\frac{X}{Y}\right) \neq \frac{E(X)}{E(Y)}$,
+3. $\Var(X+Y) \neq \Var(X) + \Var(Y)$ if $X$ and $Y$ are not independent,
+4. $\Var(X - Y) \neq \Var(X) - \Var(Y)$,
+5. $\SD(X + Y) \neq \SD(X) + \SD(Y)$, even when $X$ and $Y$ are independent.
+
+## A Few Important Distributions
+
+### The Bernoulli Distribution 
+
+In the first example above, we consider flipping a coin. Such an experiment, i.e. one with only two possible outcomes, is often referred to as a *Bernoulli experiment*, and the random variable $X$ is referred to as a *Bernoulli random variable*. The "probability of success" (you get to pick our favorite outcome as a success) is often denoted $p$. As a shorthand for such a random variable, we write $X \sim \text{Bernoulli}(p)$, which is read as "$X$ follows a Bernoulli distribution with probability parameter $p$" or "$X$ is Bernoulli distributed with parameter $p$". Phrases like these can sometimes sound scary and complex, but all it means is that the random variable $X$ can only take on two different outcomes, and the probability of $X$ being one of the two outcomes is $p$, the probability of it being the other is $1-p$. (Important note: remember that the sum of all probabilities has to be $1$, so if the probability of one outcome is $p$, and there are only two possible outcomes, then the probability of the other outcome must be $1-p$. This way of thinking is something we will use over and over again.)
+
+Using the properties discussed in section \@ref(properties-of-random-variables), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
+
+$$
+  E(X) = \sum_{i=1}^2 x_i \cdot P(X = x_i) = 0 \cdot P(X = 0) + 1 \cdot P(X = 1) = p,
+$$
+
+and 
+
+$$
+\begin{align}
+  \Var(X) &= \sum_{i=1}^2 P(X = x_i) \cdot (x_i - E(X))^2 \\
+          &= P(X = 0)\cdot (0 - p)^2 + P(X = 1)\cdot (1 - p)^2 \\
+          &= (1 - p)\cdot p^2 + p\cdot (1 - p)^2 \\
+          &= (1-p)\cdot(p^2 + p\cdot(1-p)) \\
+          &= (1-p)\cdot(p^2 + p - p^2) \\
+          &= (1-p)\cdot p.
+\end{align}
+$$
+
+So it is actually rather simple to find the expected value and variance of a Bernoulli random variable, if we know the probability of success ($p$). 
+
+### The Binomial Distribution 
+
+Often times we are interested in things that can be viewed as a sum of Bernoulli random variables. Let's say we have $n$ independent (i.e. the outcome of one doesn't say anything about the rest) Bernoulli random variables ($X_1$, $X_2$, ..., $X_n$), all with probability of success $p$, and are interested in the sum of those $n$ variables $Y = X_1 + X_2 + ... + X_n$. For this to make sense, we let $X_i$ be $1$ if the corresponding "experiment" is a success, and $0$ if it is a failure. Now, we can think of the random variable $Y$ as either (1) the sum of independent Bernoulli random variables, or (2) the number of successes among $n$ independent trials with binary outcomes. It is this latter interpretation that makes the random variable $Y$ interesting. 
+
+When a random variable is the sum of $n$ independent Bernoulli random variables all with probability of success $p$, we say that $Y$ follows a Binomial distribution with size $n$ and probability of success $p$. We write $Y \sim \text{Binomial}(n,p)$. 
+
+Let's think for a second about what possible values $Y$ can take. If all $n$ Bernoulli experiments happen to come out as failures, then all $X_i$'s are $0$'s, and so $Y$ will also be $0$. The other extreme is if all $n$ Bernoulli experiments are successes, then all $X_i$'s are $1$'s, and $Y$ will be the sum of $n$ $1$'s, so $Y$ will be $n$. These are simply the two extremes - any number of the $X_i$'s can be $1$'s, so $Y$ can end up being any integer between $0$ and $n$, both included. The most likely scenarios are the integers closest to the middle. 
+
+Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
+
+```{r binomial_example, cache = TRUE}
+binom_n <- 50000
+binom_n_print <- format(binom_n, scientific = F)
+
+n <- 10
+
+binom_outcomes <- tibble(i = 1:binom_n,
+                         Numeric = map(i, function(...) as.numeric(rbernoulli(n))),
+                         HTs = map_chr(Numeric, function(x) if_else(x == 1, "H", "T") %>% 
+                                         paste(collapse = ",")),
+                         Y = map_dbl(Numeric, sum)) %>% 
+  select(i, HTs, Numeric, Y)
+```
+
+Since it's impossible to flip $n$ coins (for what is $n$?), we have to pick a real integer. Let's pick $`r n`$. Similarly, it's impossible to flip $`r n`$ coins an infinite number of times, so let's just do it a bunch of times (i.e. $`r `$). What we are about to do is repeat an experiment (flip $`r n`$ coins) many, many ($`r binom_n_print`$) times. The first time we perform this experiment, we see `r binom_outcomes$HTs[1]`. When we translate this to $0$ and $1$, it looks like `r paste(binom_outcomes$Numeric[[1]], collapse = ",")`. So, the value of the binomial variable $Y$ is `r binom_outcomes$Y[1]`, since this is the number of heads. Rinse and repeat. The results of all $`r n`$ experiments are shown in the table below.
+
+```{r cache = TRUE}
+DT::datatable(binom_outcomes %>% select(-i))
+```
+
+Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{# experiments with } Y = 2}{\text{# experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
+
+```{r}
+binom_outcomes %>% 
+  janitor::tabyl(Y) %>% 
+  rename(y = Y,
+         `Estimated Probability` = percent,
+         `# experiments with Y = y` = n) %>% 
+  pander::pander()
+```
+
+We see that the most probable outcomes are around the middle (4,5,6) with proportions above 0.20. 
+
+Another popular way of displaying this is using a histogram:
+
+```{r}
+binom_outcomes %>%  
+  janitor::tabyl(Y) %>% 
+  ggplot(aes(x = Y, y = n)) + 
+    geom_bar(stat = 'identity', width = 1, col = 'black') +
+    scale_x_continuous(breaks = c(1:10)) +
+    theme_bw()
+```
+
+When viewing this, the probability of a given outcome can be interpreted as the area of the corresponding bar divided by the total area. 
+
+As mentioned earlier, the distribution of a binomial random variable can also be calculated mathematically. We won't go into the details here, but I will leave you with the formulat: $P(Y = k) = {n \choose k}p^k (1-p)^{n-k}$^[${n \choose k}$ is read as "n choose k" and is the number of ways you can choose $k$ elements from $n$ elements. For example, the number of ways you can pick $2$ balls out of a basked of $3$ different balls is ${3 \choose 2}$. It can be calculated as ${n \choose k} = \frac{n!}{k!(n-k)!}$, where $n!$ ("$n$ factorial") is $n\cdot (n-1) \cdot (n-2) \cdot ... \cdot 2 \cdot 1$. By definition, $0! = 1$.]. Take a look at the calculated probabilities below, and compare them to the estimates we got by flipping $`r n`$ coins $`r binom_n_print`$ times. 
+
+```{r}
+binom_outcomes %>% 
+  janitor::tabyl(Y) %>% 
+  mutate(Probability = dbinom(x = Y, size = 10, prob = 0.5)) %>% 
+  rename(y = Y,
+         `Estimated Probability` = percent,
+         `# experiments with Y = y` = n) %>% 
+  pander::pander()
+```
+
+Pretty close! 
+
+As mentioned, the expected value is basically the long run average. So, if we calculate the average of all outcomes of $Y$ we get a good estimate of what the expected value of $Y$ is. Similarly, the variance of the outcomes is a good estimate of the variance of the random variable $Y$. From the data, $\bar{y} = `r mean(binom_outcomes[["Y"]])`$ and $s_Y^2 = `r var(binom_outcomes[["Y"]])`$. Remember those two numbers.
+
+If we use the rules of expectation and variance from the previous section, we can find the exact expected value and variance of a binomial random variable with size $n$ and probability of success $p$. Since $Y \sim \text{Binomial}(n,p)$ if $Y = X_1 + ... + X_n$, where $X_i \sim \text{Bernoulli}(p)$ and all $X_i$'s are independent, we have that 
+
+$$
+\begin{align}
+  E(Y) &= E(X_1 + ... + X_n) && \\
+       &= E(X_1) + ... + E(X_n) && \\
+       &= p + ... p && (E(X_i) = p \text{ since } X_i \sim \text{Bernoulli}(p)) \\
+       &= n\cdot p, &&
+\end{align}
+$$
+
+and 
+
+$$
+\begin{align}
+  \Var(Y) &= \Var(X_1 + ... + X_n) && \\
+          &= \Var(X_1) + ... + \Var(X_n) && (\text{since all } X_i's \text{ are independent}) \\
+          &= p\cdot(1-p) + ... + p\cdot(1-p) && (\text{since } X_i \sim \text{Bernoulli}(p)) \\
+          &= n\cdot p \cdot (1-p). &&
+\end{align}
+$$
+
+These two equations really emphasize that a Binomial random variable is really just $n$ Bernoulli's: notice how both the expected value and the variance is $n$ times that of a single Bernoulli random variable. 
+
+Now let's calculate the expected value and variance of our little experiment. We flip a coin $`r n`$ times. The probability of success is $0.5$. So, $Y \sim \text{Binomial}(`r n`, 0.5)$, and we should have $E(Y) = `r n` \cdot 0.5 = `r n*0.5`$, and $\Var(Y) = `r n` \cdot 0.5 \cdot (1-0.5) = `r n*0.5*0.5`$. Remember what we got for the expected value and variance? Numbers very close to these.
+
+### Normal Distribution 
+
+The normal distribution is most definitely the most important distribution we will discuss in this class for one reason: The Central Limit Theorem. We'll get back to what this is later, but first let us get familiar with the normal distribution. 
+
+In contrast to the Bernoulli and Binomial distributions, the normal distribution is a continuous distribution. This means that we can not specify the probability of every single possible outcome. Instead we simply specify it using a curve. We then about areas under this curve as the probabilities. This curve is what we call the density. 
+
+The normal distribution density is specified by two parameters^[a parameter is simply a number]. The first specifies the mean of the distribution (and is therefore called the *mean* or *location* paramater). We often use $\mu$ to denote the mean of a normal distribution, or $\mu_X$ if we want to really stress that we are talking about the mean of the random variable $X$^[very useful when we are working with multiple random variables, as we will see in a second]. The second parameter specifies the variance of the distribution. We often use $\sigma^2$ to denote this, or $\sigma_X^2$. The mean parameter can really be any real number, while the variance has to be positive. If $X$ follows a normal distribution with mean $\mu$ and variance $\sigma^2$, we write $X \sim N(\mu, \sigma^2)$. 
+
+So what does this curve actually look like? It's a bell curve that is centered at the mean $\mu$ and the shape/width is controlled by the variance $\sigma^2$. Below are a few examples. The first figure shows varying means, the second varying variances.
+
+```{r}
+normals_base <- ggplot(data = data.frame(x = seq(-5, 5, by = 0.1)),
+       aes(x = x)) +
+  labs(x = '', y = '', color = '') + 
+  scale_x_continuous(breaks = -5:5)
+
+normals_base + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = 'N(0,1)'), group = 'mean') + 
+  stat_function(fun = dnorm, args = list(mean = -2, sd = 1), 
+                aes(color = 'N(-2,1)'), group = 'mean') + 
+  stat_function(fun = dnorm, args = list(mean = 1, sd = 1), 
+                aes(color = 'N(1,1)'), group = 'mean') 
+```
+
+```{r}
+normals_base +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = 'N(0,1)'), group = 'var') + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 2), 
+                aes(color = 'N(0,4)'), group = 'var') + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 3), 
+                aes(color = 'N(0,9)'), group = 'var')
+```
+
+
+As the names of the parameters suggest, the actual expected value and variance of a random variable that is normally distributed, $X \sim N(\mu, \sigma^2)$, is simply $\mu$ and $\sigma^2$, respectively. 
+
+#### Linear Combination of Normal with Constant
+
+One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(properties-of-random-variables), we get that 
+
+$$\begin{aligned}
+  E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\
+  E(Y_2) &= E(a\cdot X) = a E(X) = a\cdot \mu,
+\end{aligned}$$
+
+and 
+
+$$
+\begin{aligned}
+  \Var(Y_1) &= \Var(X+a) = \Var(X) = \sigma^2, \\
+  \Var(Y_2) &= \Var(a\cdot X) = a^2 \Var(X) = a^2 \sigma^2.
+\end{aligned}
+$$
+
+So $X + a \sim N(\mu + a, \sigma^2)$, and $a\cdot X \sim N(a\cdot \mu, a^2 \sigma^2)$. 
+
+One particular case of the normal distribution plays an important role in much of statistics, and is therefore been named the Standard Normal Distribution. For historic reasons, we often use $Z$ to denote the standard normal distribution, which is simply a normal distribution with mean $0$ and variance $1$. I.e. $Z \sim N(0,1)$. One reason why this is important is that it provides sort of a baseline that we can always revert to. Whenever you are working with a normal distribution, you can use the rules above to get the standard normal. If $X \sim N(\mu, \sigma^2)$, then $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. Why? As we just discussed, adding a constant to a normal random variable results in something normal. $X-\mu$ is simply adding $-\mu$ to $X$, so this is still normal. We also saw that multiplying by a constant is still normal, so since $\frac{X-\mu}{\sigma}$ is simply multiplying $X$ by $\frac{1}{\sigma}$, we have that $\frac{X-\mu}{\sigma}$ is a normal random variable. We can find it's mean and variance using the rules we've learned, and get that $E\left(\frac{X - \mu}{\sigma}\right) = \frac{E(X) - \mu}{\sigma} = 0$, and $\Var\left(\frac{X - \mu}{\sigma}\right) = \frac{\Var(X)}{\sigma^2} = 1$, so $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. 
+
+#### Sum of (Independent) Normals
+
+Another really important and useful property of the normal distribution is that if you have two normally distributed variables, $X \sim N(\mu_X, \sigma_X^2)$ and $Y \sim N(\mu_Y, \sigma_Y^2)$, then the sum of the two, $X + Y$, is also a normally distributed random variable. 
+
+The mean parameter of this newly created random variable is always easy to find: $E(X + Y) = E(X) + E(Y) = \mu_X + \mu_Y$. The variance is, in general a bit harder, except if the two are independent of each other. In this case $\Var(X + Y) = \Var(X) + \Var(Y) = \sigma_X^2 + \sigma_Y^2$. So, if $X$ and $Y$ are independent, then $X + Y \sim N(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)$. 
+
+Combining this with the rules stated above, we get that $X - Y$ is normally distributed as well, since $X - Y = X + (-Y)$, and both $X$ and $-Y$ are normally distributed. More applications of the rules give us $X - Y \sim N(\mu_X - \mu_Y, \sigma_X^2 + \sigma_Y^2)$. (**NOTE**: we DO NOT subtract the variances.)
+
+
+#### Some Exploration through Simulations
+
+```{r}
+set.seed(1010101)
+
+mean_x <- -0.5
+mean_y <- 1
+var_x <- 1
+var_y <- 1.5
+
+
+X <- Normal(mean_x, sqrt(var_x))
+Y <- Normal(mean_y, sqrt(var_y))
+
+normal_sim_n <- 10000
+
+normal_sim_res <- tibble(Xs = random(X, n = normal_sim_n),
+                         Ys = random(Y, n = normal_sim_n),
+                         Ws = Xs - Ys)
+```
+
+To illustrate the properties presented in the two previous sections, let us take a look at some simulated data. Let $X \sim N(`r mean_x`, `r var_x`)$ and $Y \sim N(`r mean_y`, `r var_y`)$. I.e. $X$ and $Y$ follow these two distributions:
+
+```{r}
+normals_base + 
+  geom_line(aes(y = pdf(X, x), color = "X")) + 
+  geom_line(aes(y = pdf(Y, x), color = "Y"))
+```
+
+Now, let's say we're actually interested in $W = X - Y$. That is, we perform an experiment, observe a realization of $X$ and $Y$, and then create a realization of $W$ as $w = x - y$. The first experiment results in $x = `r round(normal_sim_res[["Xs"]][1], digits = 4)`, y = `r round(normal_sim_res[["Ys"]][1], digits = 4)`$, and so $w = x - y = `r round(normal_sim_res[["Ws"]][1], digits = 4)`$. We repeat this experiment many, many ($`r normal_sim_n`$) times. This enables us to take a look at histograms of the outcomes of $X$, $Y$, and $W$, and we calculate the observed averages and variances so that we can compare with our theoretical expectations. 
+
+So, first of all: do $X$ and $Y$ actually match the distributions we wanted them to come from? Below are histograms of the outcomes with the distributions overlayed. Notice how closely the histograms follow the curves. It definitely seems that the outcomes of $X$ and $Y$ indeed come from the respective normal distributions. 
+
+```{r}
+for_normal_sim_plots <- normal_sim_res %>% 
+  gather(key = "var") %>% 
+  mutate(PDF = case_when(var == "Xs" ~ pdf(X, value),
+                         var == "Ys" ~ pdf(Y, value),
+                         var == "Ws" ~ pdf(Normal(mean_x - mean_y, sqrt(var_x + var_y)), value)),
+         var = str_sub(var, end = 1)) 
+
+
+for_normal_sim_plots %>% 
+  filter(var != "W") %>% 
+  ggplot(aes(x = value, fill = var)) + 
+    geom_histogram(bins = normal_sim_n/100, alpha = 0.5, position = 'identity',
+                   aes(y = ..density..)) +
+    geom_line(aes(y = PDF)) + 
+    labs(x = '', y = '', fill = '') + 
+    scale_x_continuous(breaks = -5:5)
+```
+
+
+Now, let us take a look at the difference between the two, i.e. $W$. 
+
+```{r}
+for_normal_sim_plots %>% 
+  filter(var != "W") %>% 
+  ggplot(aes(x = value, fill = var)) + 
+    geom_histogram(bins = normal_sim_n/100, alpha = 0.5, position = 'identity',
+                   aes(y = ..density..)) +
+    geom_line(aes(y = PDF)) +
+    geom_histogram(data = filter(for_normal_sim_plots,
+                                 var == "W"),
+                   alpha = 1,
+                   bins = normal_sim_n/100, position = 'identity',
+                   aes(y = ..density..)) +
+    labs(x = '', y = '', fill = '', alpha = '') + 
+    scale_x_continuous(breaks = -7:5)
+```
+
+A few things to notice: 
+
+1. it most definitely looks like a new normal distribution
+2. it seems to be centered not far from $`r mean_x - mean_y`$
+3. it seems to be wider than both of the other curves
+
+So, do these observations match what we would expect? 
+
+1. We know that the difference of two normally distributed variables should again be normally distributed
+2. Our rules tell us that $E(W) = E(X - Y) = E(X) - E(Y) = `r mean_x` - `r mean_y` = `r mean_x - mean_y`$, so that also checks out
+3. The rules stated above also tell us that $\Var(W) = \Var(X - Y) = \Var(X) + \Var(Y) = `r var_x` + `r var_y` = `r var_x + var_y`$, so we do expect the new curve to be wider than both of the old ones. 
+
+Finally, we can check that the averages and variances we observe are close to what the theory tells us:
+
+```{r}
+normal_sim_res %>% 
+  rename(X = Xs, Y = Ys, W = Ws) %>% 
+  gather(key = "Variable") %>% 
+  group_by(Variable) %>% 
+  summarise(Average = mean(value), `Observed Variance` = var(value)) %>% 
+  ungroup() %>% 
+  mutate(Mean = case_when(Variable == 'X' ~ mean_x,
+                             Variable == 'Y' ~ mean_y,
+                             Variable == 'W' ~ mean_x - mean_y),
+         Variance = case_when(Variable == 'X' ~ var_x,
+                             Variable == 'Y' ~ var_y,
+                             Variable == 'W' ~ var_x + var_y),
+         Variable = factor(Variable, levels = c("X", "Y", "W"))) %>% 
+  arrange(Variable) %>% 
+  knitr::kable()
+```
+
+
+Again, only small differences between the observed and the expected.
+
+
+### t-distribution 
+
+The t-distribution is very similar to the normal distribution in that the curve also resembles a bell. Unlike the normal distribution, it only depends on one parameter, which is called the degrees of freedom, or $df$. We use the notation $t_{df}$ for a t-distribution with $df$ degrees of freedom. 
+
+The t-distribution is always centered around $0$, which is also its mean, but the variance depends on the degrees of freedom: if $X \sim t_{df}$, then $\Var{X} = \frac{df}{df-2}$ if $df > 2$, $\Var{X} = \inftu$ if $1 < df < 2$, and the variance of $X$ is actually undefined if $df < 1$. 
+
+Below are a few examples of the t-distribution with different degrees of freedom. For comparison, the standard normal is also included. Notice how similar the t-distributions with more than 9 degrees of freedom look, and how they keep getting closer and closer to the standard normal distribution. It can actually be shown that if we had an infinite number of degrees of freedom, then the t-distribution is identical to the standard normal distribution. 
+
+```{r}
+ggplot(data = data.frame(x = seq(-3, 3, by = 0.1)),
+       aes(x = x)) + 
+  stat_function(fun = dt, args = list(df = 1), 
+                aes(color = "df1")) +
+  stat_function(fun = dt, args = list(df = 3), 
+                aes(color = "df3")) +
+  stat_function(fun = dt, args = list(df = 9), 
+                aes(color = "df9")) +
+  stat_function(fun = dt, args = list(df = 15), 
+                aes(color = "df15")) + 
+  stat_function(fun = dt, args = list(df = 20), 
+                aes(color = "df20")) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = "N(0,1)")) + 
+  scale_color_discrete(labels = c("df1" = expression(df[1]),
+                                  "df3" = expression(df[3]),
+                                  "df9" = expression(df[9]),
+                                  "df15" = expression(df[15]),
+                                  "df20" = expression(df[20])),
+                       breaks = factor(c("df1", "df3", "df9", "df15", "df20", "N(0,1)")))
+```
+
+
+### Other Distribution
+
+The four distributions above are the ones we'll consider, but there are many, many more out there. Here are a few examples.
+
+#### Poisson Distribution 
+
+The Poisson distribution is often used for counting things, such as the number of patients showing up in a clinic during a specified time period. It is a discrete distribution that only returns integer values. It depends on only one parameter which is often referred to as the rate parameter. It is displayed below with a few different values of the rate.
+
+```{r}
+tibble(lambda = c(1, 5, 10),
+       n = list(c(0:20)),
+       p = map2(n, lambda, function(x,y) dpois(x, y))) %>% 
+  unnest() %>% 
+  ggplot(aes(x = n, y = p, fill = as.character(lambda))) + 
+    geom_histogram(stat = 'identity', position = "identity",
+                   alpha = 0.5, width = 1, col = 'grey50') + 
+    labs(y = 'Probabilities', fill = "Rate parameter") +
+    theme_bw()
+```
+
+For a Poisson distributed random variable with rate parameter $\lambda$, $X \sim \text{Poisson}(\lambda)$, it holds that $E(X) = \Var(X) = \lambda$. 
+
+#### Exponential Distribution 
+
+The exponential distribution is often used for wait times. This can be useful if you want to model the wait times in an emergency room, for example. It is a continuous distribution that depends on a single parameter, which is also called the rate parameter. 
+
+```{r}
+tibble(x = list(seq(0, 2, by = 0.05)),
+       Rate = c(1,5,10),
+       p = map2(x, Rate, function(x,y) dexp(x, y))) %>% 
+  unnest() %>% 
+  mutate(Rate = factor(Rate, levels = c(1, 5, 10))) %>% 
+  ggplot(aes(x = x, y = p, fill = Rate)) + 
+    geom_area(col = 'grey50', alpha = 0.5, position = 'identity') + 
+    scale_y_continuous('', expand = expand_scale(mult = c(0,0), add = c(0, 2))) 
+```
+
+
+For a random variable that is exponentially distributed with rate parameter $\lambda$, $X \sim \text{Exp}(\lambda)$, it holds that $E(X) = \frac{1}{\lambda}$, and $\Var(X) = \frac{1}{\lambda^2}$.
+
+<!--chapter:end:06-random-variables-and-distributions.Rmd-->
+
+# Estimators and their distributions
+
+```{r}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+In [Part I](#discrete), we discussed how we can describe and summarize collected data. Different research questions lead you to collect different types of data, and depending on the type of data, there are different ways to present it. 
+
+So far in this part, we've talked about this super abstract concepts, such as probability [random variables](#random-variables) and [distributions](#a-few-important-distributions) that at have nothing to do with the real world. So why did we spent so much time talking about these things? 
+
+In this section, we will see how random variables and distributions can help us answer questions about the data we collect in the real world. With a few assumptions we will be able to talk about probabilities of real world events, and later on we will use these probabilities to answer questions such as "is it likely that the mean heights of adult men and women in the US are the same?" 
+
+## What is an Estimator?
+
+Recall the setup: on one hand, we have a population that we are interested in. In this population, there's some feature that we would like to learn more about. This could be either a continuous measurement (such as height, blood pressure, glucose level, etc), or discrete (marital status, disease status, etc). If we could go out and simply inspect every individual in this population, we could learn the truth. We could find out exactly what proportion of the population have a certain disease, what is the mean glucose level among non-diabetics, and so on. Unfortunately, this is not feasible. 
+
+What we do instead is we get a sample of individuals from the population. We do this in a way that ensures that this sample is representative of the population, meaning things we might observe in the sample are close to what we would observe in the population, if we had the chance. 
+
+After collecting a representative sample, we think for a second about exactly what *parameter* of the population is of interest to us, and then we pick "something" we can actually calculate based on our sample that is close to the parameter of interest. This "something" is what we call the *estimator* -- it is our best guess of what the parameter is based on a sample.
+
+An important thing to realize here is that **an estimator is a random varaible**. The specific value of it depends on the sample we get, which by nature is random. Therefore, repeating the experiment leads to a different value of the estimator. The hope is that the estimator doesn't vary too much when repeating the experiment, and that the estimator is actually close to the true value of the population parameter. 
+
+Since an estimator is a random variable, we can talk about the distribution of an estimator. This plays a crucial role when creating confidence intervals and testing hypotheses, as we will see later on in the course. To find the distribution of an estimator, one can take two routes: 
+
+1. perform the experiment over and over and over and over again, each time calculating the observed value of the estimator, then drawing a histogram, which in the end will give you the distribution of the estimator,
+2. make some assumptions, do some math.
+
+The first strategy, as stated here, is not super useful -- we can't possibly afford to repeat every single experiment we do enough times to get enough observed values of the estimator to actually draw a histogram that provides any insights. However, we can do this for made up data, and it turns out that we can tweak this strategy a tiny bit to make it not only useful in practice, but super powerful. 
+
+The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(properties-of-random-variables) and THE coolest theorem we see in this class, namely the Central Limit Theorem. 
+
+The rest of this section will proceed as follows: first, we'll see a few examples of common estimators. Then, we will explore the distributions of those estimators through simulations and using the SHOW data set as our population. Then we will briefly discuss how to adjust strategy 1 above to make it useful in a practical setting, and finally we will take a look at the Central Limit Theorem, and how we can apply that to back up the distributions we found for different estimators through simulations.
+
+## Common Estimators
+
+Some things we are often interested in and their estimators:
+
+| Parameter of Interest (most commonly used symbol)         | Estimator Name                    | Notation and Formula                                      |
+|:---------------------------------------------------------:|:---------------------------------:|:---------------------------------------------------------:|
+| Mean of a feature ($\mu$)                                 | Sample average                    | $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$                  |
+| Variance of a feature ($\sigma^2$)                        | Sample variance                   | $S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$      |
+| Standard deviation ($\sigma$)                             | Sample standard deviation         | $S = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2}$ |
+| Probability of random individual having a disease ($\pi$) | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+| Proportion of individuals with disease ($\pi$)            | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+
+As you can see in the table above, most of the estimators we will consider here are pretty much what you would expect. If you are interested in the mean of the population, you look at the average (or *mean*) of the sample. Interested in the proportion of individuals with a disease in the population? Consider the proportion with that disease in your sample. 
+
+### Examples
+
+In the following examples, we'll play a game of pretend: pretend that the SHOW cohort is the *entire* population, and that we would like to estimate different things in this population.  
+
+#### Estimating Mean Height {-}
+
+```{r cache = TRUE}
+show_heights <- full_show %>% 
+  select(id, height) %>% 
+  filter(!is.na(height))
+
+true_mean <- mean(show_heights$height, na.rm = T)
+true_var <- var(show_heights$height, na.rm = T)
+
+N <- 10000
+sample_size <- 20
+
+samples <- map_dfr(1:N, function(x) sample_n(show_heights, size = sample_size) %>% mutate(i = x))
+
+height_averages <- samples %>% 
+  group_by(i) %>% 
+  summarise(average = mean(height)) %>% 
+  ungroup()
+```
+
+Say I ask you to estimate the mean height of the subjects in the SHOW population. I won't show you the entire population, but I will let you pick a simple random sample of size `r sample_size` from the population. You do just that, and you get the following sample.
+
+```{r}
+samples %>% filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+
+Based on this sample, what would be your best guess as to what the true mean height of the entire population is? Since the sample is a simple random sample, you would probably go with the average: `r samples %>% filter(i == 1) %>% summarise(m = mean(height)) %>% pull(m)`. But how certain are you that your estimate is a good? What's to say that it's not super far from the true population mean height? 
+
+One way to answer this question is by thinking about the distribution of the average of `r sample_size` samples. If we can get an idea of what the distribution of this is compared to the true population mean height (which we know in this case, since the SHOW cohort is the entire population), then we can maybe say something about how likely we are to be "close" to the population mean. To get a better idea of what the distribution of the sample average is, we can create many, many samples of size `r sample_size` from the population, calculate the average height for each of them, and then create a histogram. Since we have the entire population available, we can also calculate the true population mean height, and then see how the distribution of the sample average compares. 
+
+So, let us do just that. First of all, the true population mean height is `r mean(full_show$height, na.rm = T)`, which is simply the average of ALL subjects in the population. Furthermore, we can consider the distribution of the individual heights:
+
+
+```{r pop-dist-height, fig.cap = "Population distribution of height"}
+ggplot(show_heights, aes(x = height)) + 
+  geom_histogram(aes(y = ..density..),
+                 bins = floor(N/200)) +
+  geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') + 
+  scale_color_discrete("", direction = -1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+Now, the first sample we got gave us an average of `r height_averages %>% filter(i == 1) %>% pull(average)`. We resample from the population, and this time end up with this sample:
+
+```{r}
+samples %>% 
+  filter(i == 2) %>% 
+  select(-i) %>% 
+  left_join(full_show) %>% 
+  knitr::kable()
+```
+
+As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
+
+```{r cache = TRUE}
+height_averages %>% 
+  ggplot(aes(x = average)) + 
+    geom_histogram(bins = floor(N/200),
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') + 
+    # stat_function(fun = dnorm,
+    #               args = list(mean = true_mean, 
+    #                           sd = sqrt(true_var/sample_size)),
+    #               aes(color = 'N')) + 
+    scale_color_discrete("", direction = -1) + 
+    # scale_color_discrete("", labels = c(expression(paste('N(', mu, ',', sigma^2, '/n)')), expression(mu))) + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+A few things to note here: 
+
+1. Look how nicely the distribution is centered around the true population mean! This mean that using the sample average as an estimator of the true population mean might not be an entirely bad idea: in general, we are more likely to get an average that is "close" to the truth!
+2. The shape of that distribution looks an awful lot like a normal distribution, don't you think? Coincidence? Maybe. Maybe not...
+3. This histogram is a lot narrower than that of the actual heights. To really see that, the figure below shows both distributions overlayed one another. This tells us that to get a good idea of the true mean population height, it's a much better idea to create a sample of `r sample_size` subjects and use their average as your best guess than to simply sample a single individual, and use their height. Probably not surprising. But if you think of the height of a single individual as "an average of a sample of size 1", and the true value as "an anverage of a sample of size $\infty$" (here, $\infty$ equals the total population), then you might realize a pattern: the small sample size (sample size of 1) is worse than the medium sample size (`r sample_size`), which is worse than the ideal sample size ($\infty$). It seems that your guess gets better as you increase the sample size... Coincidence? Maybe. Maybe not... 
+
+```{r}
+ggplot(show_heights, aes(x = height)) +
+  geom_histogram(data = height_averages, 
+                 aes(x = average, y = ..density.., alpha = "Distribution of Averages"),
+                 #alpha = 0.5,
+                 bins = floor(N/100)) + 
+  geom_histogram(aes(y = ..density.., alpha = 'Distribution of Heights in the Population'),
+                 bins = floor(N/200)) + 
+  geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') +
+  scale_alpha_manual("", values = c(0.7, 0.5)) + 
+  scale_color_discrete("", direction = -1) +  
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+#### Estimating Mean Depression Score {-}
+
+Of the three bullet points above, the one that to me is the most surprising is the second one. Points 1 and 3 seem pretty intuitive: the former says that the average is a good substitute for the mean, the third that bigger sample size is better. Not exactly mind blowing. The second one, however, is more intriguing, although in the previous case, maybe not so much. After all, the distribution of the population (i.e. the distribution of all heights, shown in \@ref(fig:pop-dist-height)) looks a whole lot like a normal distribution in the first place. 
+
+Let's take a look at what happens if we consider something that is nothing like a normal distribution. Let's say we would like to estimate the mean depression score in the population. The procedure is the same as before. Take a sample, calculate the average, repeat a bunch of times to get a good approximation of the distribution.
+
+```{r cache = TRUE}
+show_depression_scores <- full_show %>% 
+  select(id, depression_score) %>% 
+  filter(!is.na(depression_score))
+
+true_mean_dep_score <- mean(show_depression_scores$depression_score)
+true_var_dep_score <- var(show_depression_scores$depression_score)
+
+sample_size_dep <- 50
+
+samples_dep_scores <- map_dfr(1:N, function(x) sample_n(show_depression_scores, size = sample_size_dep) %>% mutate(i = x))
+
+dep_score_averages <- samples_dep_scores %>% 
+  group_by(i) %>% 
+  summarise(average = mean(depression_score),
+            t_stat = sqrt(sample_size_dep)*(mean(depression_score) - true_mean_dep_score)/sd(depression_score))
+```
+
+Here, we take samples of `r sample_size_dep`. The first sample came out to consist of the following subjects: 
+
+```{r}
+samples_dep_scores %>% 
+  filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+The average depression score in this sample is `r dep_score_averages %>% filter(i == 1) %>% pull(average)`. Rinse and repeat `r N` times. 
+
+Before we take a look at the distribution of all the averages, let's consider the distribution of the depression scores in the entire population.
+
+```{r}
+ggplot(show_depression_scores, aes(x = depression_score)) + 
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 0.5) +
+  geom_vline(aes(color = 'True mean', xintercept = true_mean_dep_score), linetype = 'dashed') + 
+  scale_color_discrete("", direction = -1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+This is nothing like a normal distribution at all! By nature, this distribution is discrete (each observation is a score from 0 to 25), and it is not symmetrical around the mean. But take a look at what the distribution of the averages looks like:
+
+```{r cache = TRUE}
+dep_score_averages %>% 
+  ggplot(aes(x = average)) + 
+    geom_histogram(bins = floor(N/200),
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True mean', xintercept = true_mean_dep_score), linetype = 'dashed') + 
+    # stat_function(fun = dnorm,
+    #               args = list(mean = true_mean_dep_score, 
+    #                           sd = sqrt(true_var_dep_score/sample_size_dep)),
+    #               aes(color = 'N')) + 
+    #scale_color_discrete(labels = c(expression(paste('N(', mu, ',', sigma^2, '/n)')), expression(mu))) + 
+    scale_color_discrete("", direction = -1) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+1. Pretty symmetrical.
+2. Centered around the true mean.
+3. Looks pretty bell-shaped to me.
+
+In other words, saying that this distribution is (at least approximately) normal does not seem like a stretch to me! 
+
+
+#### Estimating Proportion of Men {-}
+
+Next, let's consider what to do if we were instead interested in the proportion of the population that are men From a simple random sample of size `r sample_size`, I would argue that the best guess for the true proportion of women in the population is the sample proportion: the number of women out of the total number of individuals in the sample. Seems intuitively sound. Let's got through the same motion that we did with the means above: sample a bunch of times from the population, each time calculate the sample proportion, then consider the histogram. 
+
+First, the true distribution of the gender variable in the data. Here, $0$ is stand-in for women, $1$ stand-in for men.
+
+```{r cache = TRUE}
+show_gender <- full_show %>% 
+  select(id, gender) %>% 
+  filter(!is.na(gender))
+
+true_prop <- mean(show_gender$gender)
+
+samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
+
+gender_props <- samples_gender %>% 
+  group_by(i) %>% 
+  summarise(props = mean(gender))
+
+show_gender %>% 
+  ggplot(aes(x = gender)) + 
+    geom_histogram(aes(y = ..count../nrow(show_gender)), binwidth = 0.5) + 
+    scale_x_continuous(breaks = c(0,1),
+                       minor_breaks = NULL) + 
+    scale_y_continuous('Proportion',
+                       expand = expand_scale(mult = c(0, 0.025)))
+```
+
+We see that the true proportion of the population that are men is `r round(mean(show_gender$gender), digits = 2)`. 
+
+Next, let's take a look at the distribution of sample proportions. 
+
+```{r cache = TRUE}
+gender_props %>% 
+  ggplot(aes(x = props)) + 
+    geom_histogram(binwidth = 1/sample_size,
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True prop', xintercept = true_prop), linetype = 'dashed') + 
+    # stat_function(fun = dnorm,
+    #               args = list(mean = true_prop, 
+    #                           sd = sqrt(true_prop*(1-true_prop)/sample_size)),
+    #               aes(color = 'N(p, p(1-p)/n')) + 
+    scale_color_discrete("", direction = -1) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+Again, it looks pretty normal! How can that be?!
+
+The truth is, as we will see later on, a proportion is really not that different from an average. Since the gender variable is $1$ for all men, and $0$ for all women, then the proportion of men is really calculated as $\frac{1}{n}\sum_{i=1}^n g_i$, where $g_i$ is $1$ if the $i$'th subject is male, and $0$ otherwise. So, the proportion is really an average, and therefore it might not be that big of a surprise that the distribution of the sample proportions is approximately normal. 
+#### Estimating Relative Risk {-}
+
+So far, we've seen three examples, but they've really all dealt with one estimator: namely the average. (As mentioned, even the proportion can be considered an average.) Let's turn to something that does NOT turn out to be normally distributed. 
+
+Say we are interested in the relative risk of being severely depressed between men and women. It seems reasonable that a good estimate of the relative risk in the population is simply the relative risk in the sample we get. Let's take a look. 
+
+```{r cache = TRUE}
+show_depr_by_gender <- full_show %>% 
+  select(id, depression_severity_binary, gender) %>% 
+  filter(complete.cases(.))
+
+# dat <- show_depr_by_gender
+# trt <- quo(gender)
+# out <- quo(depression_severity_binary)
+
+RR <- function(dat, trt, out){
+  
+  trt <- enquo(trt)
+  out <- enquo(out)
+  
+  tmp <- dat %>% 
+    count(!!trt, !!out) %>% 
+    group_by(!!trt) %>% 
+    mutate(totals = sum(n)) %>% 
+    filter(!!out == 1) %>% 
+    summarise(R = n/totals)
+
+  return(filter(tmp, !!trt == 1)$R/filter(tmp, !!trt == 0)$R)
+}
+
+sample_size_RR <- 50
+
+true_RR <- RR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+logRR_var <- show_depr_by_gender %>% 
+  count(gender, depression_severity_binary) %>% 
+  spread(depression_severity_binary, n) %>% 
+  mutate(var_contribution = (`0`/`1`)/sample_size_RR) %>% 
+  pull(var_contribution) %>% sum
+  
+  
+
+samples_RR <- map_dfr(1:N, function(x){ 
+  show_depr_by_gender %>% 
+    #group_by(gender) %>% 
+    sample_n(size = sample_size_RR) %>% 
+    mutate(i = x)
+})
+
+RRs <- samples_RR %>% 
+  group_by(i) %>% 
+  nest() %>%
+  ungroup() %>% 
+  mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+```
+
+We create simple random samples of size `r sample_size_RR`. The first sample consists of the following individuals: 
+
+```{r}
+samples_RR %>% 
+  filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+To find the relative risk, we create the 2 by 2 contingency table for `gender` and `depression_severity_binary`:
+
+```{r}
+samples_RR %>% 
+  filter(i == 1) %>% 
+  mutate(gender = if_else(gender == 0, 'Female', 'Male')) %>% 
+  janitor::tabyl(depression_severity_binary, gender) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  knitr::kable()
+```
+
+The relative risk is then calculated as 
+
+$
+\begin{align}
+  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx `r round(RRs[["RR"]][1], digits = 2)`.
+\end{align}
+$
+
+As before, we repeat this many, many times, and plot the results as a histogram, which gives us an approximate distribution of the relative risk in a sample of `r sample_size_RR` subjects.
+
+```{r}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = RR)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/200)) + 
+    geom_vline(aes(xintercept = true_RR, color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+The first thing we probably notice is that this is not a normal distribution. It is not symmetrical, and therefore also not bell-shaped. However, it is very nicely distributed around the true population relative risk. 
+
+So, for the first time we end up with something that is not normally distributed. This is not in and of itself a huge problem, but it does make life a bit harder later on. In this particular case, however, there is a very simple fix: instead of considering the relative risk, consider $\log(RR)$, the log transformed relative risk:
+
+```{r cache = TRUE}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = log(RR))) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    # stat_function(fun = dnorm, args = list(mean = log(true_RR), sd = sqrt(logRR_var))) + 
+    geom_vline(aes(xintercept = log(true_RR), color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+Looks pretty normal, huh? We will (ab)use this fact later on. 
+
+#### Estimating Odds Ratios {-}
+
+Here we repeat the previous section, but estimating the odds ratio instead of the relative risk. Same comments apply.
+
+```{r cache = TRUE}
+OR <- function(dat, trt, out){
+  trt <- enquo(trt)
+  out <- enquo(out)
+  
+  tmp <- dat %>% 
+    count(!!trt, !!out) %>%
+    group_by(!!trt) %>% 
+    mutate(p = n/sum(n)) %>% 
+    select(-n) %>% 
+    spread(!!out, p) %>% 
+    mutate(Odds = `1`/`0`)
+  
+  return(filter(tmp, !!trt == 1)$Odds/filter(tmp, !!trt == 0)$Odds)
+}
+
+true_OR <- OR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+
+ORs <- samples_RR %>% 
+  group_by(i) %>% 
+  nest() %>% 
+  mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
+  ungroup()
+
+ORs %>% 
+  ggplot(aes(x = OR)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    geom_vline(aes(xintercept = true_OR, color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    labs(color = '')
+```
+
+Definitely not normal. But if we log transform...
+
+```{r cache = TRUE}
+logOR_var <- show_depr_by_gender %>% 
+  count(gender, depression_severity_binary) %>% 
+  group_by(gender) %>% 
+  mutate(group_total = sum(n),
+         expected_xi = n/group_total * sample_size_RR,
+         var_contribution = 1/expected_xi) %>% 
+  pull(var_contribution) %>% 
+  sum
+
+
+ORs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = log(OR))) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    stat_function(fun = dnorm, args = list(mean = log(true_OR), sd = sqrt(logOR_var))) + 
+    geom_vline(aes(xintercept = log(true_OR), color = 'True OR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    labs(color = '')
+```
+
+
+## Deriving Distributions in Practice
+
+In the previous section, we considered quite a few examples of estimators, and saw how we can get a very good idea of exactly what the distribution of an estimator is *when we have the entire population at our disposal*. This is basically never the case. Even if we had a way of getting in touch with the entire popoulation, and create thousands and thousands of simple random samples, it is very unlikely we would have the time and funds to do so. So, in practice, we have to do something else to find the distribution of the estimator we're interested in. Here, we will discuss how to do so using what I think is *the* coolest result we will encounter in this class, namely the *Central Limit Theorem*.
+
+<!-- ### The Bootstrap -->
+
+<!-- The bootstrap method is both super simple, and very confusing. Say we have a simple random sample taken from a population. We would like to estimate something in the population (think mean, median, variance,...), and we would like to do so using an appropriate estimator (think sample average, sample median, sample variance,...). To get an idea of whether or not our estimator is appropriate, we'd like to know something about the distribution of this estimator. Ideally, we would follow the procedure sketched in the [previous section](#common-estimators), but we can't resample from the population. But we can resample from the original sample we have.  -->
+
+<!-- Since the sample we have is a simple random sample, we have this idea that it looks a lot like the actual population. Therefore, drawing an individual from the sample should be similar to drawing an individual from the population. So, to create a new sample, we simply draw from our original sample with replacement! We call these new samples *bootstrap* samples. -->
+
+<!-- #### Estimating Mean Depression Score (cont.) {-} -->
+
+<!-- ```{r cache = TRUE} -->
+<!-- dep_scores_boot <- samples_dep_scores %>% filter(i == 1) %>% select(-i) -->
+
+<!-- dep_scores_boot_samples <- tibble(i = 1:N) %>%  -->
+<!--   mutate(boot_sample = map(i, ~sample_n(dep_scores_boot, size = sample_size_dep, replace = TRUE)), -->
+<!--          boot_average = map_dbl(boot_sample, ~summarise(.x, m = mean(depression_score)) %>% pull(m))) -->
+
+<!-- ids_multiple <- dep_scores_boot_samples %>%  -->
+<!--   select(boot_sample) %>%  -->
+<!--   filter(row_number() < 2) %>%  -->
+<!--   unnest() %>%  -->
+<!--   count(id) %>%  -->
+<!--   filter(n > 1) %>%  -->
+<!--   arrange(-n) -->
+
+<!-- dep_scores_boot_true_mean <- mean(dep_scores_boot$depression_score) -->
+
+<!-- dep_scores_boot_samples <- dep_scores_boot_samples %>% -->
+<!--   mutate(boot_t = map_dbl(boot_sample, ~ sqrt(nrow(.x))*mean(.x$depression_score - dep_scores_boot_true_mean)/sd(.x$depression_score))) -->
+<!-- #  -->
+<!-- # dep_scores_boot_samples %>%  -->
+<!-- #   ggplot(aes(x = boot_t)) +  -->
+<!-- #     geom_histogram(aes(y = ..density..), bins = floor(N/200)) +  -->
+<!-- #     stat_function(fun = dt, args = list(df = 19)) -->
+<!-- ``` -->
+
+<!-- We've taken a sample from the population, i.e. from the entire collection of SHOW subjects, of sample size `r sample_size_dep`. It looks like this: -->
+
+<!-- ```{r} -->
+<!-- dep_scores_boot %>%  -->
+<!--   left_join(full_show) %>%  -->
+<!--   knitr::kable() -->
+<!-- ``` -->
+
+
+<!-- To create the first bootstrap sample, we draw an individual from this sample, put them (and their data) on a separate list, draw a second individual, out them (and their data) on the list, etc. We do this `r sample_size_dep` times. The result is this: -->
+
+<!-- ```{r} -->
+<!-- dep_scores_boot_samples %>%  -->
+<!--   filter(i == 1) %>%  -->
+<!--   select(boot_sample) %>%  -->
+<!--   unnest(cols = 'boot_sample') %>%  -->
+<!--   left_join(full_show) %>%  -->
+<!--   DT::datatable() -->
+<!-- ``` -->
+
+<!-- Notice how some individuals were picked more than once (id `r ids_multiple$id[1]` shows up `r ids_multiple$n[1]` times). This is due to the fact that we sample *WITH* replacement.  -->
+
+<!-- ```{r} -->
+<!-- ggplot(dep_score_averages,  -->
+<!--        aes(x = average)) +  -->
+<!--   geom_histogram(aes(y = ..density..,  -->
+<!--                      alpha = 'Distribution of Averages', fill = 'Distribution of Averages'), -->
+<!--                  bins = floor(N/100)) + -->
+<!--   geom_histogram(data = dep_scores_boot_samples, -->
+<!--                  aes(x = boot_average, y = ..density..,  -->
+<!--                      alpha = 'Bootstrap Distribution', fill = 'Bootstrap Distribution'), -->
+<!--                  bins = floor(N/100)) + -->
+<!--   geom_vline(aes(color = 'True mean', xintercept = true_mean_dep_score), linetype = 'dashed') +  -->
+<!--   scale_color_discrete("", direction = -1) + -->
+<!--   scale_alpha_manual("", values = c(.75, 0.75, 0.5)) + -->
+<!--   scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) -->
+
+<!-- dep_scores_bootstrap_plot -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- height_boot <- samples %>% filter(i == 1) %>% select(-i) -->
+
+<!-- height_boot_samples <- tibble(i = 1:N) %>%  -->
+<!--   mutate(boot_sample = map(i, ~sample_n(height_boot, size = sample_size, replace = TRUE)), -->
+<!--          boot_average = map_dbl(boot_sample, ~summarise(.x, m = mean(height)) %>% pull(m))) -->
+
+<!-- ids_multiple <- dep_scores_boot_samples %>%  -->
+<!--   select(boot_sample) %>%  -->
+<!--   filter(row_number() < 2) %>%  -->
+<!--   unnest() %>%  -->
+<!--   count(id) %>%  -->
+<!--   filter(n > 1) %>%  -->
+<!--   arrange(-n) -->
+
+<!-- true_boot_height <- mean(height_boot$height) -->
+
+<!-- height_boot_samples <- height_boot_samples %>% -->
+<!--   mutate(boot_t = map_dbl(boot_sample, ~ sqrt(nrow(.x))*mean(.x$height - true_boot_height)/sd(.x$height))) -->
+
+<!-- t_heights <- samples %>% group_by(i) %>% summarise(average = mean(height), t_stat = sqrt(sample_size)*(mean(height) - true_mean)/sd(height)) -->
+
+<!-- height_boot_samples %>% -->
+<!--   ggplot(aes(x = boot_t)) + -->
+<!--     geom_histogram(aes(y = ..density..), bins = floor(N/200)) +  -->
+<!--     geom_histogram(data = t_heights, -->
+<!--                    aes(x = t_stat, y = ..density.., fill = 'averages')) -->
+<!-- ``` -->
+
+
+### The Central Limit Theorem
+
+Let's jump right to it, and state the Central Limit Theorem:
+
+```{theorem, "The Central Limit Theorem"}
+Let $X_1, X_2, ..., X_n$ be a simple random sample from a population with mean $\mu$ and variance $\sigma^2$ (i.e. $E(X_i) = \mu$ and $\Var(X_i) = \sigma^2$ for all $i$). Then, as long as $n$ is large enough, the *average* $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i \sim N(\mu, \sigma^2 / n)$.
+```
+
+
+
+
+- Probability Sampling (Simple random/Systematic/Stratified Sampling)
+- Non-probability Sampling (Convenience/Quota Sampling)
+- Basic Concepts
+
+<!--chapter:end:07-estimators-and-their-distributions.Rmd-->
+
+# (APPENDIX) Appendix {-} 
+
+# About Assumptions
+
+# Simulating Data
+
+
+<!--chapter:end:99-appendix.Rmd-->
+
