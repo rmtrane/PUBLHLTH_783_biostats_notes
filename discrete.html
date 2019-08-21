@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>2 Discrete Data | Biostatistics in Public Health</title>
   <meta name="description" content="2 Discrete Data | Biostatistics in Public Health" />
-  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
 
   <meta property="og:title" content="2 Discrete Data | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="intro.html">
-<link rel="next" href="continuous.html">
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="continuous.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -141,8 +141,14 @@
 </ul></li>
 <li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a><ul>
 <li class="chapter" data-level="8.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>8.1</b> What is an Estimator?</a></li>
+<li class="chapter" data-level="8.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>8.2</b> Common Estimators</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#examples-2"><i class="fa fa-check"></i><b>8.2.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="central-limit-theorem.html"><a href="central-limit-theorem.html"><i class="fa fa-check"></i><b>9</b> Central Limit Theorem</a></li>
+<li class="chapter" data-level="8.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>8.3</b> Deriving Distributions in Practice</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#the-central-limit-theorem"><i class="fa fa-check"></i><b>8.3.1</b> The Central Limit Theorem</a></li>
+<li class="chapter" data-level="8.3.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#distributions-of-common-estimators"><i class="fa fa-check"></i><b>8.3.2</b> Distributions of Common Estimators</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="about-assumptions.html"><a href="about-assumptions.html"><i class="fa fa-check"></i><b>A</b> About Assumptions</a></li>
 <li class="chapter" data-level="B" data-path="simulating-data.html"><a href="simulating-data.html"><i class="fa fa-check"></i><b>B</b> Simulating Data</a></li>
@@ -195,134 +201,250 @@
 <p>Below are the frequencies for some categorical variables in the SHOW data set.</p>
 <ul>
 <li><p><strong>edu</strong>:</p>
-<table style="width:28%;">
+<table style="width:50%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="center">0</td>
+<td align="center">2</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">49</td>
+<td align="center">0.01452</td>
+</tr>
+<tr class="odd">
 <td align="center">11</td>
-<td align="center">1</td>
+<td align="center">66</td>
+<td align="center">0.01956</td>
 </tr>
 <tr class="even">
 <td align="center">12</td>
-<td align="center">2</td>
+<td align="center">90</td>
+<td align="center">0.02667</td>
 </tr>
 <tr class="odd">
 <td align="center">13</td>
-<td align="center">3</td>
+<td align="center">624</td>
+<td align="center">0.1849</td>
 </tr>
 <tr class="even">
 <td align="center">14</td>
-<td align="center">1</td>
+<td align="center">112</td>
+<td align="center">0.03319</td>
 </tr>
 <tr class="odd">
 <td align="center">15</td>
-<td align="center">7</td>
+<td align="center">680</td>
+<td align="center">0.2015</td>
 </tr>
 <tr class="even">
 <td align="center">16</td>
-<td align="center">1</td>
+<td align="center">437</td>
+<td align="center">0.1295</td>
 </tr>
 <tr class="odd">
-<td align="center">18</td>
-<td align="center">3</td>
+<td align="center">17</td>
+<td align="center">191</td>
+<td align="center">0.05659</td>
 </tr>
 <tr class="even">
+<td align="center">18</td>
+<td align="center">723</td>
+<td align="center">0.2142</td>
+</tr>
+<tr class="odd">
 <td align="center">19</td>
-<td align="center">1</td>
+<td align="center">263</td>
+<td align="center">0.07793</td>
+</tr>
+<tr class="even">
+<td align="center">20</td>
+<td align="center">47</td>
+<td align="center">0.01393</td>
 </tr>
 <tr class="odd">
 <td align="center">21</td>
+<td align="center">40</td>
+<td align="center">0.01185</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
 <td align="center">1</td>
+<td align="center">0.0002963</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">4</td>
+<td align="center">0.001185</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">2</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">20</td>
+<td align="center">0.005926</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center">22</td>
+<td align="center">0.006519</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">6</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
 <li><p><strong>gender</strong>:</p>
-<table style="width:28%;">
+<table style="width:50%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">1</td>
-<td align="center">10</td>
+<td align="center">0</td>
+<td align="center">1479</td>
+<td align="center">0.4376</td>
 </tr>
 <tr class="even">
-<td align="center">2</td>
-<td align="center">10</td>
+<td align="center">1</td>
+<td align="center">1901</td>
+<td align="center">0.5624</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">1</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
 <li><p><strong>marital</strong>:</p>
-<table style="width:28%;">
+<table style="width:50%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center">1</td>
-<td align="center">12</td>
+<td align="center">2075</td>
+<td align="center">0.6146</td>
 </tr>
 <tr class="even">
 <td align="center">2</td>
-<td align="center">1</td>
+<td align="center">113</td>
+<td align="center">0.03347</td>
 </tr>
 <tr class="odd">
 <td align="center">3</td>
-<td align="center">1</td>
+<td align="center">416</td>
+<td align="center">0.1232</td>
 </tr>
 <tr class="even">
-<td align="center">5</td>
-<td align="center">5</td>
+<td align="center">4</td>
+<td align="center">41</td>
+<td align="center">0.01214</td>
 </tr>
 <tr class="odd">
+<td align="center">5</td>
+<td align="center">603</td>
+<td align="center">0.1786</td>
+</tr>
+<tr class="even">
 <td align="center">6</td>
-<td align="center">1</td>
+<td align="center">126</td>
+<td align="center">0.03732</td>
+</tr>
+<tr class="odd">
+<td align="center">D</td>
+<td align="center">2</td>
+<td align="center">0.0005924</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">5</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
-<li><p><strong>RACE</strong>:</p>
-<table style="width:28%;">
+<li><p><strong>race</strong>:</p>
+<table style="width:50%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center">1</td>
-<td align="center">18</td>
+<td align="center">2870</td>
+<td align="center">0.8511</td>
 </tr>
 <tr class="even">
 <td align="center">2</td>
-<td align="center">2</td>
+<td align="center">243</td>
+<td align="center">0.07206</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">108</td>
+<td align="center">0.03203</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">151</td>
+<td align="center">0.04478</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">9</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
@@ -331,169 +453,316 @@
 <p>We can add relative frequencies to this simply by dividing each frequency by the total number of observations.</p>
 <ul>
 <li><p><strong>edu</strong>:</p>
-<table style="width:57%;">
+<table style="width:79%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
 <col width="29%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
 <th align="center">Relative Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="center">0</td>
+<td align="center">2</td>
+<td align="center">0.0005915</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">49</td>
+<td align="center">0.01449</td>
+<td align="center">0.01452</td>
+</tr>
+<tr class="odd">
 <td align="center">11</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">66</td>
+<td align="center">0.01952</td>
+<td align="center">0.01956</td>
 </tr>
 <tr class="even">
 <td align="center">12</td>
-<td align="center">2</td>
-<td align="center">0.1</td>
+<td align="center">90</td>
+<td align="center">0.02662</td>
+<td align="center">0.02667</td>
 </tr>
 <tr class="odd">
 <td align="center">13</td>
-<td align="center">3</td>
-<td align="center">0.15</td>
+<td align="center">624</td>
+<td align="center">0.1846</td>
+<td align="center">0.1849</td>
 </tr>
 <tr class="even">
 <td align="center">14</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">112</td>
+<td align="center">0.03313</td>
+<td align="center">0.03319</td>
 </tr>
 <tr class="odd">
 <td align="center">15</td>
-<td align="center">7</td>
-<td align="center">0.35</td>
+<td align="center">680</td>
+<td align="center">0.2011</td>
+<td align="center">0.2015</td>
 </tr>
 <tr class="even">
 <td align="center">16</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">437</td>
+<td align="center">0.1293</td>
+<td align="center">0.1295</td>
 </tr>
 <tr class="odd">
-<td align="center">18</td>
-<td align="center">3</td>
-<td align="center">0.15</td>
+<td align="center">17</td>
+<td align="center">191</td>
+<td align="center">0.05649</td>
+<td align="center">0.05659</td>
 </tr>
 <tr class="even">
+<td align="center">18</td>
+<td align="center">723</td>
+<td align="center">0.2138</td>
+<td align="center">0.2142</td>
+</tr>
+<tr class="odd">
 <td align="center">19</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">263</td>
+<td align="center">0.07779</td>
+<td align="center">0.07793</td>
+</tr>
+<tr class="even">
+<td align="center">20</td>
+<td align="center">47</td>
+<td align="center">0.0139</td>
+<td align="center">0.01393</td>
 </tr>
 <tr class="odd">
 <td align="center">21</td>
+<td align="center">40</td>
+<td align="center">0.01183</td>
+<td align="center">0.01185</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">2</td>
+<td align="center">0.0005915</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
 <td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">0.0002958</td>
+<td align="center">0.0002963</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">4</td>
+<td align="center">0.001183</td>
+<td align="center">0.001185</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">2</td>
+<td align="center">0.0005915</td>
+<td align="center">0.0005926</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">20</td>
+<td align="center">0.005915</td>
+<td align="center">0.005926</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center">22</td>
+<td align="center">0.006507</td>
+<td align="center">0.006519</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">6</td>
+<td align="center">0.001775</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
 <li><p><strong>gender</strong>:</p>
-<table style="width:57%;">
+<table style="width:79%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
 <col width="29%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
 <th align="center">Relative Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">1</td>
-<td align="center">10</td>
-<td align="center">0.5</td>
+<td align="center">0</td>
+<td align="center">1479</td>
+<td align="center">0.4374</td>
+<td align="center">0.4376</td>
 </tr>
 <tr class="even">
-<td align="center">2</td>
-<td align="center">10</td>
-<td align="center">0.5</td>
+<td align="center">1</td>
+<td align="center">1901</td>
+<td align="center">0.5623</td>
+<td align="center">0.5624</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">1</td>
+<td align="center">0.0002958</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
 <li><p><strong>marital</strong>:</p>
-<table style="width:57%;">
+<table style="width:79%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
 <col width="29%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
 <th align="center">Relative Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center">1</td>
-<td align="center">12</td>
-<td align="center">0.6</td>
+<td align="center">2075</td>
+<td align="center">0.6137</td>
+<td align="center">0.6146</td>
 </tr>
 <tr class="even">
 <td align="center">2</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">113</td>
+<td align="center">0.03342</td>
+<td align="center">0.03347</td>
 </tr>
 <tr class="odd">
 <td align="center">3</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">416</td>
+<td align="center">0.123</td>
+<td align="center">0.1232</td>
 </tr>
 <tr class="even">
-<td align="center">5</td>
-<td align="center">5</td>
-<td align="center">0.25</td>
+<td align="center">4</td>
+<td align="center">41</td>
+<td align="center">0.01213</td>
+<td align="center">0.01214</td>
 </tr>
 <tr class="odd">
+<td align="center">5</td>
+<td align="center">603</td>
+<td align="center">0.1783</td>
+<td align="center">0.1786</td>
+</tr>
+<tr class="even">
 <td align="center">6</td>
-<td align="center">1</td>
-<td align="center">0.05</td>
+<td align="center">126</td>
+<td align="center">0.03727</td>
+<td align="center">0.03732</td>
+</tr>
+<tr class="odd">
+<td align="center">D</td>
+<td align="center">2</td>
+<td align="center">0.0005915</td>
+<td align="center">0.0005924</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">5</td>
+<td align="center">0.001479</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
-<li><p><strong>RACE</strong>:</p>
-<table style="width:57%;">
+<li><p><strong>race</strong>:</p>
+<table style="width:79%;">
 <colgroup>
 <col width="11%" />
 <col width="16%" />
 <col width="29%" />
+<col width="22%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="center">Value</th>
 <th align="center">Frequency</th>
 <th align="center">Relative Frequency</th>
+<th align="center">valid_percent</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center">1</td>
-<td align="center">18</td>
-<td align="center">0.9</td>
+<td align="center">2870</td>
+<td align="center">0.8489</td>
+<td align="center">0.8511</td>
 </tr>
 <tr class="even">
 <td align="center">2</td>
-<td align="center">2</td>
-<td align="center">0.1</td>
+<td align="center">243</td>
+<td align="center">0.07187</td>
+<td align="center">0.07206</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">108</td>
+<td align="center">0.03194</td>
+<td align="center">0.03203</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">151</td>
+<td align="center">0.04466</td>
+<td align="center">0.04478</td>
+</tr>
+<tr class="odd">
+<td align="center">NA</td>
+<td align="center">9</td>
+<td align="center">0.002662</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table></li>
 </ul>
 <!-- end of list -->
 <p>Relative frequencies are useful when trying to compare the values of a specific variable across groups. Say we want to investigate if there are any differences in the marital status between genders in this cohort. We could consider the frequency of marital status stratified by gender:</p>
-<pre><code>##  gender       1       2       3       5       6  Total
-##       1 0.6 (6) 0.1 (1) 0.1 (1) 0.2 (2)   0 (0) 1 (10)
-##       2 0.6 (6)   0 (0)   0 (0) 0.3 (3) 0.1 (1) 1 (10)</code></pre>
+<pre><code>##  gender                        1                       2
+##       0 0.627450980392157  (928) 0.0209601081812035 (31)
+##       1 0.603366649132036 (1147) 0.0431351920042083 (82)
+##      NA                 0    (0)                  0  (0)
+##                        3                        4                       5
+##  0.103448275862069 (153) 0.00540906017579446  (8) 0.204868154158215 (303)
+##  0.138348237769595 (263)  0.0173592845870594 (33) 0.157811678064177 (300)
+##                  0   (0)                   0  (0)                 0   (0)
+##                        6                        D                     NA_
+##  0.0358350236646383 (53) 0.000676132521974307 (1) 0.00135226504394861 (2)
+##   0.038400841662283 (73) 0.000526038926880589 (1) 0.00105207785376118 (2)
+##                   0  (0)                    0 (0)                   1 (1)
+##     Total
+##  1 (1479)
+##  1 (1901)
+##  1    (1)</code></pre>
 <p>The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the same proportion of…</p>
 </div>
 </div>
@@ -510,9 +779,9 @@
 <div id="bar-charts" class="section level3">
 <h3><span class="header-section-number">2.4.1</span> Bar Charts</h3>
 <p>Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>This can easily be turned into a bar chart of the relative frequencies.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -574,8 +843,9 @@ gitbook.start({
     script.type = "text/javascript";
     var src = "true";
     if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>7 Random Variables and Distributions | Biostatistics in Public Health</title>
   <meta name="description" content="7 Random Variables and Distributions | Biostatistics in Public Health" />
-  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
 
   <meta property="og:title" content="7 Random Variables and Distributions | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="conditional-probability.html">
-<link rel="next" href="estimators-and-their-distributions.html">
+<link rel="prev" href="conditional-probability.html"/>
+<link rel="next" href="estimators-and-their-distributions.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -141,8 +141,14 @@
 </ul></li>
 <li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a><ul>
 <li class="chapter" data-level="8.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>8.1</b> What is an Estimator?</a></li>
+<li class="chapter" data-level="8.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>8.2</b> Common Estimators</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#examples-2"><i class="fa fa-check"></i><b>8.2.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="central-limit-theorem.html"><a href="central-limit-theorem.html"><i class="fa fa-check"></i><b>9</b> Central Limit Theorem</a></li>
+<li class="chapter" data-level="8.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>8.3</b> Deriving Distributions in Practice</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#the-central-limit-theorem"><i class="fa fa-check"></i><b>8.3.1</b> The Central Limit Theorem</a></li>
+<li class="chapter" data-level="8.3.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#distributions-of-common-estimators"><i class="fa fa-check"></i><b>8.3.2</b> Distributions of Common Estimators</a></li>
+</ul></li>
+</ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="about-assumptions.html"><a href="about-assumptions.html"><i class="fa fa-check"></i><b>A</b> About Assumptions</a></li>
 <li class="chapter" data-level="B" data-path="simulating-data.html"><a href="simulating-data.html"><i class="fa fa-check"></i><b>B</b> Simulating Data</a></li>
@@ -195,7 +201,7 @@
 </div>
 <div id="examples-continuous-distributions" class="section level3">
 <h3><span class="header-section-number">7.1.3</span> Examples: continuous distributions</h3>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 </div>
 <div id="properties-of-random-variables" class="section level2">
@@ -291,7 +297,7 @@
 <h4><span class="header-section-number">7.2.2.2</span> So what about that standard deviation?</h4>
 <p>So far we’ve talked about the variance, a bit about how to interpret it, and how to work with it for multiple random variables. But what about that other thing mentioned above, the standard deviation?</p>
 <p>The standard deviation of a random variable is simply the square root of the variance: <span class="math inline">\(\text{SD}(X) = \sqrt{\text{Var}(X)}\)</span>. As we saw above, the variance has some nice mathematical properties, such as the fact that it is basically an expected value, and that (when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent) <span class="math inline">\(\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)\)</span>. Neither of these two things are true for the standard deviation, and we lose both because of the square root. However, it is also because of an effect of the square root that we like using the standard deviation in certain situation.</p>
-<p>As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn’t great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is 66.470625 inches, and the variance is 22.1376297… <span class="math inline">\(\text{inches}^2\)</span>? This is hard to really grasp, and the number itself doesn’t mean much to us. Is 22 <span class="math inline">\(\text{inches}^2\)</span> a lot? We can’t even really compare it to the mean because of the different units! However, the standard deviation fixes just that. It is still a measure of the expected variation, but this has been brought by to the original scale by taking the square root. So when we report a mean height of 66.470625 inches with a standard deviation of 4.7050643 inches, this all of a sudden makes much more sense intuitively.</p>
+<p>As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn’t great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is NA inches, and the variance is NA… <span class="math inline">\(\text{inches}^2\)</span>? This is hard to really grasp, and the number itself doesn’t mean much to us. Is 22 <span class="math inline">\(\text{inches}^2\)</span> a lot? We can’t even really compare it to the mean because of the different units! However, the standard deviation fixes just that. It is still a measure of the expected variation, but this has been brought by to the original scale by taking the square root. So when we report a mean height of NA inches with a standard deviation of NA inches, this all of a sudden makes much more sense intuitively.</p>
 <p>The moral of the story: both the variance and the standard deviation have a role in the world of statistics, but at different stages. The variance is very useful in the more mathematical parts of the field, while the standard deviation is easier to interpret. Luckily, going from one to the other is simple: <span class="math inline">\(\text{Var}(X) = \text{SD}(X)^2\)</span> and <span class="math inline">\(\text{SD}(X) = \sqrt{\text{Var}(X)}\)</span>. Therefore, if you ever have one, you practically have both. Don’t forget this, as it is a common mistake to plug in the variance to equations where it should have been the standard deviation.</p>
 </div>
 </div>
@@ -420,7 +426,7 @@
 </table>
 <p>We see that the most probable outcomes are around the middle (4,5,6) with proportions above 0.20.</p>
 <p>Another popular way of displaying this is using a histogram:</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>When viewing this, the probability of a given outcome can be interpreted as the area of the corresponding bar divided by the total area.</p>
 <p>As mentioned earlier, the distribution of a binomial random variable can also be calculated mathematically. We won’t go into the details here, but I will leave you with the formulat: <span class="math inline">\(P(Y = k) = {n \choose k}p^k (1-p)^{n-k}\)</span><a href="simulating-data.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Take a look at the calculated probabilities below, and compare them to the estimates we got by flipping <span class="math inline">\(10\)</span> coins <span class="math inline">\(50000\)</span> times.</p>
 <table style="width:97%;">
@@ -536,8 +542,8 @@
 <p>In contrast to the Bernoulli and Binomial distributions, the normal distribution is a continuous distribution. This means that we can not specify the probability of every single possible outcome. Instead we simply specify it using a curve. We then about areas under this curve as the probabilities. This curve is what we call the density.</p>
 <p>The normal distribution density is specified by two parameters<a href="simulating-data.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. The first specifies the mean of the distribution (and is therefore called the <em>mean</em> or <em>location</em> paramater). We often use <span class="math inline">\(\mu\)</span> to denote the mean of a normal distribution, or <span class="math inline">\(\mu_X\)</span> if we want to really stress that we are talking about the mean of the random variable <span class="math inline">\(X\)</span><a href="simulating-data.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>. The second parameter specifies the variance of the distribution. We often use <span class="math inline">\(\sigma^2\)</span> to denote this, or <span class="math inline">\(\sigma_X^2\)</span>. The mean parameter can really be any real number, while the variance has to be positive. If <span class="math inline">\(X\)</span> follows a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>, we write <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span>.</p>
 <p>So what does this curve actually look like? It’s a bell curve that is centered at the mean <span class="math inline">\(\mu\)</span> and the shape/width is controlled by the variance <span class="math inline">\(\sigma^2\)</span>. Below are a few examples. The first figure shows varying means, the second varying variances.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p><img src="783_biostats_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>As the names of the parameters suggest, the actual expected value and variance of a random variable that is normally distributed, <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span>, is simply <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>, respectively.</p>
 <div id="linear-combination-of-normal-with-constant" class="section level4">
 <h4><span class="header-section-number">7.3.3.1</span> Linear Combination of Normal with Constant</h4>
@@ -565,12 +571,12 @@
 <div id="some-exploration-through-simulations" class="section level4">
 <h4><span class="header-section-number">7.3.3.3</span> Some Exploration through Simulations</h4>
 <p>To illustrate the properties presented in the two previous sections, let us take a look at some simulated data. Let <span class="math inline">\(X \sim N(-0.5, 1)\)</span> and <span class="math inline">\(Y \sim N(1, 1.5)\)</span>. I.e. <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> follow these two distributions:</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Now, let’s say we’re actually interested in <span class="math inline">\(W = X - Y\)</span>. That is, we perform an experiment, observe a realization of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, and then create a realization of <span class="math inline">\(W\)</span> as <span class="math inline">\(w = x - y\)</span>. The first experiment results in <span class="math inline">\(x = 1.5653, y = 0.7306\)</span>, and so <span class="math inline">\(w = x - y = 0.8347\)</span>. We repeat this experiment many, many (<span class="math inline">\(10^{4}\)</span>) times. This enables us to take a look at histograms of the outcomes of <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(W\)</span>, and we calculate the observed averages and variances so that we can compare with our theoretical expectations.</p>
 <p>So, first of all: do <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> actually match the distributions we wanted them to come from? Below are histograms of the outcomes with the distributions overlayed. Notice how closely the histograms follow the curves. It definitely seems that the outcomes of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> indeed come from the respective normal distributions.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Now, let us take a look at the difference between the two, i.e. <span class="math inline">\(W\)</span>.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>A few things to notice:</p>
 <ol style="list-style-type: decimal">
 <li>it most definitely looks like a new normal distribution</li>
@@ -626,7 +632,7 @@
 <p>The t-distribution is very similar to the normal distribution in that the curve also resembles a bell. Unlike the normal distribution, it only depends on one parameter, which is called the degrees of freedom, or <span class="math inline">\(df\)</span>. We use the notation <span class="math inline">\(t_{df}\)</span> for a t-distribution with <span class="math inline">\(df\)</span> degrees of freedom.</p>
 <p>The t-distribution is always centered around <span class="math inline">\(0\)</span>, which is also its mean, but the variance depends on the degrees of freedom: if <span class="math inline">\(X \sim t_{df}\)</span>, then <span class="math inline">\(\text{Var}{X} = \frac{df}{df-2}\)</span> if <span class="math inline">\(df &gt; 2\)</span>, <span class="math inline">\(\text{Var}{X} = \inftu\)</span> if <span class="math inline">\(1 &lt; df &lt; 2\)</span>, and the variance of <span class="math inline">\(X\)</span> is actually undefined if <span class="math inline">\(df &lt; 1\)</span>.</p>
 <p>Below are a few examples of the t-distribution with different degrees of freedom. For comparison, the standard normal is also included. Notice how similar the t-distributions with more than 9 degrees of freedom look, and how they keep getting closer and closer to the standard normal distribution. It can actually be shown that if we had an infinite number of degrees of freedom, then the t-distribution is identical to the standard normal distribution.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 <div id="other-distribution" class="section level3">
 <h3><span class="header-section-number">7.3.5</span> Other Distribution</h3>
@@ -634,13 +640,13 @@
 <div id="poisson-distribution" class="section level4">
 <h4><span class="header-section-number">7.3.5.1</span> Poisson Distribution</h4>
 <p>The Poisson distribution is often used for counting things, such as the number of patients showing up in a clinic during a specified time period. It is a discrete distribution that only returns integer values. It depends on only one parameter which is often referred to as the rate parameter. It is displayed below with a few different values of the rate.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>For a Poisson distributed random variable with rate parameter <span class="math inline">\(\lambda\)</span>, <span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>, it holds that <span class="math inline">\(E(X) = \text{Var}(X) = \lambda\)</span>.</p>
 </div>
 <div id="exponential-distribution" class="section level4">
 <h4><span class="header-section-number">7.3.5.2</span> Exponential Distribution</h4>
 <p>The exponential distribution is often used for wait times. This can be useful if you want to model the wait times in an emergency room, for example. It is a continuous distribution that depends on a single parameter, which is also called the rate parameter.</p>
-<p><img src="783_biostats_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p>For a random variable that is exponentially distributed with rate parameter <span class="math inline">\(\lambda\)</span>, <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span>, it holds that <span class="math inline">\(E(X) = \frac{1}{\lambda}\)</span>, and <span class="math inline">\(\text{Var}(X) = \frac{1}{\lambda^2}\)</span>.</p>
 
 </div>
@@ -705,8 +711,9 @@ gitbook.start({
     script.type = "text/javascript";
     var src = "true";
     if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
