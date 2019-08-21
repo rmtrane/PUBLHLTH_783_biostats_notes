@@ -2685,6 +2685,11 @@ $</p>
 <div id="the-central-limit-theorem" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> The Central Limit Theorem</h3>
 <p>Let’s jump right to it, and state the Central Limit Theorem:</p>
+
+<div class="theorem">
+<span id="thm:The Central Limit Theorem" class="theorem"><strong>(#thm:The Central Limit Theorem) </strong></span>Let <span class="math inline">\(X_1, X_2, ..., X_n\)</span> be a simple random sample from a population with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span> (i.e. <span class="math inline">\(E(X_i) = \mu\)</span> and <span class="math inline">\(\text{Var}(X_i) = \sigma^2\)</span> for all <span class="math inline">\(i\)</span>). Then, as long as <span class="math inline">\(n\)</span> is large enough, the <em>average</em> <span class="math inline">\(\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i\)</span> is approximately <span class="math inline">\(N(\mu, \sigma^2 / n)\)</span>.
+</div>
+
 <p>So what’s so special about this? It’s a rather simple setup: if you have a simple random sample of size “big enough”, then the average is going to be normally distributed with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2/n\)</span>. But think about this for a second: there are no assumptions on where you start, and yet we get that we end up with something that is normally distributed!</p>
 <p>Let’s revisit the examples from above.</p>
 <div id="estimating-mean-height-1" class="section level4 unnumbered">
