@@ -1,3 +1,36 @@
 # Introduction to Biostatistics {#intro}
 
-Words about biostats.
+
+
+```{r, engine='tikz', echo = FALSE}
+\begin{tikzpicture}
+  \node[align=center] at (0,11) {\huge \bf Population};
+  \draw [thick] (0,0) to [out=0, in=-90] (4.5,4)
+                      to [out=90,in=-90] (3.5,8)
+                      to [out=90,in=0] (2,10)
+                      to [out=180,in=0] (0,9)
+                      to [out=180,in=0] (-3,10)
+                      to [out=180,in=90] (-5,7)
+                      to [out=-90,in=90] (-4,5)
+                      to [out=-90,in=90] (-5,2)
+                      to [out=-90,in=180](0,0);
+
+  \node[align=center] at (6.25,9) {\large SRS};
+  \draw [thick,->] (4,8) to [out=25,in=155] (8.5,8);
+
+  \node[align=center] at (10,11) {\huge \bf Sample};
+  \draw [thick] (10,8.5) to [out=0,in=135] (11,8)
+                         to [out=-45,in=100] (12,7)
+                         to [out=-75,in=90] (12.5,5)
+                         to [out=-105,in=0] (11.25,4)
+                         to [out=180,in=0] (9.5,4.25)
+                         to [out=180,in=0] (8.5,4)
+                         to [out=180,in=-90] (8,4.5)
+                         to [out=90,in=-90] (8.25,5.25)
+                         to [out=90,in=-165] (8.5,7.5)
+                         to [out=0,in=180](10,8.5);
+
+\end{tikzpicture}
+```
+
+

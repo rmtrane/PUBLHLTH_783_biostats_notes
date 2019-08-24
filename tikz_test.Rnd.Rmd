@@ -1,0 +1,11 @@
+---
+title: "tikz test"
+author: "Ralph Trane"
+output: html_document
+---
+
+```{r, engine = 'tikz', fig.ext='pdf'}
+\begin{tikzpicture}
+  \draw (0,0) circle (2cm);
+\end{tikzpicture}
+```
