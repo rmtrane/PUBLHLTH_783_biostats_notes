@@ -1,6 +1,0 @@
-# (APPENDIX) Appendix {-} 
-
-# About Assumptions
-
-# Simulating Data
-
