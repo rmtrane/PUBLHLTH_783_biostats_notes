@@ -2,5 +2,4 @@ Package: placeholder
 Type: Book
 Title: Does not matter.
 Version: 0.0.1
-Imports: bookdown, tidyverse, ggthemes, viridis, gganimate, janitor, pander, DT, distributions3, magick
-
+Imports: bookdown, tidyverse, ggthemes, viridis, gganimate, janitor, pander, DT, distributions3
