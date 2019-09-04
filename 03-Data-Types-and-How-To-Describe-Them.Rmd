@@ -41,7 +41,7 @@ Recall our general setup for any statistical analysis: we have some question abo
 
 So how do we make sure the sample is representative of the population? The first step is to make sure our sampling scheme is good. Ideally, we sample completely at random, meaning that every single individual in the population has the same chance of ending up in the sample. As you might be able to guess, this is rarely the case, but if the sampling is done right it is either approximately true, or the sampling is done in a way that any biases introduced can be accounted for in the analysis.^[**Full disclaimer**: sampling is hard. As in really, really, really hard. Very smart people spend a lot of time on making sure different sampling schemes work. It is well beyond the scope of this course, and me, how the details of this work out.] Most commonly, sampling is done in such a way that the "equal chance" assumption isn't too crazy. But how do we know if this is actually the case? 
 
-The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See \@ref(liu_womens_2016) for a more thorough discussion of the exclusion of women in particular.] 
+The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See [@liu_womens_2016] for a more thorough discussion of the exclusion of women in particular.] For this particular reason, producing descriptive statistics is often the first step in any data analysis.
 
 The rest of this section will go through different types of data, and show how we in each case can describe (or summarize, if you will) the specific type of data. 
 
@@ -53,7 +53,7 @@ A variable is called a *discrete* variable if the possible values of the variabl
 
 A discrete variable is of one of two subtypes: *categorical* or *ordinal*.
  
-## Categorical data
+## Categorical data {#categorical}
 
 Categorical variables are discrete variables with no particular ordering of the categories.
 
@@ -69,6 +69,9 @@ Other examples:
 * country of origin
 * political orientation
 
+### Binary/Dichotomous Data
+
+Often researchers will refer to certain variables as *binary* or *dichotomous*. This simply means *categorical with two categories*.
 
 ## How to describe categorical data
 
@@ -78,7 +81,7 @@ Categorical variables are often described using *frequency counts* and *relative
 
 ### Examples
 
-Below are the frequencies for some categorical variables in the SHOW data set. 
+Below are the frequencies for some categorical variables in the SHOW data set. One thing that often comes from this preliminary step of a data analysis is the realization that there are some kinks in your data. For example, notice how there are missing values for most of these variables (denoted by NA -- "Not Available").
 
 ```{r}
 library(janitor)
@@ -86,17 +89,33 @@ SHOW_cat_freqs <- full_show %>%
   select(gender, edu, marital, race) %>% 
   gather(key = "Variable", value = "Value") %>% 
   split(.$Variable) %>% 
-  map(~ .x %>% 
-        tabyl(Value) %>% 
-        rename(Frequency = n,
-               `Relative Frequency` = percent))
+  map(function(x){
+    tmp <- x %>% 
+      tabyl(Value) %>% 
+      rename(Frequency = n,
+             `Relative Frequency` = percent) %>% 
+      select(-valid_percent) 
+    
+    if("D" %in% x$Value){
+      tmp %>% 
+        mutate(Value = factor(Value, levels = c(sort(as.numeric(unique(Value))), "D"))) %>% 
+        arrange(Value) %>% 
+        adorn_totals()
+    } else {
+      tmp %>% 
+        mutate(Value = factor(Value, levels = sort(as.numeric(unique(Value))))) %>% 
+        arrange(Value) %>% 
+        adorn_totals()
+    }
+  })
 
 SHOW_cat_freqs %>% 
-  map(~ .x %>% select(-`Relative Frequency`)) %>% 
+  map(~ .x %>% 
+        select(Value, Frequency)) %>% 
   pander::pander()
 ```
 
-We can add relative frequencies to this simply by dividing each frequency by the total number of observations. 
+We can add relative frequencies to this simply by dividing each frequency by the total number of observations. You can check a few of them yourself -- simply divide the frequency by the total number of observations (found on the last line of the table). 
 
 ```{r}
 SHOW_cat_freqs %>% 
@@ -115,20 +134,21 @@ full_show %>%
   knitr::kable()
 ```
 
-The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the same proportion of...
+The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the relative frequencies of men and women in the different groups are very close to each other. If you just look at the raw frequencies, this would not be obvious. 
 
 
 ## Ordinal Data
 
-An *ordinal variable* is a discrete variable where the groups can easily be ordered in a meaningful sense. 
+An *ordinal variable* is a discrete variable where the groups can easily be ordered in a meaningful sense. We won't distinguish between ordinal variables and categorical variables in this class, but there are methods out there that try to incorporate the extra information from ordinal data that you lose if you treat it as categorical data. 
 
 ### Examples 
 
-
+* age groups
+* disease severity scales
 
 ## How to visualize discrete data
 
-Categorical data is often best presented using a bar chart of either frequency counts or relative frequencies. 
+Discrete data is often best presented using a bar chart of either frequency counts or relative frequencies. 
 
 ### Bar Charts
 
@@ -139,7 +159,7 @@ ggplot(full_show, aes(x = marital)) +
   geom_bar(width = 0.75) + 
   labs(x = 'Martial Status', y = "Frequency Counts") +
   scale_y_continuous(limits = c(0, max(table(full_show$marital))) + c(0,3), 
-                     expand = c(0,0)) + 
+                     expand = expand_scale(mult = c(0, 0.1), add = c(0,0))) + 
   theme_bw()
 ```
 
@@ -156,13 +176,96 @@ ggplot(full_show, aes(x = marital)) +
 ```
 
 
-# Continuous
+# Continuous Data {#continuous}
 
-A *continuous variable* is a numerical variable that can take on an infinite and uncountable number of possible values. 
+A *continuous variable* is a numerical variable that can (at least theoretically) take on an infinite and uncountable number of possible values. 
+
+## Examples
+
+* age
+* height
+* speed
+* blood pressure
+* heart rate
 
 ## How to describe continuous data
 
+When dealing with continuous data, we are often interested in two aspects: 
+
+1. location
+2. spread
+
+### Location
+
+The location of continuous data is often described by one of two metrics: the *mean* (or *average*) and the *median*. For completion, these are briefly defined below. For a more in-depth discussion of the mean and the median, see [@ls] pages 50-57
+
+#### Mean 
+
+The *mean* of a variable measured in a sample is also referred to as the *sample mean* or *average*. It is simply calculated as the sum of all observed values divided by the number of values. If we are interested in a variable $X$, the average is denoted $\bar{X}$ (read "$X$ bar"). So $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$.^[If you are not familiar with this notation, fear not: it simply means "sum up all values of $X$". I.e., $\sum_{i=1}^n X_i = X_1 + X_2 + X_3 + ... + X_n$.] 
+
+#### Median
+
+The *median* is the middle point of the data. It is found by writing down all observations in order, then eliminating the most extreme pair (i.e. the smallest and largest values). Repeat until only one observation, or one pair of observations, is left. If you're left with one observation, congratulations, you found the median. If you're left with a pair, the median is the average of the two. 
+
+#### Other location related metrics
+
+Sometimes we are interested in the most extreme values we can expect of a value. Here it would be of interest to find the *minimum* and *maximum* of the variable. 
+
+More generally, the minimum, median, and maximum values are examples of what is called *quantiles*. A quantile is a number that "cuts off" a certain proportion of the data (from the bottom). You can think of the median as the number that "cuts off" half the data. Therefore the median is also called the 0.5 quantile. The minimum is the 0 quantile (it cuts off nothing of the data), and the maximum the 1 quantile (it cuts off all the data). The most commonly used quantiles are the *quartiles*. This is the set of numbers that cut the data into four equally sized pieces. I.e. the 0.25, 0.5, and 0.75 quantiles are collectively known as the quartiles. These can be useful when talking about the location of the data, since indicating the 0.25 and 0.75 quantiles tells you where half the data is located -- namely between those two values.
+
+### Spread
+
+Once we have an idea of the location of a continuous variable, the next natural question is how large the spread (or variation) is. 
+
+To motivate our interest in a measure of the spread of a continuous variable, say we are interested in any association between 
+
+
 ## How to visualize continuous data
+
+My favorite graphs to use with continuous data are scatter plots, boxplots, and histograms.
+
+### Scatter Plots
+
+A scatter plot is only really useful when you are considering the relationship between two variables where at least one is continuous. For example, consider the variables `height` and `weight` from the SHOW data. A scatter plot shows potential relationships between the two. Unsurprisingly, it seems that there is a positive correlation between the two -- i.e. when one goes up, so does the other. 
+
+```{r}
+full_show %>% 
+  ggplot(aes(x = height, y = weight)) + 
+    geom_point(alpha = 0.3)
+```
+
+
+You can also utilize scatter plots when one of the variables is categorical. For example, we could be interested in the relationship between height and gender. 
+
+```{r}
+full_show %>% 
+  ggplot(aes(x = gender, y = height)) + 
+    geom_point(alpha = 0.5)
+```
+
+In this case, it can be beneficial to add a bit of jitter to the plot in the direction of the categorical variable.
+
+```{r}
+full_show %>% 
+  ggplot(aes(x = gender, y = height)) + 
+    geom_jitter(height = 0, width = 0.3, alpha = 0.5)
+```
+
+Even with a bit of jitter, it might be really hard to make anything of a scatter plot in this case, simply because we have "too much" data. In such a case, a boxplot might be a better choice. 
+
+### Boxplots
+
+Boxplots are great when you have a lot of data. They show the data through a set of summaries, namely the quartiles. Below are boxplots for the height of the SHOW population by gender. 
+
+```{r}
+full_show %>% 
+  filter(!is.na(gender), !is.na(height)) %>% 
+  ggplot(aes(x = as.character(gender), y = height)) + 
+    geom_boxplot() + 
+    scale_y_continuous(limits = c(0, NA))
+```
+
+The boxed display.
 
 # Grey areas
 
