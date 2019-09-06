@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # (PART) Data Types and Descriptive Statistics {-}
 
 # Before we get started... {-} 
@@ -52,10 +53,13 @@ Recall our general setup for any statistical analysis: we have some question abo
 So how do we make sure the sample is representative of the population? The first step is to make sure our sampling scheme is good. Ideally, we sample completely at random, meaning that every single individual in the population has the same chance of ending up in the sample. As you might be able to guess, this is rarely the case, but if the sampling is done right it is either approximately true, or the sampling is done in a way that any biases introduced can be accounted for in the analysis.^[**Full disclaimer**: sampling is hard. As in really, really, really hard. Very smart people spend a lot of time on making sure different sampling schemes work. It is well beyond the scope of this course, and me, how the details of this work out.] Most commonly, sampling is done in such a way that the "equal chance" assumption isn't too crazy. But how do we know if this is actually the case? 
 
 The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See [@liu_womens_2016] for a more thorough discussion of the exclusion of women in particular.] For this particular reason, producing descriptive statistics is often the first step in any data analysis.
+=======
+# (PART) Data Types, Descriptives, and Summary Statistics {-}
 
-The rest of this section will go through different types of data, and show how we in each case can describe (or summarize, if you will) the specific type of data. 
+\label{PARTI}
+>>>>>>> parent of 874fc27... Commit before switching to data-types branch
 
-In general, when we talk about data we often refer to *variables*. Variables are simply (and very vaguely) *things we measure*. You will see examples which hopefully helps understand exactly what is meant by a variable. 
+[Chapter 4 in @ls.]
 
 
 
@@ -64,8 +68,13 @@ In general, when we talk about data we often refer to *variables*. Variables are
 A variable is called a *discrete* variable if the possible values of the variable are countable, that is if you can count them. Note that a discrete variable can technically have an infinite number of possible outcomes. 
 
 A discrete variable is of one of two subtypes: *categorical* or *ordinal*.
+<<<<<<< HEAD
  
 ## Categorical data {#categorical}
+=======
+
+## Categorical data
+>>>>>>> parent of 874fc27... Commit before switching to data-types branch
 
 Categorical variables are discrete variables with no particular ordering of the categories.
 
@@ -75,7 +84,7 @@ The classical example of a categorical variable is sex. For each subject, the va
 
 Other examples:
 
-* color
+* color. We generally work with a set number of categories. 
 * race
 * blood type
 * country of origin
@@ -89,7 +98,7 @@ Often researchers will refer to certain variables as *binary* or *dichotomous*. 
 
 Categorical variables are often described using *frequency counts* and *relative frequencies*. 
 
-*Frequency counts* (or simply *frequencies*) are found by counting how many times each possible value is present in the data. *Relative frequencies* are found by dividing the frequency by the total number of observations. 
+*Frequency counts* (or simply *frequency*) are found simply by counting how many times each possible value of an outcome is present in the data. *Relative frequencies* are found by dividing the frequency by the total number of observations. 
 
 ### Examples
 
@@ -142,8 +151,7 @@ full_show %>%
   tabyl(gender, marital) %>% 
   adorn_percentages() %>% 
   adorn_totals(where = "col") %>% 
-  adorn_ns() %>% 
-  knitr::kable()
+  adorn_ns()
 ```
 
 The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the relative frequencies of men and women in the different groups are very close to each other. If you just look at the raw frequencies, this would not be obvious. 
