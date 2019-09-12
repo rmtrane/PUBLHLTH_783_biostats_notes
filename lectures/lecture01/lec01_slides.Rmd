@@ -376,10 +376,8 @@ Where should you live
 2. Use public records to get age of death for a good sample of people
 
 3. What would be a good quantity to look at in the sample?
-
 --
-
-probably the average age of death
+ probably the average age of death
 
 ---
 
@@ -532,14 +530,10 @@ This is what enables us to describe the variability of sampling
 The art of extrapolating from a sample to the population.
 
 SUPER HARD!
---
- To make it easier, we make assumptions. 
 
---
+To make it easier, we make assumptions. 
 
-This also means that if our assumptions are off, everything is off. 
---
- Therefore, important to state **AND** check your assumptions!
+This also means that if our assumptions are off, everything is off. Therefore, important to state **AND** check your assumptions!
  
 ???
 
@@ -565,6 +559,6 @@ This is where decisions come into play. Subjective what assumptions you're willi
 
 --
 
-How do we get an idea of how much would the quantity would vary with repetition? 
+How do we get an idea of how much this quantity would vary with repetition? 
 
 
