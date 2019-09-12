@@ -1,6 +1,5 @@
 # Introduction to Biostatistics {#intro}
 
-
 ## What is Biostatistics?
 
 Biostatistics is "simply" statistics applied to a specific set of problems, namely problems related to biological questions. Hence, the question "what is biostatistics?" is quickly replaced by "what is statistics?" 

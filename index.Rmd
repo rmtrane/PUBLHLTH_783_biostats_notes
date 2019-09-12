@@ -5,10 +5,9 @@ date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: refs/refs.bib
+bibliography: refs.bib
 biblio-style: apalike
 link-citations: yes
-pandoc-latex-unlisted: [unlisted]
 ---
 
 \newcommand{\Var}{\text{Var}}
