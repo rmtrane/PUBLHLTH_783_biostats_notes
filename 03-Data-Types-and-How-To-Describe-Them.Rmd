@@ -1,6 +1,8 @@
 # (PART) Data Types and Descriptive Statistics {-}
 
-# Before we get started... {-} 
+<div style="font-size: 14pt; font-weight: bold">
+Before we get started...
+</div>
 
 This section is very minimal. I decided to go that route because 1) this is the "easiest" part of the materiale in the sense that there isn't a lot of things to really understand and think about, and 2) it is objectively speaking very, very, very boring... So, when you find my notes insufficient, take a look at Chapter 4 in [@ls]. 
 
@@ -144,7 +146,8 @@ full_show %>%
   tabyl(gender, marital) %>% 
   adorn_percentages() %>% 
   adorn_totals(where = "col") %>% 
-  adorn_ns()
+  adorn_ns() %>% 
+  pander::pander()
 ```
 
 The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the relative frequencies of men and women in the different groups are very close to each other. If you just look at the raw frequencies, this would not be obvious. 

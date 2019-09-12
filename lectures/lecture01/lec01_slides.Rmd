@@ -51,24 +51,87 @@ Office hours: Wednesdays 11am till noon in PHS 666 (WARF 6th floor)
 
 Lecture notes will be hosted [here](https://rmtrane.github.io/PUBLHLTH_783_biostats_notes/)
 
---
-
 Updated as we go with some material available before lectures, some after
 
+Lecture slides will be available on Canvas _after_ lectures
+
+---
+
+## Expectations
+
+You can expect that I will ...
+
+... be brutally honest
+
+... do everything I can to keep things interesting
+
+... fight for you!
+
 --
 
-Lecture slides will be available on Canvas after lectures
+In return, I expect that you will...
+
+... help me out by participating in lectures (i.e. ask me all your question, answer all my questions)
+
+... show up prepared when I ask that of you
+
+... give me a chance!
+
+???
+
+* There will be times where we need to talk about stuff that's boring/uninteresting/not really relevant anymore. Also, bad practices still in play...
+* Things are just more fun when there's interaction + it helps me help you
+* Sometimes I will ask you to read things **BEFORE** lecture. I ONLY do this when it really makes sense, i.e. helps improve lecture or I believe it helps you understand the material better
 
 ---
 layout: false
 
-# Learning Objectives
+# Before we get started...
+
+... let's clear the air. Based on my personal experiences
+--
+ most of you think statistics is boring.
+ 
+--
+
+.center[
+<img src="./images/boring.gif" width="400px">
+]
+
+---
+
+# Before we get started...
+
+... let's clear the air. Based on previous experiences most of you think statistics is boring. 
+ 
+Give me a shot: I will try to make this different than most statistics classes. 
+
+--
+
+Take a leap of faith...
+
+.center[
+<img src="./images/leap_of_faith.gif" height="250px">
+]
+
+--
+
+... I promise you won't get hurt!
+
+
+---
+layout: false
+
+# Objectives for Today
 
 1. "Define" statistics
 
-2. Better understanding of what statistics is not
+2. Better understanding of what statistics is/isn't
 
-3. 
+3. Why is statistics important?
+
+4. Broad overview of statistics in 783
+
 
 ---
 
@@ -78,11 +141,11 @@ Statistics applied to biology related questions
 
 * Average Age of Death in 1842 Great Britain
 
-|    | Manchester | Rutland |
-|:--:|:----------:|:-------:|
-| Professionals | 38 | 52 |
-| Tradesmen | 20 | 41 | 
-| Laborers | 17 | 38 |
+|               | Manchester | Rutland |
+|:-------------:|:----------:|:-------:|
+| Professionals |     38     |    52   |
+| Tradesmen     |     20     |    41   | 
+| Laborers      |     17     |    38   |
 
 
 * Are there genes associated with an increased risk of cancer?
@@ -143,13 +206,59 @@ Therefore, if you think about it, a lot of what Kristin talked about on Tuesday 
 
 --
 
-It is more accurately described as a *decision science*
+It is more accurately described as a *decision science*.
+
+--
+
+Very unfortunate misconception. Lead to terms as "statistically significant", arbitrary cutoffs used as THE way to determine importance, etc. 
 
 ???
 
 Much, much more than means, and standard deviations. That's the boring stuff...
 
 Stats is not MATH
+
+---
+layout: true 
+
+# Why you should care
+
+---
+
+These days, statistics is all around us, but most have problems with even simple things, such as interpreting a probability.
+
+--
+
+.center[
+  <img src="./images/2016_election.png" width="400px">
+]
+
+---
+
+Too often studies are misrepresented.
+
+.center[
+  <img src="./images/planned_parenthood_abortion_chart_bs.jpg" height="200px">
+]
+
+.center[
+  <img src="./images/planned_parenthood_abortion_chart_corrected.jpg" height="200px">
+]
+
+
+---
+
+People get away with bad practices (on purpose or accidentially): 
+
+.center[
+  <img src="./images/bad_science.png" height="400px">
+  Full paper [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2685008/)  
+]
+
+
+---
+
+My point is: whether you'll be producers or consumers of statistics, it's important to have a basic understanding of what's going on.
 
 ---
 layout: true
@@ -172,9 +281,13 @@ More specific: "People who smoke cigarettes have a higher incidence of lung canc
 
 * Clear what it means to "cause lung cancer" -- higher incidence 
 
+--
+
+* However, it is **NOT** clear what "higher" means
+
 ---
 
-Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
+Say we wanted to answer this question. Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
 
 --
 
@@ -193,7 +306,7 @@ Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
 .center[
 Rejoice in newfound knowledge!
 
-<img src="happiness.gif" width="400">
+<img src="./images/happiness.gif" width="400">
 ]
 
 ---
@@ -209,7 +322,7 @@ Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
 .center[
 Unfortunately, this is basically impossible!
 
-<img src="sadness.gif" width="400">
+<img src="./images/sadness.gif" width="400">
 ]
 
 ---
@@ -218,20 +331,27 @@ What do we do instead? Statistics!
 
 --
 
-1. Define the population you're interested in, and specify the feature you'll be looking at
+1. Define the population(s) you're interested in, and specify the feature you'll be looking at
+  - populations are people who smoke, and people who do not
+  - feature of interest would be incidence rate
 
 2. Get a representative sample from the population
+  - preferably sample by random from the two populations
 
 3. From the sample, calculate quantities that help you say things about the "truth"
+  - when interested in the incidence rate, simply calculate the incidence rate in the samples
 
+--
 
-From here, it's all about trying to understand uncertainty.
+The thing is, the samples won't mirror the populations *exactly* -- take a new sample, get new estimates of incidence rate.
+
+The question then is: is the difference due to "differences in the truths", or is it simply "differences due to random samples"?
 
 ???
 
 - The "fundamental assumption" of statistics: there is a "truth" in the population
 - The "fundamental idea" of statisitcs:  take sample, work with sample, if sample is similar to population we can do inference
-
+- If the difference is "big enough", fair to say it is due to differences in the truths
 
 ---
 
@@ -346,19 +466,11 @@ Would you prefer Kewaunee?
 
 ---
 
-Big picture time (a.k.a. "Statistics in a Nutshell"):
+The main question: when is a difference "big enough"? How do we make that question less subjective?
 
-1. Take sample from population
+???
 
-2. Calculate quantity of interest
-
-3. Ask: is the difference we see due to different truths in the two populations, or simply due to chance?
-
-4. Answer: get an idea of how much observations vary, and compare differences to variation
-
---
-
-How do we get an idea of how much this would vary with repetition? 
+Note: less subjective, not objective!
 
 ---
 
@@ -374,15 +486,17 @@ How do we get an idea of how much this would vary with repetition?
 
 ## 1. Descriptive Statistics
 
-Q: Why is it important to describe you sample?
+Q: Why is it important to describe your sample?
 
 --
 
-A: Can only draw conclusions about population that looks like our sample
+A: Can only draw conclusions about population that looks like your sample
+
+--
 
 .center[
-<img src="know_your_pop1.png" height="400">
-<img src="know_your_pop3.jpeg" height="400">
+<img src="./images/know_your_pop1.png" height="400">
+<img src="./images/know_your_pop3.jpeg" height="400">
 ]
 
 Moral of the story: know your population!
@@ -399,9 +513,9 @@ Super important, but....... super boring.
 
 Describes what happens when getting a sample from a population.
 
-*Probability Theory* a branch of mathematics that plays a crucial role in statistics
+*Probability Theory* is a branch of mathematics that plays a crucial role in statistics
 
-What enables us to describe the variability of sampling
+This is what enables us to describe the variability of sampling
 
 --
 
@@ -412,4 +526,38 @@ The art of extrapolating from a sample to the population.
 SUPER HARD!
 --
  To make it easier, we make assumptions. 
+
+--
+
+This also means that if our assumptions are off, everything is off. 
+--
+ Therefore, important to state and check your assumptions!
+ 
+???
+
+This is where decisions come into play. Subjective what assumptions you're willing to accept, and checking assumptions is often very hard and very subjective 
+
+
+---
+
+## Work Flow:
+
+* Want to test hypothesis
+
+* Take sample from population
+
+* Calculate quantity of interest
+
+* Ask: *IF* the hypothesis is true, how likely are we to see what we saw
+
+* If unlikely, take that as evidence *against* 
+
+3. Ask: is the difference we see due to different truths in the two populations, or simply due to chance?
+
+4. Answer: get an idea of how much observations vary, and compare differences to variation
+
+--
+
+How do we get an idea of how much this would vary with repetition? 
+
 
