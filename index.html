@@ -68,7 +68,10 @@
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a><ul>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#bounty-program"><i class="fa fa-check"></i>Bounty Program</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-biostatistics"><i class="fa fa-check"></i><b>2.1</b> What is Biostatistics?</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#biostatistics-in-publhlth-783"><i class="fa fa-check"></i><b>2.2</b> Biostatistics in PUBLHLTH 783</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -92,13 +95,13 @@
 <div id="header">
 <h1 class="title">Biostatistics in Public Health</h1>
 <p class="author"><em>Ralph Trane</em></p>
-<p class="date"><em>Fall 2019</br>(last compiled: 2019-09-04)</em></p>
+<p class="date"><em>Fall 2019</br>(last compiled: 2019-09-12)</em></p>
 </div>
 <div id="introduction-to-notes" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction to Notes</h1>
 <p>Welcome to Public Health 783. This is where you’ll find my notes for the biostatistics part of this class for Fall 2019.</p>
 <p>These notes are meant to be a supplement to lectures and <span class="citation">Sullivan (<a href="#ref-ls" role="doc-biblioref">2017</a>)</span>. If you have any doubts as to what parts of the book I think are more important, this is a good place to look. There’s a good chance that if it is not included here, I do not care too much about it. That being said, things included here might not be elaborated to a satisfying extent, and therefore I do <em>NOT</em> recommend that you rely solely on these notes, but rather use them in conjunction with the book, and, just as importantly, lectures.</p>
-<p>I want to emphasize that these notes are not exhaustive, but are meant to complete lectures. We simply won’t have time to cover everything in the amount of detail I would like. Therefore, I will use these notes to write down some thoughts on certain topics that I think you might as well read outside the classroom. At times I will ask you to read sections before showing up to lectures. Other times, I won’t even make the material available to you until after lectures. There’s good reason for that. Some things are easier to explain when you have already seen them before. Other concepts can be scary on paper, and are best introduced by another human being. In either case, it is extremely important that you show up to lectures.</p>
+<p>I want to emphasize that these notes are not exhaustive, but are meant to complement lectures. We simply won’t have time to cover everything in the amount of detail I would like. Therefore, I will use these notes to write down some thoughts on certain topics that I think you might as well read outside the classroom. At times I will ask you to read sections before showing up to lectures. Other times, I won’t even make the material available to you until after lectures. There’s good reason for that. Some things are easier to explain when you have already seen them before. Other concepts can be scary on paper, and are best introduced by another human being. In either case, it is extremely important that you show up to lectures.</p>
 <p>Finally, note that this collection is a living thing. It will change throughout the semester as we move along. Sometimes I might go back and clarify sections, if it seems to be necessary. At the beginning of the class you’ll only find the first part, but as we make our way through, I will publish more notes on the topics to be covered later.</p>
 <div id="bounty-program" class="section level2 unnumbered">
 <h2>Bounty Program</h2>
@@ -186,6 +189,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
