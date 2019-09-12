@@ -12,3 +12,131 @@ pre {
 pre code {
   white-space: inherit;
 }
+
+
+/* Sidenotes, margin notes, figures, captions */
+/*
+img {max-width: 100%;}
+
+.marginnote img { display: block; }
+
+.sidenote, .marginnote { float: right;
+                         clear: right;
+                         margin-right: -15%;
+                         width: 40%;
+                         margin-top: 0;
+                         margin-bottom: 1rem;
+                         font-size: 1.1rem;
+                         line-height: 1.3;
+                         vertical-align: baseline;
+                         position: relative; }
+
+.marginnote p { font-size:80%!important;
+				        line-height:1.3; }
+
+.marginnote ul { width: 100%;
+			padding-right:30%!important;
+			line-height:1.2!important;
+         -webkit-padding-start: 0%;
+         -webkit-padding-end: 0%; }
+
+.marginnote li {width: 80%;
+				padding-right: 5%;}
+
+.marginnote ol { font-size:90%!important;
+				width: 100%;
+				padding-right:5%!important;}
+
+.sidenote-number { font-family: et-book-roman-old-style;
+                                           position: relative;
+                                           vertical-align: baseline; }
+
+.sidenote-number { font-size: 1rem;
+                   top: -0.5rem;
+                   left: 0.1rem; }
+
+
+p, footer, table { width: 70%!important; }
+table table, li p, li pre { width: auto; }
+li p, li pre {margin-top: auto; }
+
+.caption {width: 100%!important;}
+
+div.fullwidth, table.fullwidth { max-width: 90%; }
+
+#TOC, h1.title { max-width: 90%; }
+#TOC ol, #TOC ul { width: auto; }
+
+div.fullwidth p.caption {
+  margin-right: 0;
+  max-width: 33%;
+}
+
+p.caption {  text-align: left;
+             font-size: 70%!important;
+             line-height: 1.5;
+             width: 100% }
+
+@media screen and (max-width: 760px) { p, footer, ol, ul, table { width: 90%; }
+                                       pre { width: 87.5%; }
+                                       ul { width: 85%; }
+                                       figure { max-width: 90%; }
+                                       div.fullwidth p.caption { max-width: none; }
+                                       blockquote p, blockquote footer { width: 90%; }}
+
+
+
+.sans { font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+        letter-spacing: .03em; }
+
+code { font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        font-size: 1.125rem;
+        line-height: 1.6; }
+
+
+pre code { font-size: 1rem; }
+
+p code { white-space: inherit; }
+
+h1 code, h2 code, h3 code { font-size: 0.80em; }
+
+
+.marginnote code, .sidenote code { font-size: 1rem; }
+
+
+
+pre { width: 70%;
+      overflow-x: auto; }
+
+.fullwidth { max-width: 90%;
+             clear:both; }
+
+span.newthought { font-variant: small-caps;
+                  font-size: 1.2em; }
+
+input.margin-toggle { display: none; }
+
+label.sidenote-number { display: inline; }
+
+label.margin-toggle:not(.sidenote-number) { display: none; }
+
+@media (max-width: 760px) { label.margin-toggle:not(.sidenote-number) { display: inline; }
+                            .sidenote, .marginnote { display: none; }
+                            .shownote,
+                            .margin-toggle:checked + .sidenote,
+                            .margin-toggle:checked + .marginnote {
+                                                                   display: block;
+                                                                   float: left;
+                                                                   left: 1rem;
+                                                                   clear: both;
+                                                                   width: 95%;
+                                                                   margin: 1rem 2.5%;
+                                                                   vertical-align: baseline;
+                                                                   position: relative;
+                                                                   }
+                            label { cursor: pointer; }
+                            div.figure { max-width: 90%; }
+                            pre { width: 90%;
+                                       padding: 0; }
+                            }
+*/
