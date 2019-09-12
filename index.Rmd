@@ -10,6 +10,8 @@ biblio-style: apalike
 link-citations: yes
 ---
 
+# Introduction to Notes
+
 \newcommand{\Var}{\text{Var}}
 \newcommand{\var}{\text{var}}
 \newcommand{\SD}{\text{SD}}
@@ -41,8 +43,6 @@ scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
 ## Load data sets used
 full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
 ```
-
-# Introduction to Notes
 
 Welcome to Public Health 783. This is where you'll find my notes for the biostatistics part of this class for Fall 2019. 
 
