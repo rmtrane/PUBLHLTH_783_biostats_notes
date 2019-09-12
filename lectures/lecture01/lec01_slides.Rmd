@@ -555,7 +555,7 @@ This is where decisions come into play. Subjective what assumptions you're willi
     - If unlikely, evidence **against** the hypothesis
     - If likely, evidence **for** the hypothesis
 
-* Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory
+* Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory?
 
 --
 
