@@ -102,19 +102,15 @@ layout: false
 
 # Before we get started...
 
-... let's clear the air. Based on previous experiences most of you think statistics is boring. 
+... let's clear the air. Based on my personal experiences most of you think statistics is boring.
  
 Give me a shot: I will try to make this different than most statistics classes. 
-
---
 
 Take a leap of faith...
 
 .center[
 <img src="./images/leap_of_faith.gif" height="250px">
 ]
-
---
 
 ... I promise you won't get hurt!
 
