@@ -1,0 +1,415 @@
+---
+title: "Biostats Lecture 1: Introduction"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+layout: true
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Welcome!
+
+---
+
+## Practicalities
+
+Office hours: Wednesdays 11am till noon in PHS 666 (WARF 6th floor)
+
+```{r echo = FALSE, out.width = 800, out.height = 350}
+library(leaflet)
+leaflet() %>% 
+  addProviderTiles(provider = "Esri.WorldImagery",
+                   options = tileOptions(minZoom = 2,
+                                         noWrap = TRUE)) %>% 
+  addPopups(lng = c(-89.430528, -89.426106, -89.407260, 11.324524), 
+            lat = c(43.077731, 43.076249, 43.074241, 55.257877), 
+            popup = c("We're here.", "WARF", "MSC", "Denmark!"),
+            options = popupOptions(closeButton = FALSE,
+                                   closeOnClick = FALSE)) %>% 
+  setView(lng = -89.426106, lat = 43.076249, zoom = 15)
+```
+
+---
+
+## Practicalities
+
+Office hours: Wednesdays 11am till noon in PHS 666 (WARF 6th floor)
+
+Lecture notes will be hosted [here](https://rmtrane.github.io/PUBLHLTH_783_biostats_notes/)
+
+--
+
+Updated as we go with some material available before lectures, some after
+
+--
+
+Lecture slides will be available on Canvas after lectures
+
+---
+layout: false
+
+# Learning Objectives
+
+1. "Define" statistics
+
+2. Better understanding of what statistics is not
+
+3. 
+
+---
+
+# What is Biostatistics?
+
+Statistics applied to biology related questions
+
+* Average Age of Death in 1842 Great Britain
+
+|    | Manchester | Rutland |
+|:--:|:----------:|:-------:|
+| Professionals | 38 | 52 |
+| Tradesmen | 20 | 41 | 
+| Laborers | 17 | 38 |
+
+
+* Are there genes associated with an increased risk of cancer?
+
+* What are common factors of increased risk of cardiovascular disease?
+
+* Does exposure to green spaces improve mental health?
+
+--
+
+So the question really is: what is statistics?
+
+???
+
+Saw this example on Tuesday. 
+
+How do we know what the average age of death is?
+
+Well known that if BRCA is overexpressed it increases the risk of breast cancer. How? 
+
+So what is Statistics? 
+
+---
+
+# What is Statistics?
+
+Statistics is... 
+--
+very hard to define. 
+
+--
+
+From Wikipedia: 
+
+.center[
+![stats_on_wiki](./stats_on_wiki.png)
+]
+
+--
+
+
+So it seems that statistics is everything that has to do with data...?
+
+
+???
+
+Therefore, if you think about it, a lot of what Kristin talked about on Tuesday was actually statistics in disguise. 
+
+---
+
+# What is Statistics?
+
+--
+
+<div class="middlecenter">
+  STATISTICS IS NOT AN EXACT SCIENCE!!
+</div>
+
+--
+
+It is more accurately described as a *decision science*
+
+???
+
+Much, much more than means, and standard deviations. That's the boring stuff...
+
+Stats is not MATH
+
+---
+layout: true
+
+# Biostatistics in PUBLHLTH 783
+
+---
+
+In the begining, there is a hypothesis: "Cigarette smoking causes lung cancer".
+
+--
+
+* Very vague, hard to verify or dismiss
+
+--
+
+More specific: "People who smoke cigarettes have a higher incidence of lung cancer over a 10-year period than people who do not smoke cigarettes."
+
+--
+
+* Clear what it means to "cause lung cancer" -- higher incidence 
+
+---
+
+Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
+
+--
+
+1. Ask every single individual who's ever lived if they smoked, and if they developed lung cancer. 
+
+--
+
+2. Calculate incidence rates
+
+--
+
+3. See which is larger
+
+--
+
+.center[
+Rejoice in newfound knowledge!
+
+<img src="happiness.gif" width="400">
+]
+
+---
+
+Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
+
+1. Ask every single individual who's ever lived if they smoked, and if they developed lung cancer. 
+
+2. Calculate incidence rates
+
+3. See which is larger
+
+.center[
+Unfortunately, this is basically impossible!
+
+<img src="sadness.gif" width="400">
+]
+
+---
+
+What do we do instead? Statistics! 
+
+--
+
+1. Define the population you're interested in, and specify the feature you'll be looking at
+
+2. Get a representative sample from the population
+
+3. From the sample, calculate quantities that help you say things about the "truth"
+
+
+From here, it's all about trying to understand uncertainty.
+
+???
+
+- The "fundamental assumption" of statistics: there is a "truth" in the population
+- The "fundamental idea" of statisitcs:  take sample, work with sample, if sample is similar to population we can do inference
+
+
+---
+
+## Example: Average age of death in Wisconsin
+
+(Inspired by the "Average Age of Death (1842)" example)
+
+Where should you live 
+
+1. Populations of interest: people living in Wisconsin broken down by county. Feature: mean age of death
+
+2. Use public records to get age of death for a good sample of people
+
+3. What would be a good quantity to look at in the sample?
+
+--
+
+probably the average age of death
+
+---
+
+Results according to [this report](https://www.dhs.wisconsin.gov/publications/p01551.pdf): 
+
+| County      | Life expectancy |
+|:-----------:|:---------------:|
+| Kewaunee    | 82.0 | 
+| Ozaukee     | 81.8 |
+| Pierce      | 81.6 |
+| Waukesha    | 81.5 |
+| Taylor      | 81.5 |
+| Milwaukee   | 77.6 |
+| Washburn    | 76.7 |
+| Ashland     | 77.5 |
+| Sawyer      | 77.1 |
+| Menominee   | 72.5 |
+
+
+--
+
+Would you prefer Kewaunee over Waukesha?
+
+???
+
+* Not everyone dies at the same age, so we'll be thinking about the mean age
+
+* Clearly rather live in Kewaunee than Menominee. But would you prefer Kewaunee over Waukesha?
+
+---
+
+The question is: do we *really* think there's a difference? 
+
+--
+
+Let's pretend the results of the actual data looked like this:
+
+```{r echo = FALSE, results = "asis", fig.width = 4, fig.height = 4, fig.align='center'}
+library(tidyverse)
+n <- 100
+set.seed(1011)
+made_up_life_exp <- tibble(county = rep(c("Kewaunee", "Waukesha"), each = 2*n),
+                           experiment = rep(c(1,2), 2*n),
+                           mean = if_else(county == "Kewaunee", 82, 81.5), 
+                           sd = case_when(experiment == 1 & county == "Kewaunee"~ 5, 
+                                          experiment == 1 & county == "Waukesha"~ 2, 
+                                          experiment == 2 ~ 0.1)) %>% 
+  group_by(county, experiment) %>% 
+  mutate(`Age of Death` = rnorm(n = n, mean, sd),
+         group_mean = mean(`Age of Death`)) %>% 
+  ungroup() %>% 
+  mutate(`Age of Death` = `Age of Death` - (group_mean-mean))
+  
+
+made_up_life_exp_table <- made_up_life_exp %>% 
+  group_by(county, experiment) %>% 
+  summarise(n = n(), 
+            `Average Age of Death` = mean(`Age of Death`))
+
+made_up_life_exp_table %>% 
+  filter(experiment == 2) %>% 
+  select(-experiment) %>% 
+  knitr::kable(format = 'html')
+
+ggplot(made_up_life_exp %>% filter(experiment == 2),
+       aes(x = county, y = `Age of Death`)) + 
+  geom_jitter(alpha = 0.75, width = 0.25) + 
+  theme_bw()
+```
+
+Would you prefer Kewaunee?
+--
+ I definitely would...
+
+---
+
+What if the actual data look more like this:
+
+```{r echo = FALSE, results = "asis", fig.width = 4, fig.height = 4, fig.align='center'}
+made_up_life_exp_table %>% 
+  filter(experiment == 1) %>% 
+  select(-experiment) %>% 
+  knitr::kable(format = "html")
+
+ggplot(made_up_life_exp %>% filter(experiment == 1),
+       aes(x = county, y = `Age of Death`)) + 
+  geom_jitter(alpha = 0.75, width = 0.25) + 
+  theme_bw()
+```
+
+Would you prefer Kewaunee?
+--
+ I'm not sure...
+
+---
+
+Big picture time (a.k.a. "Statistics in a Nutshell"):
+
+1. Take sample from population
+
+2. Calculate quantity of interest
+
+3. Ask: is the difference we see due to different truths in the two populations, or simply due to chance?
+
+4. Answer: get an idea of how much observations vary, and compare differences to variation
+
+--
+
+How do we get an idea of how much this would vary with repetition? 
+
+---
+
+## Components
+
+1. Descriptive Statisitcs
+
+2. Probability
+
+3. Inference
+
+---
+
+## 1. Descriptive Statistics
+
+Q: Why is it important to describe you sample?
+
+--
+
+A: Can only draw conclusions about population that looks like our sample
+
+.center[
+<img src="know_your_pop1.png" height="400">
+<img src="know_your_pop3.jpeg" height="400">
+]
+
+Moral of the story: know your population!
+
+??? 
+
+Other examples: medical research excluding minorities.
+
+Super important, but....... super boring.
+
+---
+
+## 2. Probability
+
+Describes what happens when getting a sample from a population.
+
+*Probability Theory* a branch of mathematics that plays a crucial role in statistics
+
+What enables us to describe the variability of sampling
+
+--
+
+## 3. Inference
+
+The art of extrapolating from a sample to the population.
+
+SUPER HARD!
+--
+ To make it easier, we make assumptions. 
+
