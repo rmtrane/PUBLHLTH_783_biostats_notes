@@ -29,7 +29,9 @@ The best way to become comfortable with this definition is by considering a few 
 1. They are so simple that it is possible to better grasp what's going on
 2. A lot of more complicated examples can be simplified by comparing them to these two
 
-### Example: coin flip {-}
+### Examples 
+
+#### Coin Flip 
 
 We want to find the probability $P(\text{coin comes up heads})$. A natural assumption is that when flipping a coin, heads and tails are the only outcomes^[i.e. it is NOT possible for the coin to land on the side], and they are equally likely. Therefore, 
 
@@ -47,15 +49,17 @@ Similarly, one can find the probability that the coin comes up tails:
   &= 0.5.
 \end{align}
 
-### Example: roll of a die {-}
+#### Roll of a Die 
 
---- 
+Another classic example: calculate different probabilities when rolling a die. (Done in class -- see lecture notes.)
+
+---
 
 The two examples above show situations where all possible outcomes are equally likely. What if that is not the case? 
 
-### Example: disease status {-}
+### Example: disease status 
 
-Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might  conclude that the probability of a subject being obese if $\frac{1}{2}$, i.e. $0.5$. 
+Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might conclude that the probability of a subject being obese if $\frac{1}{2}$, i.e. $0.5$. 
 
 This is obviously not the case. The problem with this approach is that the two outcomes -- those being "the subject is obese", and "the subject is NOT obese" -- are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good. 
 
@@ -71,7 +75,7 @@ Repeating an experiment an infinite number of times is obviously not possible, s
 
 When introducing this different approach to probabilities, first we need to make sure it doesn't contradict our previous approach. 
 
-### Example: coin flip (revisited) {-}
+### Example: coin flip (revisited) 
 
 We previously established that when flipping a coin, the probability of heads is $0.5$. Hopefully this new definition will yield a similar answer. 
 
@@ -118,6 +122,8 @@ anim_save(filename = "coin_flip.mp4",
 
 ### Example: roll of a die (revisited)
 
+Similarly to what we did above for the coin flip, we will do here for the roll of a die.
+
 `r n_rolls <- 100000; format(n_rolls, scientific = FALSE)`
 
 ```{r}
@@ -162,4 +168,16 @@ Okay, so both when flipping a coin and rolling a die, the second definition agre
 
 In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are "similar enough" that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease. 
 
+Let's consider the probability that a person from the SHOW population is mildly depressed. To estimate this, we simply divide the number of individuals in the population who are mildly depressed with the total number of people in the population. 
+
+Below are estimated probabilities for all depression severity levels. Note: $P(\text{mildly depressed}) = \frac{454}{3381} \approx 0.134$. 
+
+```{r}
+pander::panderOptions("digits", 3)
+full_show %>% 
+  janitor::tabyl(depression_severity) %>%
+  janitor::adorn_totals("row") %>% 
+  select(-valid_percent, `Depression Severity` = depression_severity, Count = n, `Estimated Probability` = percent) %>% 
+  pander::pander()
+```
 

@@ -2,19 +2,38 @@
 
 So far, we have talked about probabilities in a context where no additional information is available about the experiment. This is of course not always the case, and also not always what we are interested in. 
 
-A useful concept in these cases is the concept of *conditional probabilities*. In a nutshell, conditional probabilities deal with the chances of something happening given something else has already happened. If we consider two events, $A$ and $B$, then we write $P(A | B)$ for the conditional probability of $A$ given that $B$ has happened.
+A useful concept in these cases is the concept of *conditional probabilities*. In a nutshell, conditional probabilities deal with the chances of something happening given something else has already happened. If we consider two events, $A$ and $B$, then we write $P(A | B)$ for the conditional probability of $A$ given that $B$ has happened, and read it as "the (conditional) probability of $A$ given $B$". 
 
-## Example: roll a die {-}
+
+
+## Example: roll a die 
 
 Previously, we considered the probabilities associated with the roll of a die. We found that the probability of rolling a six is $\frac{1}{6}$. What if we somehow knew that the outcome turned out to be an even number, but simply didn't know which even number? Well, using this information, we know there are only three possible outcomes, namely $2,4,6$. They are all equally likely, so using the probability of rolling a six given the roll comes up even is 
 
 $$\left .P(\text{roll a } 6\ \right|\ \text{roll is even}) = \frac{1}{3}.$$
 
-## Example: disease status {-}
+## Example: disease status 
+
+In the last section we found $P(\text{mild depression}) \approx 0.134$. Let us try to calculate the conditional probability of having a mild depression *given* the subject is divorced. The way to do this is to first create the two way contingency table: 
+
+```{r}
+dep_sev_by_marital <- full_show %>% 
+  janitor::tabyl(depression_severity, marital) %>% 
+  janitor::adorn_totals(where = c("row", "col"))
+
+dep_sev_by_marital %>% 
+  pander::pander(split.table = Inf)
+```
+
+To find the conditional probability, you basically narrow down the universe you operate in. Instead of asking "how many individuals have mild depression out of all individuals?" you ask "how many individuals have mild depression out of **individuals that are divorced**?". So, in other words, all you worry about is the second row in the table. We estimate the conditional probability of having a mild depression given the subject is divorced as $P(\text{mild depression} | \text{divorced}) = \frac{76}{454} \approx `r round(76/454, digits = 3)`$. 
+
+```{r}
+dep_sev_by_marital %>% 
+  pander::pander(split.table = Inf, emphasize.strong.rows = 2)
+```
 
 
-
-## Example: Sensitivity/specificity {-}
+## Example: Sensitivity/specificity 
 
 Two important examples of conditional probabilities are the so-called sensitivity and specificity. These are particularly useful when discussing the accuracy of screening tests. 
 
@@ -80,12 +99,14 @@ $$
 \end{align}
 $$
 
-That's pretty impressive. The test has an accuracy rate of almost $93\%$, i.e. almost $93\%$ of tests yield the correct result. Now, let us consider a different test for the same disease. Tested on the same 4810 women, let's pretend it yields the following results:
+That's pretty impressive. The test has an accuracy rate of almost $93\%$, i.e. almost $93\%$ of tests yield the correct result. Now, let us consider a different test for the same disease. Tested on the same 4810 women, and pretend it yields the following results:
 
 ```{r}
-prenatal_screening %>% 
-  mutate(`Screening Test Result` = factor(c('Negative', 'Positive'), 
-                                          levels = c('Positive', 'Negative'))) %>% 
+tibble(`Fetus Status` = c('Affected', 'Affected', 'Unaffected', 'Unaffected'),
+                             `Screening Test Result` = factor(c('Positive', 'Negative', 'Positive', 'Negative'),
+                                                              levels = c('Positive', 'Negative')),
+                             n = c(1, 9, 351, 4449)) %>% 
+  spread(`Fetus Status`, n) %>% 
   arrange(`Screening Test Result`) %>% 
   janitor::as_tabyl() %>% 
   janitor::adorn_totals(where = c('row', 'col')) %>% 
@@ -99,7 +120,7 @@ Now, the accuracy rate of this test is $\frac{1 + 4449}{4810} = 0.925$, i.e. alm
 
 This is a common problem with rare diseases. Since by far most individuals will not be diseased, a test that is good at predicting healthy individuals, but awful at predicting diseased individuals, will have a high accuracy, but such a test is not very desirable. Consider this last test for Down Syndrome: no test is performed, and we just always say the fetus is unaffected. Since 4800 out of 4810 fetuses were unaffected, we have an accuracy of $\frac{4800}{4810} = 0.998$. Pretty impressive accuracy rate, absolutely useless test...
 
-## Example: positive/negative predictive value {-}
+## Example: positive/negative predictive value 
 
 The specificity is the answer to the question "what is the probability the test will be correct when the patient is actually healthy?" This is of course a very important thing to know, and if this probability is very low, the test might not be particularly useful. However, a just as important, and sometimes more relevant, measure is the *negative predictive value*. This relates to the question "what is the probability the patient is actually healthy when the test comes back negative?" 
 
@@ -127,24 +148,56 @@ $$
 
 ## Bayes' Theorem
 
-We have seen a few examples of some very useful and meaningful quantities that are actually conditional probabilities. We've seen how we, in general, calculate these conditional probabilities, but only in a setting where we know everything. The following theorem (i.e. very big and important result) provides a powerful way of finding conditional probabilities, and it also provides a very useful connection between conditional probabilities, and marginal probabilities (i.e. probabilities that are not conditional).
+We have seen a few examples of some very useful and meaningful quantities that are actually conditional probabilities. We've seen how we, in general, calculate these conditional probabilities, but only in a setting where we know everything. The following theorem^[to those who are not familiar with the math jargon: theorem = very big and important result] provides a powerful way of finding conditional probabilities, and it also provides a very useful connection between conditional probabilities, and marginal probabilities (i.e. probabilities that are not conditional).
 
 ```{theorem, name = "Bayes' Theorem", label = bayes, echo = TRUE}
-Bayes' Theorem simply states that $P(A | B) = \frac{P(A \text{ and } B)}{P(B)}$. Since $P(A \text{ and } B) = P(B \text{ and } A)$, this gives us that $P(B | A)P(A) = P(A \text{ and } B)$, so $P(A | B) = \frac{P(B | A)P(A)}{P(B)}$. Especially the latter formulation is very powerful, as we shall see in this next example.
+Bayes' Theorem simply states that 
+
+\begin{align}
+P(A | B) = \frac{P(A \text{ and } B)}{P(B)} (\#eq:bayes1),
+\end{align}
+
+or equivalently
+
+$$
+P(A | B) = \frac{P(B | A)P(A)}{P(B)} (\#eq:bayes2)
+$$
+
 ```
 
-### Example: positive predictive value from sensitivity{-} 
+Since $P(A \text{ and } B) = P(B \text{ and } A)$, equation \@ref(eq:bayes1) gives us that $P(B | A)P(A) = P(A \text{ and } B)$, and so equation \@ref(eq:bayes2) follows by plugging this in to the numerator in equation \@ref(eq:bayes1). 
 
-This allows us to calculate the positive predictive value using the sensitivity of a test, the prevalence of the disease we're testing for, and how often the test itself is positive (regardless of patient status). 
+Especially the latter formulation is very powerful, as we shall see in this next example.
 
+### Example (5.8 in @ls): positive predictive value from sensitivity
+
+Bayes' Theorem allows us to calculate the positive predictive value using the sensitivity of a test, the prevalence of the disease we're testing for, and how often the test itself is positive (regardless of patient status). 
+
+Consider a situation where a disease is really rare with a prevalence of $0.2\%$ (i.e. $2$ in $1000$ individuals have the disease). A screening test for this disease has a reported sensitivity of $85\%$, comes back positive $8\%$ of the time, and negative $92\%$ of the time. 
+
+We would like to know what the positive predictive value is, i.e. $P(\text{patient has the disease} | \text{screen positive})$. Using Bayes' rule, we know 
+
+$$
+  P(\text{patient has the disease} | \text{screen positive}) = \frac{P(\text{screen positive} | \text{patient has the disease}) \cdot P(\text{patient has the disease})}{P(\text{screen positive})}.
+$$
+
+Notice: $P(\text{screen positive} | \text{patient has the disease})$ is exactly the sensitivity, $P(\text{patient has the disease})$ is the prevalence, and $P(\text{screen positive})$ is the probability the screening test comes back positive. We know all these probabilities, and so we can calculate the positive predictive value. 
+
+$$
+\begin{align}
+  \text{PPV} &= P(\text{patient has the disease} | \text{screen positive}) \\
+             &= \frac{P(\text{screen positive} | \text{patient has the disease}) \cdot P(\text{patient has the disease})}{P(\text{screen positive})} \\
+             &= \frac{0.85 \cdot 0.002}{0.08} \approx `r round(0.85*0.002/0.08, digits = 3)`
+\end{align}
+$$
 
 ## Independence 
 
-One of the big ones in statistics in general is the concept of independence. When things are independent, all the math simplifies a great deal, which is the main reason why a lot of the methods we will consider later on are based on the assumption that observations are independent of one another. 
+One of the big concepts in statistics in general is the concept of independence. When things are independent, all the math simplifies a great deal, which is the main reason why a lot of the methods we will consider later on are based on the assumption that observations are independent of one another. 
 
-Loosely speaking, two events are said to be *independent* if knowledge about one of the events does not provide any information about the other. I.e. if I ask you what the probabilitity of event A happening is before and after I tell you whether event B happened or not, your answers should be the same. 
+Loosely speaking, two events are said to be *independent* if knowledge about one of the events does not provide any information about the other. I.e. if I ask you what the probabilitity of event A before and after I tell you whether event B happened or not, your answers should be the same. 
 
-### Example: independent events {-}
+### Example: independent events 
 
 Event A: I walk around Madison one day, stop a random stranger, and ask: "are you taller than 6ft?"
 
@@ -152,7 +205,7 @@ Event B: I flip a coin, and it comes up tails.
 
 Events A and B are independent. The probability that a random person is taller than 6ft is not altered by the fact that a coin flip comes up tails. 
 
-### Example: dependent events {-}
+### Example: dependent events 
 
 Event A: I walk around Madison one day, stop a random stranger, and ask: "are you taller than 6ft?"
 
@@ -164,15 +217,62 @@ Events A and B are NOT independent. The probability a random stranger is taller 
 
 We will work with two definitions of independence. (Fortunately, they are equivalent, i.e. if one holds, the other holds.)
 
-```{definition, echo = TRUE}
+```{definition, label = 'ind1',echo = TRUE}
 Two events are independent if and only if $P(A \text{ and } B) = P(A) P(B)$.
 ```
 
-```{definition, echo = TRUE}
+```{definition, label = 'ind2', echo = TRUE}
 Two events are independent if and only if $P(A | B) = P(A)$ AND $P(B | A) = P(B)$. 
 ```
 
-### Example {-}
+### Example: are "depression severity = mild depression" and "marital status = divorced" independent?
 
+We will consider where the events $A = \text{subject is divorced}$ and $B = \text{subject is mildly depressed}$ are independent. For simplicity, we only consider subjects for which we know both marital status and depression severity, i.e. any subjects with missing data in one of the two variables have been removed.
+
+The contingency table:
+
+```{r}
+full_show %>% 
+  select(depression_severity, marital) %>% 
+  mutate(depression_severity = ifelse(depression_severity == '[2] Mild depression', 'mild depression', 'not mild depression'), 
+         marital = ifelse(marital == '[3] Divorced', 'Divorced', 'Not divorced')) %>% 
+  filter(complete.cases(.)) %>% 
+  janitor::tabyl(depression_severity, marital) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  pander::pander()
+```
+
+
+Now, we can test for independence in two different ways: either using definition \@ref(def:ind1) or definition \@ref(def:ind2). Let's do both.
+
+Using definition \@ref(def:ind1), we need to calculate three probabilities: 
+
+$$
+\begin{align}
+  P(A \text{ and } B) &= P(\text{divorced and mildly depressed}) = \frac{76}{2273} \approx `r round(76/2273, digits = 4)` \\
+  & \\
+  P(A) &= P(\text{divorced}) = \frac{295}{2273} \approx `r round(295/2273, digits = 4)` \\
+  & \\
+  P(B) &= P(\text{mild depression}) = \frac{453}{2273} \approx `r round(453/2273, digits = 4)`
+  
+\end{align}
+$$
+
+
+Since $P(A)\cdot P(B) \approx `r round(295/2273, digits = 4)` \cdot `r round(453/2273, digits = 4)` \approx `r round(453/2273, digits = 4)*round(295/2273, digits = 4)`$, which is NOT the same as $P(A \text{ and } B) = `r round(76/2273, digits = 4)`$, these two events are not independent of each other.
+
+Using definition \@ref(def:ind2), we need to calculate four probabilities. Two of them, $P(A)$ and $P(B)$, we already calculated. Let's calculate the remaining two:
+
+$$
+\begin{align}
+  P(A | B) &= P(\text{divorced} | \text{mildly depressed}) = \frac{76}{453} \approx `r round(76/453, digits = 4)`\\
+  & \\
+  P(B | A) &= P(\text{mildly depressed} | \text{divorced}) = \frac{76}{295} \approx `r round(76/295, digits = 4)`
+\end{align}
+$$
+
+As you can see, $P(A | B) \neq P(A)$ and $P(B | A) \neq P(B)$, so again, the conclusion is that the two events are not independent of one another. 
+
+---
 
 
