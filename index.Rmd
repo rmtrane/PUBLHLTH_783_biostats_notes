@@ -64,3 +64,18 @@ Now, I know that noone wants to do that -- who has the time to send an email jus
 | Spelling/grammatical error | 1 |
 | Math error | 2 |
 | Conceptual nonsense in either text or math | 3 |
+
+Current number of points obtained:
+
+```{r}
+point_system <- tibble(Type = c("Spelling/grammatical error", "Math error", "Conceptual nonsense in either text or math"), 
+                       Points = c(1,2,3))
+tribble(
+  ~Mistake, ~Points,
+  '"materiale" instead of "material', 1
+) %>% 
+  left_join(point_system) %>% 
+  select(Type, Mistake, Points) %>% 
+  pander::pander()
+```
+
