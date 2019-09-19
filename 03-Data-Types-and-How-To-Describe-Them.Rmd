@@ -2,7 +2,7 @@
 
 # Before we get started...
 
-This section is very minimal. I decided to go that route because 1) this is the "easiest" part of the materiale in the sense that there isn't a lot of things to really understand and think about, and 2) it is objectively speaking very, very, very boring... So, when you find my notes insufficient, take a look at Chapter 4 in [@ls]. 
+This section is very minimal. I decided to go that route because 1) this is the "easiest" part of the material in the sense that there isn't a lot of things to really understand and think about, and 2) it is objectively speaking very, very, very boring... So, when you find my notes insufficient, take a look at Chapter 4 in [@ls]. 
 
 **Learning Objectives**
 
