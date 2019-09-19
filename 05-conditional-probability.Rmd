@@ -275,4 +275,6 @@ As you can see, $P(A | B) \neq P(A)$ and $P(B | A) \neq P(B)$, so again, the con
 
 ---
 
+While definition \@ref(def:ind1) is very useful when doing math, it might not make a whole lot of sense intuitively. Definition \@ref(def:ind2), on the other hand, I would argue aligns with our intuitive understanding of independence. 
 
+Intuitively, two events, $A$ and $B$, are independent if $A$ provides no information of $B$, and vice versa. Now, if $A$ provides no information about $B$, then what would the difference between $P(B)$ and $P(B|A)$ be? Remember, the latter is basically the probability of $B$ if $A$ happens. But if $A$ and $B$ are independent, $A$ provides no information about $B$, so the probability of $B$ doesn't change if $A$ happens. 
