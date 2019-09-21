@@ -16,36 +16,225 @@ A third example is if we let $Z$ denote the diabetes status of a randomly chosen
 
 --- 
 
-As the example above was meant to illustrate, a random variable can really be anything you'd like. And whenever we talk about a random variable, we also talk about the probability of certain outcomes. If we can define a way to calculate probabilities of different outcomes of the random variable, we call this the *distribution* of the random variable. 
+As the example above was meant to illustrate, a random variable can really be anything you'd like. Whenever we talk about a random variable, we also talk about the probability of certain outcomes. If we can define a way to calculate probabilities of different outcomes of the random variable, we call this the *distribution* of the random variable. 
 
-Recall previously we talked about two kinds of variables: discrete and continuous variables. Likewise, we can consider both discrete and continuous *random* variables. Depending on the kind of random variable we're discussing, defining it's distribution is handled slightly differently. When we consider discrete random variables, its distribution is defined by specifying the probability of every single possible outcome. There are two things that are important to remember:
+Recall previously we talked about two kinds of variables: [discrete](#discrete) and [continuous](#continuous) variables. Likewise, we can consider both discrete and continuous *random* variables. Depending on the kind of random variable we're discussing, defining it's distribution is handled slightly differently. 
+
+### Discrete Distributions
+
+When we consider discrete random variables, its distribution is defined by specifying the probability of every single possible outcome. There are two things that are important to remember:
 
 1. all probabilities must be between $0$ and $1$,
 2. the sum of all probabilities must add up to $1$. 
 
 The second point above is important, and is sometimes super handy when trying to calculate probabilities of certain complicated events. The intuition behind it is pretty simple: something must happen. So the probability that something happens is $1$. 
 
-### Examples: discrete distributions 
+#### Examples:
 
-Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes. 
+Let $X$ be a disrete random variables that can attain the values $1,2,3,4,5$. 
 
-Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data. 
-
----
-
-The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve.
-
-### Examples: continuous distributions 
+One possible distribution $X$ could follow is given in the table below:
 
 ```{r}
-ggplot(full_show, 
+tibble(x = 1:5, `P(X = x)` = c(0.2, 0.5, 0.1, 0.05, 0.15)) %>% 
+  pander::pander()
+```
+
+Another possible distribution is 
+
+```{r}
+tibble(x = 1:5,
+       `P(X = x)` = c(0.9, 0.025, 0.025, 0.025, 0.025)) %>% 
+  pander::pander()
+```
+
+Note that in both cases 1) we have specified the probabilities of all possible outcomes, 2) all probabilities are between $0$ and $1$, and 3) the probabilities add up to $1$. 
+
+Using the latter distribution, we can calculate all sorts of probabilities: 
+
+$$
+\begin{align}
+  P(X = 3 \text{ or } X = 4) &= 0.025 + 0.025 = 0.05 \\
+  & \\
+  P(X < 3) &= 0.9 + 0.025 = 0.925 \\
+  & \\
+  P(3 < X < 5) &= 0.025 \\
+  & \\
+  P(X = 2 \text{ and } X = 5) &= 0
+\end{align}
+$$
+
+<!-- Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes.  -->
+
+<!-- Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data.  -->
+
+<!-- --- -->
+
+<!-- The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve. -->
+
+### Continuous distributions
+
+The distribution of a continuous variable is specified by a curve that covers all possible values of the variable. Where for a discrete distribution the sum of all probabilities must add up to $1$, for a continuous distribution the area under the curve must be $1$.
+
+Recall that the distribution of a random variable allows us to calculate probabilities of any possible events related to the random variable. 
+
+There are two questions we need to answer:
+
+1. How do we figure out what the curve looks like if we don't know the distributions?
+2. How do we use the curve to calculate probabilities?
+
+Let's start with the first question.
+
+```{r}
+Y <- Exponential(rate = 2)
+
+sample_of_Y <- tibble(x = random(Y, n = 1000000)) %>% 
+  mutate(i = row_number()) 
+
+
+
+hist_of_Y <- function(n_rows = 10, add_density = FALSE){
+  n_rows <- min(n_rows, 1000000)
+  tmp <- sample_of_Y %>% 
+    filter(i <= n_rows) %>% 
+    ggplot(aes(x = x)) + 
+      geom_histogram(aes(y = ..density..),
+                     binwidth = (max(sample_of_Y$x)/n_rows)^(1/2))
+  
+  if(add_density)
+    tmp <- tmp + 
+      geom_density()
+  
+  tmp
+}
+
+frames <- c(10,
+            seq(from = 100, to = 1000, by = 100),
+            seq(from = 1000, to = 100000, by = 10000),
+            seq(from = 100000, to = 1000000, by = 100000))
+
+if (FALSE){
+  for (i in frames){
+    print(i)
+    ggsave(plot = hist_of_Y(i) + 
+             labs(title = paste("Number of observations:", format(i, scientific = F))) + 
+             theme(plot.title = element_text(hjust = 1)),
+           filename = paste0("histogram_of_exponential/", str_pad(format(i, scientific = F), width = 7, side = 'left', pad = '0'), ".jpg"))
+  }
+
+  system("ffmpeg -framerate 3 -pattern_type glob -i 'histogram_of_exponential/*.jpg' -c:v libx264 exponential_distr_animation.mp4 -y")
+}
+```
+
+Remember how we interpret probabilities per definition \@ref(def:prob-def-2) ("the long run proportion of times an event happens"), and how we noticed how proportions could be found using a [histogram](#histogram) (as the area of bars corresponding to the event divided by the total area). To find the distribution of a random variable, we would (if we could...) in some sense combine the two: observe the outcome of the random variable many, many, many times, then create a histogram with very narrow bars. 
+
+The animation below illustrates this. Here we pretend that we observe the outcome of a random variable $X$ many, many times. We continuously draw a histogram of the values we've seen so far. Notice how as we get more observations, we make the bars more and more narrow. In the end, it is not hard to imagine a curve where we once had bars. This curve is what is formally known as the *density* of the distribution of the random variable $X$. 
+
+<video controls>
+  <source src="exponential_distr_animation.mp4" type="video/mp4">
+</video>
+
+So we have now seen how we can, at least theoretically, find the distribution of a random variable. You can imagine doing the same thing with real data, except we cannot observe the outcome as many times as we'd like. Below is the distribution of the height of participants in the show data. 
+
+
+```{r}
+height_hist <- ggplot(full_show %>% filter(!is.na(height)), 
        aes(x = height)) + 
   geom_histogram(aes(y = ..density..),
-                 bins = 35) + 
-  stat_function(fun = dnorm, 
-                args = list(mean = mean(full_show$height, na.rm = T),
-                            sd = sd(full_show$height, na.rm = T)))
+                 bins = 45)
+
+plotly::ggplotly(height_hist)
 ```
+
+As we go along, the line between the "distribution" of a random variable, and the "histogram" of the observations will probably be blurred. That's okay. As we just saw, the histogram turns into the distribution with enough observations. In many ways, the histogram is our best guess to the distribution of a random variable (unless we're willing to make some assumption, as we'll see later). This is exactly why I like the histogram to display continuous data -- when you know the distribution, you know everything, and the histogram is the closest we can get to the distribution!
+
+So how do we use this information to calculate probabilities? Areas under the curve. Let's pretend the height of SHOW participants follows the distribution depicted below:
+
+```{r}
+height_pdf <- ggplot(data = full_show %>% 
+         filter(!is.na(height)) %>% 
+         summarize_at(vars('height'), 
+                      .funs = funs(mean, sd, min, max)) %>% 
+         mutate(height = map2(min, max, function(x,y){
+           seq(x, y, by = 0.01)
+         })) %>% 
+         unnest(cols = height),
+       aes(x = height, y = dnorm(x = height, mean = mean, sd = sd))) + 
+  geom_line() + 
+  labs(y = "Density")
+
+height_pdf
+```
+
+This seems to be an okay estimate for a distribution of the heights (compare it to the histogram above). Say we want to find the probability that $X$ the height of a randomly chosen participant is between $178$ cm and $190$ cm. We would do that by finding the area under the curve above. 
+
+```{r}
+height_pdf + 
+  geom_ribbon(data = tibble(height = seq(178, 190, by = 0.01)),
+              inherit.aes = FALSE,
+              aes(x = height, 
+                  ymin = 0,
+                  ymax = dnorm(height, 
+                               mean = mean(full_show$height, na.rm = T),
+                               sd = sd(full_show$height, na.rm = T))))
+```
+
+This is not easy to do for us mortals (in this particular case, no closed form for the area exists!). Fortunately, some very smart people came up with some very smart ways to do this numerically -- that is, approximate the area with great precision. We'll simply let computers do this for us. In this particular case, the area is `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)`, or just about `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)*100`\%. 
+
+(**NOTE**: the rest of this section is not crucial for us, but is included for completeness. DO NOT panic if this seems super weird.)
+
+There is one more thing we need to wrap our heads around: the probability of a continuous random variable being any single number is $0$, no matter what number you choose. This might seem a weird -- how can the probability of observing a height of 6ft be $0$ when we actually observe people that are 6ft tall?! I'll try to provide to explanations: an "intuitive" explanation, and one based on math. Run with whichever makes more sense to you (or just take my word for it!)
+
+Remember when we first introduced the notion of continuous variables. We said that a [continuous variable](#continuous) is a variable that can take an infinite (and actually uncountable) number of values. In the case of height, we also argued that even though it can technically be any value between 0ft and [8ft 11.1in](https://www.guinnessworldrecords.com/world-records/tallest-man-ever), we won't ever be able to measure it with $100\%$ accuracy. So even though it *seems* like we observe an individual that is 6ft tall that is not the exact height of said individual. Now, we could measure their height with greater accuracy, but no matter how accurate our tools are, we never get $100\%$ accuracy. 
+
+From a mathematical point of view, consider a random variable $X$ that follows the following distribution:
+
+```{r}
+Z1 <- Normal(mu = -4, sigma = 3)
+Z2 <- Normal(mu = 2, sigma = 1)
+
+pdf_Z <- function(x) 0.5*pdf(Z1, x) + 0.5*pdf(Z2, x)
+cdf_Z <- function(x) 0.5*cdf(Z1, x) + 0.5*cdf(Z2, x)
+
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  labs(x = "X", y = "Density") 
+```
+
+
+Say we want to find the probability of $X$ being between $-1$ and $2$. We would find that as the shaded area below, which turns out to be `r round(cdf_Z(2) - cdf_Z(-1), digits = 3)`. 
+
+```{r}
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  geom_ribbon(data = tibble(x = seq(-1, 2, by = 0.01)) %>% 
+                mutate(z = pdf_Z(x)),
+              aes(ymin = 0, ymax = z)) + 
+  labs(x = "X", y = "Density") 
+```
+
+
+Now imagine we want to find the area of $X$ being between $0$ and $2$. This would be the shaded area below, which is `r round(cdf_Z(2) - cdf_Z(0), digits = 3)`
+
+```{r}
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  geom_ribbon(data = tibble(x = seq(0, 2, by = 0.01)) %>% 
+                mutate(z = pdf_Z(x)),
+              aes(ymin = 0, ymax = z)) + 
+  labs(x = "X", y = "Density") 
+```
+
+How about the area between $1$ and $2$? This is `r round(cdf_Z(2) - cdf_Z(1), digits = 3)`. Between $1.5$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.5), digits = 3)`. Between $1.9$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.9), digits = 3)`. Between $1.995$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.995), digits = 3)`. As you can see, the closer we get to the "interval" $2$ to $2$, the smaller the area. In fact, if you take the limit, the area is $0$. 
 
 ## Properties of Random Variables
 
@@ -53,11 +242,9 @@ When we talk about random variables, there is a great deal of uncertainty involv
 
 These two concepts can be a bit hard to wrap ones head around at first, but as we talk about them over and over agian, hopefully you will realize that they are not as abstract as they might first seem.
 
-### Expected Value of Random Variables 
+### Expected Values of Random Variables 
 
 The expected value of a random variable is, intuitively, the long run average. I.e. if we repeat an experiment **an infinite number of times**, we can determine the expected value of a random variable as the average of all the realizations of said random variable. As an example, if we consider the random variable $X$ that is $0$ if a coin flip comes up heads, and $1$ if it comes up tails, we can imagine flipping a coin an infinite number of times, and calculating the average. The result would be that the expected value of $X$ is $0.5$. We write $E(X) = 0.5$. 
-
-Since the expected value can be thought of as the long run average, it is in some sense the value that the outcomes of the random variable are going to be centered around. 
 
 Note: the expected value is also often referred to as the *mean* value. 
 
@@ -66,7 +253,7 @@ For any discrete random variable where we know the distribution, we can find the
 
 #### Example: expected value of discrete random variable 
 
-Let $X$ be a discrete random variable the can take the values $1,2,6$, and $12$. Let the probabilities of each outcome be as follows:
+Let $X$ be a discrete random variable that can take the values $1,2,6$, and $12$. Let the probabilities of each outcome be as follows:
 
 ```{r}
 mean_discrete_example <- tibble(x = c(1,2,6,12), `P(X = x)` = c(0.2, 0.1, 0.6, 0.1))
@@ -195,7 +382,7 @@ Let's think for a second about what possible values $Y$ can take. If all $n$ Ber
 
 Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
 
-```{r binomial_example, cache = TRUE}
+```{r binomial_example, eval = FALSE, include = FALSE}
 binom_n <- 50000
 binom_n_print <- format(binom_n, scientific = F)
 
@@ -207,11 +394,16 @@ binom_outcomes <- tibble(i = 1:binom_n,
                                          paste(collapse = ",")),
                          Y = map_dbl(Numeric, sum)) %>% 
   select(i, HTs, Numeric, Y)
+
+readr::write_rds(binom_outcomes, path = "binom_outcomes.Rds")
 ```
 
 Since it's impossible to flip $n$ coins (for what is $n$?), we have to pick a real integer. Let's pick $`r n`$. Similarly, it's impossible to flip $`r n`$ coins an infinite number of times, so let's just do it a bunch of times (i.e. $`r `$). What we are about to do is repeat an experiment (flip $`r n`$ coins) many, many ($`r binom_n_print`$) times. The first time we perform this experiment, we see `r binom_outcomes$HTs[1]`. When we translate this to $0$ and $1$, it looks like `r paste(binom_outcomes$Numeric[[1]], collapse = ",")`. So, the value of the binomial variable $Y$ is `r binom_outcomes$Y[1]`, since this is the number of heads. Rinse and repeat. The results of all $`r n`$ experiments are shown in the table below.
 
-```{r cache = TRUE}
+```{r}
+if(!exists("binom_outcomes"))
+   binom_outcomes <- readr::read_rds("binom_outcomes.Rds")
+
 DT::datatable(binom_outcomes %>% select(-i))
 ```
 
