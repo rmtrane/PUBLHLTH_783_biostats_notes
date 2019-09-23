@@ -1,12 +1,13 @@
 # Estimators and their distributions
 
 ```{r}
-knitr::opts_chunk$set(cache = FALSE)
+knitr::opts_chunk$set(cache = TRUE)
+options(DT.options = list(scrollX = TRUE))
 ```
 
 In [Part I](#discrete), we discussed how we can describe and summarize collected data. Different research questions lead you to collect different types of data, and depending on the type of data, there are different ways to present it. 
 
-So far in this part, we've talked about these super abstract concepts, such as probability [random variables](#random-variables) and [distributions](#a-few-important-distributions) that at first seem have nothing to do with the real world. So why did we spent so much time talking about these things? 
+So far in this part, we've talked about these super abstract concepts, such as [probabilities](#what-is-probability), [random variables](#random-variables) and [distributions](#a-few-important-distributions) that at first seem to have nothing to do with the real world. So why even bother?!
 
 In this section, we will see how random variables and distributions can help us answer questions about the data we collect in the real world. With a few assumptions we will be able to talk about probabilities of real world events, and later on we will use these probabilities to answer questions such as "is it likely that the mean heights of adult men and women in the US are the same?" 
 
@@ -16,20 +17,53 @@ Recall the setup: on one hand, we have a population that we are interested in. I
 
 What we do instead is we get a sample of individuals from the population. We do this in a way that ensures that this sample is representative of the population, meaning things we might observe in the sample are close to what we would observe in the population, if we had the chance. 
 
-After collecting a representative sample, we think for a second about exactly what *parameter* of the population is of interest to us, and then we pick "something" we can actually calculate based on our sample that is close to the parameter of interest. This "something" is what we call the *estimator* -- it is our best guess of what the parameter is based on a sample.
+<!-- ```{r, engine='tikz', echo = FALSE} -->
+<!-- \begin{tikzpicture} -->
+<!--   \node[align=center] at (0,11) {\huge \bf Population}; -->
+<!--   \draw [thick] (0,0) to [out=0, in=-90] (4.5,4) -->
+<!--                       to [out=90,in=-90] (3.5,8) -->
+<!--                       to [out=90,in=0] (2,10) -->
+<!--                       to [out=180,in=0] (0,9) -->
+<!--                       to [out=180,in=0] (-3,10) -->
+<!--                       to [out=180,in=90] (-5,7) -->
+<!--                       to [out=-90,in=90] (-4,5) -->
+<!--                       to [out=-90,in=90] (-5,2) -->
+<!--                       to [out=-90,in=180] (0,0); -->
 
-An important thing to realize here is that **an estimator is a random varaible**. The specific value of it depends on the sample we get, which by nature is random. Therefore, repeating the experiment leads to a different value of the estimator. The hope is that the estimator doesn't vary too much when repeating the experiment, and that the estimator is actually close to the true value of the population parameter. 
+<!--   \node[align=center] at (6.25,9) {\large SRS}; -->
+<!--   \draw [thick,->] (4,8) to [out=25,in=155] (8.5,8); -->
+
+<!--   \node[align=center] at (10,11) {\huge \bf Sample}; -->
+<!--   \draw [thick] (10,8.5) to [out=0,in=135] (11,8) -->
+<!--                          to [out=-45,in=100] (12,7) -->
+<!--                          to [out=-75,in=90] (12.5,5) -->
+<!--                          to [out=-105,in=0] (11.25,4) -->
+<!--                          to [out=180,in=0] (9.5,4.25) -->
+<!--                          to [out=180,in=0] (8.5,4) -->
+<!--                          to [out=180,in=-90] (8,4.5) -->
+<!--                          to [out=90,in=-90] (8.25,5.25) -->
+<!--                          to [out=90,in=-165] (8.5,7.5) -->
+<!--                          to [out=0,in=180] (10,8.5); -->
+
+<!-- \end{tikzpicture} -->
+<!-- ``` -->
+
+After collecting a representative sample, we think for a second about what *parameter* of the population is of interest to us, and then we pick "something" we can actually calculate based on our sample that is close to the parameter of interest. This "something" is what we call the *estimator* -- it is our best guess of what the parameter is based on a sample. More often than not, the estimator we will use is very natural.
+
+An important thing to realize here is that **an estimator is a random variable**. The specific value of it depends on the sample we get, which by nature is random. Therefore, repeating the experiment leads to a different value of the estimator. The hope is that the estimator doesn't vary too much when repeating the experiment, and that the estimator is actually close to the true value of the population parameter. 
 
 Since an estimator is a random variable, we can talk about the distribution of an estimator. This plays a crucial role when creating confidence intervals and testing hypotheses, as we will see later on in the course. To find the distribution of an estimator, one can take two routes: 
 
 1. perform the experiment over and over and over and over again, each time calculating the observed value of the estimator, then drawing a histogram, which in the end will give you the distribution of the estimator,
 2. make some assumptions, do some math.
 
-The first strategy, as stated here, is not super useful -- we can't possibly afford to repeat every single experiment we do enough times to get enough observed values of the estimator to actually draw a histogram that provides any insights. However, we can do this for made up data, and it turns out that we can tweak this strategy a tiny bit to make it not only useful in practice, but super powerful. 
+The first strategy, as stated here, is not super useful -- we can't possibly afford to repeat a single experiment enough times to get enough observed values of the estimator to actually draw a histogram that provides any insight. However, we can do this for made up data, or using a big data set as a population. As a bonus, this strategy can actually be tweaked a tiny bit to make it not only useful in practice, but super powerful.
 
-The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(properties-of-random-variables) and THE coolest theorem we see in this class, namely the Central Limit Theorem. 
+The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(properties-of-random-variables) and THE coolest theorem we will see in this class, namely the Central Limit Theorem. 
 
-The rest of this section will proceed as follows: first, we'll see a few examples of common estimators. Then, we will explore the distributions of those estimators through simulations and using the SHOW data set as our population. Then we will briefly discuss how to adjust strategy 1 above to make it useful in a practical setting, and finally we will take a look at the Central Limit Theorem, and how we can apply that to back up the distributions we found for different estimators through simulations.
+The rest of this section will proceed as follows: first, we'll see a few examples of common estimators. Then, we will explore the distributions of those estimators through simulations where we'll use the SHOW data set as our population. Then we will take a look at the Central Limit Theorem, and how we can apply that to back up the distributions we found for different estimators through simulations.
+
+Before we get started, a small comment on notation. Going forward, we will use greek letters to denote the true parameters (i.e. the values in the population that we will never really know), and latin letters to denote 
 
 ## Common Estimators
 
@@ -76,7 +110,7 @@ Say I ask you to estimate the mean height of the subjects in the SHOW population
 samples %>% filter(i == 1) %>% 
   left_join(full_show) %>% 
   select(-i) %>% 
-  knitr::kable()
+  DT::datatable()
 ```
 
 
@@ -96,17 +130,17 @@ ggplot(show_heights, aes(x = height)) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
 ```
 
-Now, the first sample we got gave us an average of `r height_averages %>% filter(i == 1) %>% pull(average)`. We resample from the population, and this time end up with this sample:
+Now, the first sample we got gave us an average of `r height_averages %>% filter(i == 1) %>% pull(average)`. We sample from the population one more time, and this time end up with this sample:
 
 ```{r}
 samples %>% 
   filter(i == 2) %>% 
   select(-i) %>% 
   left_join(full_show) %>% 
-  knitr::kable()
+  DT::datatable()
 ```
 
-As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
+As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average) %>% round(digits=2)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
 
 ```{r height-averages-histogram, fig.cap = "Distribution of average heights."}
 height_averages_histogram <- height_averages %>% 
@@ -171,7 +205,7 @@ samples_dep_scores %>%
   filter(i == 1) %>% 
   left_join(full_show) %>% 
   select(-i) %>% 
-  knitr::kable()
+  DT::datatable()
 ```
 
 The average depression score in this sample is `r dep_score_averages %>% filter(i == 1) %>% pull(average)`. Rinse and repeat `r N` times. 
@@ -318,7 +352,7 @@ samples_RR %>%
   mutate(gender = if_else(gender == 1, "[1] Male", "[2] Female")) %>% 
   left_join(full_show) %>% 
   select(-i) %>% 
-  knitr::kable()
+  DT::datatable()
 ```
 
 To find the relative risk, we create the 2 by 2 contingency table for `gender` and `depression_severity_binary`:
@@ -329,7 +363,7 @@ samples_RR %>%
   mutate(gender = if_else(gender == 0, 'Female', 'Male')) %>% 
   janitor::tabyl(depression_severity_binary, gender) %>% 
   janitor::adorn_totals(where = c('row', 'col')) %>% 
-  knitr::kable()
+  pander::pander()
 ```
 
 The relative risk is then calculated as 

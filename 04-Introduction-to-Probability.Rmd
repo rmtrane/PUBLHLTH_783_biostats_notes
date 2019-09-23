@@ -1,4 +1,4 @@
-# (PART) Introduction to Probability {-}
+# (PART) Introduction to Probability & Random Variables {-}
 
 Loosely based on @ls chapter 5.
 
