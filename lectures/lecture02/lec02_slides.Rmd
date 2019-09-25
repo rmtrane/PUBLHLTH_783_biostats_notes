@@ -1,0 +1,89 @@
+---
+title: "Biostats Lecture 1: Descriptive Statistics"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+framingham <- read_csv("../../data/Framingham/framingham.csv")
+
+```
+
+# Learning Objectives
+
+1. Understand why descriptive statistics is important, and useful
+
+2. Know the difference between discrete and continuous variables/data
+
+3. Have some ideas of which summaries and figures are appropriate for different types of data
+
+
+---
+
+# Descriptive Statistics
+
+* What: the art of describing data with few important measures ('summary statistics')
+
+* Why: 
+    - know your population!!
+    - explore your data
+
+* How: try to get an idea of the distributions of variables included 
+--
+
+    - what's a distribution?!
+    - what's a variable?!
+
+???
+
+* What: when doing big studies, you collect lots of data. Take the essense of the data, summarize it in a few summary statistics, present it to the audience.
+
+* Why: 
+    - the sample is supposed to be representative of the population. Describe the sample to know what population you MIGHT be able to generalize to
+    - often find things -- data entry errors, potential confounding variables, potential associations
+
+* How: use numbers and especially figures to describe the distribution
+    - what's a distribution? Next week
+    - what's a variable -- today.
+
+---
+
+# Data Types
+
+Two general data types: 
+
+* Discrete data
+    - categorical
+        - no natural ordering
+        - examples: sex, race, 
+    - ordinal
+    - summarized by 
+        - frequency counts
+        - relative frequencies
+        
+* Continuous data
+    - numerical
+        - examples: age, height, weight, BMI, proportions, etc.
+    - infinite (uncountable, actually...) number of potential values
+    - summarized by
+        - location measures
+        - spread/variation measures
+
+---
+
+# Examples
