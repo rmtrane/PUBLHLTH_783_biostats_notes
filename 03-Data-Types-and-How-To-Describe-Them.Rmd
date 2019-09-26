@@ -266,7 +266,7 @@ scatter_height_weight <- full_show %>%
 
 ggsave(scatter_height_weight, filename = "figures/scatter_height_weight.png")
 
-knitr::include_graphics("figures/scatter_height_weight")
+knitr::include_graphics("figures/scatter_height_weight.png")
 ```
 
 
