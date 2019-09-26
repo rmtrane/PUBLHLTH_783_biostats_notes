@@ -242,9 +242,7 @@ That was two days ago, though. Things change... I guess.
 
 --
 
-Before using a pie chart, read [this](https://www.richardhollins.com/blog/why-pie-charts-suck/), [this](https://policyviz.com/2018/01/11/fk-it-lets-use-pie-charts/), and [this](https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart).
-
-[This](https://twitter.com/maxcroser/status/857389434756505600) Twitter thread is also great!
+Before using a pie chart, read [this](https://www.richardhollins.com/blog/why-pie-charts-suck/), [this](https://policyviz.com/2018/01/11/fk-it-lets-use-pie-charts/), and [this](https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart). [This](https://twitter.com/maxcroser/status/857389434756505600) Twitter thread is also great!
 
 ---
 

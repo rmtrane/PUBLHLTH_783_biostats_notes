@@ -19,7 +19,7 @@ This section is very minimal. I decided to go that route because 1) this is the 
 
 Often when conducting an experiment, what we are actually interested in is using the sample we obtain to say something about the general population. If we, for example, enroll 200 patients in a study to find out if a new drug works, we're not *really* interested in whether or not it works for those 200 patients specifically, but more so if it works for any individual from the population in general. With that in mind, the whole concept of descriptive statistics might not seem very (1) exciting, (2) useful, or (3) necessary. While (1) is highly subjective, (2) very much so depends on the specific situation, there is little question that it is in fact necessary. 
 
-Recall our general setup for any statistical analysis: we have some question about some feature of a population. To answer this question, we go get a sample of the popoulation. If this is a good sample, the characteristics of this sample mimic those of the general population. If this is the case, then the hope is that we can draw conclusions about the sample, and generalize them to the general population. Conversely, if that is *not* the case, then no matter how convincing the evidence we find in the sample is for or against our hypotheses, it tells us nothing about the general popoulation. 
+Recall our general setup for any statistical analysis: we have some question about some feature of a population. To answer this question, we go get a sample of the population. If this is a good sample, the characteristics of this sample mimic those of the general population. If this is the case, then the hope is that we can draw conclusions about the sample, and generalize them to the general population. Conversely, if that is *not* the case, then no matter how convincing the evidence we find in the sample is for or against our hypotheses, it tells us nothing about the general population. 
 
 ```{r, general-population, echo = FALSE, engine = 'tikz', caption = "Recall the general setup: a sample is drawn from the population of interest."}
 \begin{tikzpicture}
@@ -56,7 +56,7 @@ So how do we make sure the sample is representative of the population? The first
 
 The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See @liu_womens_2016 for a more thorough discussion of the exclusion of women in particular.] For this particular reason, producing descriptive statistics is often the first step in any data analysis.
 
-The rest of this section will go through different types of data, and show how we in each case can describe (or summarize, if you will) the specific type of data. 
+The rest of this section will go through different types of data, and show how we, in each case, can describe (or summarize, if you will) the specific type of data. 
 
 In general, when we talk about data we often refer to *variables*. Variables are simply (and very vaguely) *things we measure*. You will see examples which hopefully helps understand exactly what is meant by a variable. 
 
