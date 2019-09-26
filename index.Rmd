@@ -68,21 +68,21 @@ Now, I know that noone wants to do that -- who has the time to send an email jus
 
 <!-- Current number of points obtained: -->
 
-<!-- ```{r} -->
-<!-- point_system <- tibble(Type = c("Spelling/grammatical error", "Math error", "Conceptual nonsense in either text or math"),  -->
-<!--                        Points = c(1,2,3)) -->
-<!-- tribble( -->
-<!--   ~Mistake, ~Points, -->
-<!--   '"materiale" instead of "material', 1, -->
-<!--   '"popoulation" instead of "population"', 1, -->
-<!--   '"popoulation" instead of "population"', 1, -->
-<!--   'missing comma: "show how we, in each case, ..."', 1, -->
-<!--   'missing comma: "In general, when we talk about data, ...', 1 -->
-<!-- ) %>%  -->
-<!--   left_join(point_system) %>%  -->
-<!--   select(Type, Mistake, Points) %>%  -->
-<!--   janitor::as_tabyl() %>%  -->
-<!--   janitor::adorn_totals() %>%  -->
-<!--   pander::pander() -->
-<!-- ``` -->
+```{r include=FALSE, eval=FALSE}
+point_system <- tibble(Type = c("Spelling/grammatical error", "Math error", "Conceptual nonsense in either text or math"),
+                       Points = c(1,2,3))
+tribble(
+  ~Mistake, ~Points,
+  '"materiale" instead of "material', 1,
+  '"popoulation" instead of "population"', 1,
+  '"popoulation" instead of "population"', 1,
+  'missing comma: "show how we, in each case, ..."', 1,
+  'missing comma: "In general, when we talk about data, ...', 1
+) %>%
+  left_join(point_system) %>%
+  select(Type, Mistake, Points) %>%
+  janitor::as_tabyl() %>%
+  janitor::adorn_totals() %>%
+  pander::pander()
+```
 
