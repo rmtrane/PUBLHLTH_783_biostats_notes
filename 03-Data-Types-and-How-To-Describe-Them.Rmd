@@ -264,7 +264,9 @@ scatter_height_weight <- full_show %>%
   ggplot(aes(x = height, y = weight)) + 
     geom_point(alpha = 0.3)
 
-scatter_height_weight
+ggsave(scatter_height_weight, filename = "figures/scatter_height_weight.png")
+
+knitr::include_graphics("figures/scatter_height_weight")
 ```
 
 
@@ -275,7 +277,9 @@ scatter_gender_height <- full_show %>%
   ggplot(aes(x = gender, y = height)) + 
     geom_point(alpha = 0.5)
 
-scatter_gender_height
+ggsave(scatter_gender_height, filename = "figures/scatter_gender_height.png")
+
+knitr::include_graphics("figures/scatter_gender_height.png")
 ```
 
 In this case, it can be beneficial to add a bit of jitter to the plot in the direction of the categorical variable.
@@ -310,7 +314,7 @@ plotly::ggplotly(boxplot_gender_height)
 You can use the figure below to decipher the box plot:
 
 ```{r boxplot_explanation}
-ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
+boxplot_explanation <- ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
        aes(x = 1, y = y)) + 
   geom_boxplot(width = 0.5) + 
   geom_text(data = data.frame(y = c(1.5,5,10,13,15,20,24),
@@ -330,6 +334,10 @@ ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24))
   scale_x_continuous("", limits = c(0,2.2)) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank())
+
+ggsave(boxplot_explanation, filename = "figures/boxplot_explanation.png")
+
+knitr::include_graphics("figures/boxplot_explanation.png")
 ```
 
 As you see on the boxplots of the SHOW data, it is a great tool to visualize continuous data when you have a lot of it. In a simple figure we can see that 
