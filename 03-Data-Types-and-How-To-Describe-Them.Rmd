@@ -285,7 +285,9 @@ jitter_gender_height <- full_show %>%
   ggplot(aes(x = gender, y = height)) + 
     geom_jitter(height = 0, width = 0.3, alpha = 0.5)
 
-jitter_gender_height
+ggsave(jitter_gender_height, filename = "figures/jitter_gender_height.png")
+
+knitr::include_graphics('figures/jitter_gender_height.png')
 ```
 
 Even with a bit of jitter, it might be really hard to make anything of a scatter plot in this case, simply because we have "too much" data. In such a case, a boxplot might be a better choice. 
