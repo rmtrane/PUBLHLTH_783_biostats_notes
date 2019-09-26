@@ -307,7 +307,7 @@ plotly::ggplotly(boxplot_gender_height)
 
 You can use the figure below to decipher the box plot:
 
-```{r}
+```{r results = 'asis'}
 ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
        aes(x = 1, y = y)) + 
   geom_boxplot(width = 0.5) + 
