@@ -1,0 +1,90 @@
+---
+title: "Biostats Lecture 3: Introduction to Probability"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ration: '16:9'
+      navigation:
+        scroll: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, dpi=300)
+
+options(DT.options = list(scrollX = TRUE))
+
+library(tidyverse)
+library(viridis)
+
+## Set theme for plots (only works when you load ggplot2, which can be done using library(ggplot2) OR with library(tidyverse))
+theme_set(theme_bw())
+
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+
+```
+
+# Learning Objectives
+
+1.
+
+---
+layout: true
+
+# Introduction to Probability
+
+---
+class: center
+
+## Motivational Spiel
+
+---
+
+## Definitions
+
+We talk about probabilities in regards to outcomes of an experiment. 
+
+Two definitions. We will mainly be working with the second, but the first is included for completeness. 
+
+1. If all outcomes are equally likely:
+$$
+  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}
+$$
+2. In general: the long run proportion of times the event occurs if the experiment is repeated an *infinite number of times*
+
+
+---
+
+## Example: roll a die
+
+Let $A = \{\text{roll is a 4}\}$, $B = \{\text{roll is a 1 or 5}\}$, and $C = \{\text{roll is even}\}$.
+
+What is 
+
+- $P(A)$, $P(B)$, and $P(C)$?
+
+--
+
+- $P(A \text{ OR } B)$, and $P(A \text{ OR } C)$? 
+
+--
+
+- $P(B \text{ and } C)$?
