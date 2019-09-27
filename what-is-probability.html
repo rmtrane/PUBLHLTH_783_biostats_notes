@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 What is “probability”? | Biostatistics in Public Health</title>
-  <meta name="description" content="5 What is “probability”? | Biostatistics in Public Health" />
+  <title>8 What is “probability”? | Biostatistics in Public Health</title>
+  <meta name="description" content="8 What is “probability”? | Biostatistics in Public Health" />
   <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 What is “probability”? | Biostatistics in Public Health" />
+  <meta property="og:title" content="8 What is “probability”? | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 What is “probability”? | Biostatistics in Public Health" />
+  <meta name="twitter:title" content="8 What is “probability”? | Biostatistics in Public Health" />
   
   
   
@@ -47,13 +47,17 @@
 
 
 <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.8/datatables.js"></script>
-<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
 
 
 
@@ -73,85 +77,71 @@
 <li><a href="./"><b>Public Health 783: Biostatistics</b></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome!</a></li>
-<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction to Biostatistics</a></li>
-<li class="part"><span><b>I Data Types, Descriptives, and Summary Statistics</b></span></li>
-<li class="chapter" data-level="2" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>2</b> Discrete Data</a><ul>
-<li class="chapter" data-level="2.1" data-path="discrete.html"><a href="discrete.html#categorical-data"><i class="fa fa-check"></i><b>2.1</b> Categorical data</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>2.1.1</b> Examples – categorical data</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bounty-program"><i class="fa fa-check"></i>Bounty Program</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>2.2</b> How to describe categorical data</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>2.2.1</b> Examples</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-biostatistics"><i class="fa fa-check"></i><b>2.1</b> What is Biostatistics?</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#biostatistics-in-publhlth-783"><i class="fa fa-check"></i><b>2.2</b> Biostatistics in PUBLHLTH 783</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>2.3</b> Ordinal Data</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>2.3.1</b> Examples</a></li>
+<li class="part"><span><b>I Data Types and Descriptive Statistics</b></span></li>
+<li class="chapter" data-level="3" data-path="before-we-get-started.html"><a href="before-we-get-started.html"><i class="fa fa-check"></i><b>3</b> Before we get started…</a></li>
+<li class="chapter" data-level="4" data-path="why-descriptive-statistics.html"><a href="why-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Why Descriptive Statistics?</a></li>
+<li class="chapter" data-level="5" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>5</b> Discrete Data</a><ul>
+<li class="chapter" data-level="5.1" data-path="discrete.html"><a href="discrete.html#categorical"><i class="fa fa-check"></i><b>5.1</b> Categorical data</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>5.1.1</b> Examples – categorical data</a></li>
+<li class="chapter" data-level="5.1.2" data-path="discrete.html"><a href="discrete.html#binarydichotomous-data"><i class="fa fa-check"></i><b>5.1.2</b> Binary/Dichotomous Data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>2.4</b> How to visualize discrete data</a><ul>
-<li class="chapter" data-level="2.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>2.4.1</b> Bar Charts</a></li>
+<li class="chapter" data-level="5.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>5.2</b> How to describe categorical data</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>5.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>5.3</b> Ordinal Data</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>5.3.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>5.4</b> How to visualize discrete data</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>5.4.1</b> Bar Charts</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>3</b> Continuous</a><ul>
-<li class="chapter" data-level="3.1" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>3.1</b> How to describe continuous data</a></li>
-<li class="chapter" data-level="3.2" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>3.2</b> How to visualize continuous data</a></li>
+<li class="chapter" data-level="6" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>6</b> Continuous Data</a><ul>
+<li class="chapter" data-level="6.1" data-path="continuous.html"><a href="continuous.html#examples-2"><i class="fa fa-check"></i><b>6.1</b> Examples</a></li>
+<li class="chapter" data-level="6.2" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>6.2</b> How to describe continuous data</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="continuous.html"><a href="continuous.html#location"><i class="fa fa-check"></i><b>6.2.1</b> Location</a></li>
+<li class="chapter" data-level="6.2.2" data-path="continuous.html"><a href="continuous.html#spread"><i class="fa fa-check"></i><b>6.2.2</b> Spread</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>4</b> Grey areas</a></li>
+<li class="chapter" data-level="6.3" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>6.3</b> How to visualize continuous data</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="continuous.html"><a href="continuous.html#scatter-plots"><i class="fa fa-check"></i><b>6.3.1</b> Scatter Plots</a></li>
+<li class="chapter" data-level="6.3.2" data-path="continuous.html"><a href="continuous.html#boxplots"><i class="fa fa-check"></i><b>6.3.2</b> Boxplots</a></li>
+<li class="chapter" data-level="6.3.3" data-path="continuous.html"><a href="continuous.html#histogram"><i class="fa fa-check"></i><b>6.3.3</b> Histogram</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>7</b> Grey areas</a></li>
 <li class="part"><span><b>II Introduction to Probability</b></span></li>
-<li class="chapter" data-level="5" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>5</b> What is “probability”?</a><ul>
-<li class="chapter" data-level="5.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>5.1</b> Definitions</a><ul>
-<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip"><i class="fa fa-check"></i>Example: coin flip</a></li>
-<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die"><i class="fa fa-check"></i>Example: roll of a die</a></li>
-<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i>Example: disease status</a></li>
-<li class="chapter" data-level="" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i>Example: coin flip (revisited)</a></li>
-<li class="chapter" data-level="5.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die-revisited"><i class="fa fa-check"></i><b>5.1.1</b> Example: roll of a die (revisited)</a></li>
-<li class="chapter" data-level="5.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>5.1.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="8" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>8</b> What is “probability”?</a><ul>
+<li class="chapter" data-level="8.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>8.1</b> Definitions</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#examples-3"><i class="fa fa-check"></i><b>8.1.1</b> Examples</a></li>
+<li class="chapter" data-level="8.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i><b>8.1.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="8.1.3" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i><b>8.1.3</b> Example: coin flip (revisited)</a></li>
+<li class="chapter" data-level="8.1.4" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die-revisited"><i class="fa fa-check"></i><b>8.1.4</b> Example: roll of a die (revisited)</a></li>
+<li class="chapter" data-level="8.1.5" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>8.1.5</b> Example: disease status</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>6</b> Conditional Probability</a><ul>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i>Example: roll a die</a></li>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i>Example: disease status</a></li>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i>Example: Sensitivity/specificity</a></li>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i>Example: positive/negative predictive value</a></li>
-<li class="chapter" data-level="6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>6.1</b> Bayes’ Theorem</a><ul>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i>Example: positive predictive value from sensitivity</a></li>
+<li class="chapter" data-level="9" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>9</b> Conditional Probability</a><ul>
+<li class="chapter" data-level="9.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i><b>9.1</b> Example: roll a die</a></li>
+<li class="chapter" data-level="9.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i><b>9.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="9.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i><b>9.3</b> Example: Sensitivity/specificity</a></li>
+<li class="chapter" data-level="9.4" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i><b>9.4</b> Example: positive/negative predictive value</a></li>
+<li class="chapter" data-level="9.5" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>9.5</b> Bayes’ Theorem</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-5.8-in-ls-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i><b>9.5.1</b> Example (5.8 in <span class="citation">Sullivan (<span>2017</span>)</span>): positive predictive value from sensitivity</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>6.2</b> Independence</a><ul>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i>Example: independent events</a></li>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i>Example: dependent events</a></li>
-<li class="chapter" data-level="" data-path="conditional-probability.html"><a href="conditional-probability.html#example"><i class="fa fa-check"></i>Example</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>7</b> Random Variables and Distributions</a><ul>
-<li class="chapter" data-level="7.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>7.1</b> Random Variables</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-random-variables"><i class="fa fa-check"></i><b>7.1.1</b> Examples: random variables</a></li>
-<li class="chapter" data-level="7.1.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-discrete-distributions"><i class="fa fa-check"></i><b>7.1.2</b> Examples: discrete distributions</a></li>
-<li class="chapter" data-level="7.1.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-continuous-distributions"><i class="fa fa-check"></i><b>7.1.3</b> Examples: continuous distributions</a></li>
-</ul></li>
-<li class="chapter" data-level="7.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#properties-of-random-variables"><i class="fa fa-check"></i><b>7.2</b> Properties of Random Variables</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#expected-value-of-random-variables"><i class="fa fa-check"></i><b>7.2.1</b> Expected Value of Random Variables</a></li>
-<li class="chapter" data-level="7.2.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#variancestandard-deviation-of-random-variables"><i class="fa fa-check"></i><b>7.2.2</b> Variance/Standard Deviation of Random Variables</a></li>
-<li class="chapter" data-level="7.2.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#things-to-remember-when-working-with-random-variables"><i class="fa fa-check"></i><b>7.2.3</b> Things to remember when working with random variables</a></li>
-</ul></li>
-<li class="chapter" data-level="7.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>7.3</b> A Few Important Distributions</a><ul>
-<li class="chapter" data-level="7.3.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-bernoulli-distribution"><i class="fa fa-check"></i><b>7.3.1</b> The Bernoulli Distribution</a></li>
-<li class="chapter" data-level="7.3.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-binomial-distribution"><i class="fa fa-check"></i><b>7.3.2</b> The Binomial Distribution</a></li>
-<li class="chapter" data-level="7.3.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#normal-distribution"><i class="fa fa-check"></i><b>7.3.3</b> Normal Distribution</a></li>
-<li class="chapter" data-level="7.3.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#t-distribution"><i class="fa fa-check"></i><b>7.3.4</b> t-distribution</a></li>
-<li class="chapter" data-level="7.3.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>7.3.5</b> Other Distribution</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>8</b> Estimators and their distributions</a><ul>
-<li class="chapter" data-level="8.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>8.1</b> What is an Estimator?</a></li>
-<li class="chapter" data-level="8.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>8.2</b> Common Estimators</a><ul>
-<li class="chapter" data-level="8.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#examples-2"><i class="fa fa-check"></i><b>8.2.1</b> Examples</a></li>
-</ul></li>
-<li class="chapter" data-level="8.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>8.3</b> Deriving Distributions in Practice</a><ul>
-<li class="chapter" data-level="8.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#the-central-limit-theorem"><i class="fa fa-check"></i><b>8.3.1</b> The Central Limit Theorem</a></li>
-<li class="chapter" data-level="8.3.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#distributions-of-common-estimators"><i class="fa fa-check"></i><b>8.3.2</b> Distributions of Common Estimators</a></li>
+<li class="chapter" data-level="9.6" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>9.6</b> Independence</a><ul>
+<li class="chapter" data-level="9.6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i><b>9.6.1</b> Example: independent events</a></li>
+<li class="chapter" data-level="9.6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i><b>9.6.2</b> Example: dependent events</a></li>
+<li class="chapter" data-level="9.6.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-are-depression-severity-mild-depression-and-marital-status-divorced-independent"><i class="fa fa-check"></i><b>9.6.3</b> Example: are “depression severity = mild depression” and “marital status = divorced” independent?</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
-<li class="chapter" data-level="A" data-path="about-assumptions.html"><a href="about-assumptions.html"><i class="fa fa-check"></i><b>A</b> About Assumptions</a></li>
-<li class="chapter" data-level="B" data-path="simulating-data.html"><a href="simulating-data.html"><i class="fa fa-check"></i><b>B</b> Simulating Data</a></li>
+<li class="chapter" data-level="A" data-path="lecture-slides.html"><a href="lecture-slides.html"><i class="fa fa-check"></i><b>A</b> Lecture Slides</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -173,15 +163,15 @@
 
             <section class="normal" id="section-">
 <div id="what-is-probability" class="section level1">
-<h1><span class="header-section-number">5</span> What is “probability”?</h1>
+<h1><span class="header-section-number">8</span> What is “probability”?</h1>
 <p>A <em>probability</em> is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 <strong>always</strong> occurs, while an event with probability of 0 <strong>never</strong> occurs. Every number in between are a bit harder to interpret.</p>
-<p>For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there’s a 0.5 (i.e. 50%) chance of rain tomorrow? We can only observe if it rains tomorrow or not once, so the probability surely must be 0 (it doesn’t rain) or 1 (it rains), right?</p>
+<p>For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there’s a 0.5 (i.e. 50%) chance of rain tomorrow? We can only observe if it rains tomorrow once, so the probability surely must be 0 (it doesn’t rain) or 1 (it rains), right?</p>
 <div id="definitions" class="section level2">
-<h2><span class="header-section-number">5.1</span> Definitions</h2>
+<h2><span class="header-section-number">8.1</span> Definitions</h2>
 <p>As hinted at above, the concept of “probability” can be a bit challenging to wrap your head around. There are generally two ways that the term is introduced. Though they are very similar once you understand the concepts, they can seem radically different at first.</p>
 
 <div class="definition">
-<p><span id="def:prob-def-1" class="definition"><strong>Definition 5.1  </strong></span>The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, <strong>IF</strong> all outcomes are equally likely:</p>
+<p><span id="def:prob-def-1" class="definition"><strong>Definition 8.1  </strong></span>The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, <strong>IF</strong> all outcomes are equally likely:</p>
 <span class="math display">\[
   P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}.
 \]</span>
@@ -189,47 +179,51 @@
 
 <p>We often refer to the numerator in this fraction as the number of favorable outcomes.</p>
 <p>I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: “IF all outcomes are equally likely”. We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption.</p>
-<p>The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and by far most boring, examples in the history of statistics. However, they are super useful for two reasons:</p>
+<p>The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and (by far!!) most boring examples in the history of statistics. However, they are super useful for two reasons:</p>
 <ol style="list-style-type: decimal">
 <li>They are so simple that it is possible to better grasp what’s going on</li>
 <li>A lot of more complicated examples can be simplified by comparing them to these two</li>
 </ol>
-<div id="example-coin-flip" class="section level3 unnumbered">
-<h3>Example: coin flip</h3>
-<p>We want to find the probability <span class="math inline">\(P(\text{coin comes up heads})\)</span>. A natural assumption is that when flipping a coin, heads and tails are the only outcomes<a href="simulating-data.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and they are equally likely. Therefore,</p>
-<p><span class="math display">\[\begin{align}
-  P(\text{coin comes up heads}) &amp;= \frac{\text{# possible outcomes that come up heads}}{\text{# possible outcomes}} \\
+<div id="examples-3" class="section level3">
+<h3><span class="header-section-number">8.1.1</span> Examples</h3>
+<div id="coin-flip" class="section level4">
+<h4><span class="header-section-number">8.1.1.1</span> Coin Flip</h4>
+<p>We want to find the probability <span class="math inline">\(P(\text{coin comes up heads})\)</span>. A natural assumption is that when flipping a coin, heads and tails are the only outcomes<a href="references.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, and they are equally likely. Therefore,</p>
+<p><span class="math display">\[\begin{align*}
+  P(\text{coin comes up heads}) &amp;= \frac{\text{number of possible outcomes that come up heads}}{\text{number of possible outcomes}} \\
   &amp;= \frac{1}{2} \\
   &amp;= 0.5.
-\end{align}\]</span></p>
+\end{align*}\]</span></p>
 <p>Similarly, one can find the probability that the coin comes up tails:</p>
 <p><span class="math display">\[\begin{align}
-  P(\text{coin comes up tails}) &amp;= \frac{\text{# possible outcomes that come up tails}}{\text{# possible outcomes}} \\
+  P(\text{coin comes up tails}) &amp;= \frac{\text{number of possible outcomes that come up tails}}{\text{number of possible outcomes}} \\
   &amp;= \frac{1}{2} \\
   &amp;= 0.5.
 \end{align}\]</span></p>
 </div>
-<div id="example-roll-of-a-die" class="section level3 unnumbered">
-<h3>Example: roll of a die</h3>
+<div id="roll-of-a-die" class="section level4">
+<h4><span class="header-section-number">8.1.1.2</span> Roll of a Die</h4>
+<p>Another classic example: calculate different probabilities when rolling a die. (Done in class – see lecture notes.)</p>
 <hr />
 <p>The two examples above show situations where all possible outcomes are equally likely. What if that is not the case?</p>
 </div>
-<div id="example-disease-status" class="section level3 unnumbered">
-<h3>Example: disease status</h3>
+</div>
+<div id="example-disease-status" class="section level3">
+<h3><span class="header-section-number">8.1.2</span> Example: disease status</h3>
 <p>Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might conclude that the probability of a subject being obese if <span class="math inline">\(\frac{1}{2}\)</span>, i.e. <span class="math inline">\(0.5\)</span>.</p>
 <p>This is obviously not the case. The problem with this approach is that the two outcomes – those being “the subject is obese”, and “the subject is NOT obese” – are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good.</p>
 <hr />
 <p>To find a more satisfying answer to the question asked in the last example, we need to consider a different approach to probabilities.</p>
 
 <div class="definition">
-<span id="def:prob-def-2" class="definition"><strong>Definition 5.2  </strong></span>The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an <em>infinite number of times</em>.
+<span id="def:prob-def-2" class="definition"><strong>Definition 8.2  </strong></span>The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an <em>infinite number of times</em>.
 </div>
 
 <p>Repeating an experiment an infinite number of times is obviously not possible, so in practice “an infinite number of times” becomes “a very large number of times”.</p>
 <p>When introducing this different approach to probabilities, first we need to make sure it doesn’t contradict our previous approach.</p>
 </div>
-<div id="example-coin-flip-revisited" class="section level3 unnumbered">
-<h3>Example: coin flip (revisited)</h3>
+<div id="example-coin-flip-revisited" class="section level3">
+<h3><span class="header-section-number">8.1.3</span> Example: coin flip (revisited)</h3>
 <p>We previously established that when flipping a coin, the probability of heads is <span class="math inline">\(0.5\)</span>. Hopefully this new definition will yield a similar answer.</p>
 <p>To find out if that is actually the case, we would have to flip a coin “an infinite number of times”. Obviously, this is not possible, so we will have to settle for “a very large number of times”. So, imagine we flip a coin 100000 times. Every time it is flipped, we write down the result, and count how many times we’ve seen heads, and how many times we’ve seen tails so far. If the probability of seeing heads is <span class="math inline">\(0.5\)</span>, we should eventually see about as many heads as tails.</p>
 <p>Below is an animation that shows the results of such an experiment. The bars show you the proportion of heads and tails, which in the end (by the definition above) will converge to the probability. The first 100 flips are all shown, then only the results after every 100 flips, and finally results after every 1000 flips are shown. Note how at the very end the two bars are both very close to <span class="math inline">\(0.5\)</span>.</p>
@@ -238,16 +232,70 @@
 </video>
 </div>
 <div id="example-roll-of-a-die-revisited" class="section level3">
-<h3><span class="header-section-number">5.1.1</span> Example: roll of a die (revisited)</h3>
-<p>100000</p>
+<h3><span class="header-section-number">8.1.4</span> Example: roll of a die (revisited)</h3>
+<p>Similarly to what we did above for the coin flip, we will do here for the roll of a die.</p>
 <video controls>
 <source src="die_roll.mp4" type="video/mp4">
 </video>
 </div>
 <div id="example-disease-status-1" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> Example: disease status</h3>
+<h3><span class="header-section-number">8.1.5</span> Example: disease status</h3>
 <p>Okay, so both when flipping a coin and rolling a die, the second definition agrees with the first one. But how can we use this way of thinking in the disease status example? What does it even mean to “repeat the experiment”, let alone “repeat an infinite number of times”?!</p>
 <p>In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are “similar enough” that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease.</p>
+<p>Let’s consider the probability that a person from the SHOW population is mildly depressed. To estimate this, we simply divide the number of individuals in the population who are mildly depressed with the total number of people in the population.</p>
+<p>Below are estimated probabilities for all depression severity levels. Note: <span class="math inline">\(P(\text{mildly depressed}) = \frac{454}{3381} \approx 0.134\)</span>.</p>
+<table style="width:81%;">
+<colgroup>
+<col width="36%" />
+<col width="11%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Depression Severity</th>
+<th align="center">Count</th>
+<th align="center">Estimated Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">[1] No depression</td>
+<td align="center">1629</td>
+<td align="center">0.482</td>
+</tr>
+<tr class="even">
+<td align="center">[2] Mild depression</td>
+<td align="center">454</td>
+<td align="center">0.134</td>
+</tr>
+<tr class="odd">
+<td align="center">[3] Moderate depression</td>
+<td align="center">125</td>
+<td align="center">0.037</td>
+</tr>
+<tr class="even">
+<td align="center">[4] Moderately severe
+depression</td>
+<td align="center">52</td>
+<td align="center">0.0154</td>
+</tr>
+<tr class="odd">
+<td align="center">[5] Severe depression</td>
+<td align="center">15</td>
+<td align="center">0.00444</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">1106</td>
+<td align="center">0.327</td>
+</tr>
+<tr class="odd">
+<td align="center">Total</td>
+<td align="center">3381</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
