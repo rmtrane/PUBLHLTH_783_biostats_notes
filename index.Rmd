@@ -7,6 +7,7 @@ output: bookdown::gitbook
 documentclass: book
 bibliography: refs.bib
 biblio-style: apalike
+always_allow_html: yes
 link-citations: yes
 ---
 
@@ -44,7 +45,25 @@ scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
 
 ## Load data sets used
 full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
+
+## Get output format to decide if plotly can be used
+output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+
+## My ggplotly function
+my_ggplotly <- function(plot, output_format = output_format, ...){
+  if (interactive() || output_format == 'html'){ ## double | to only check second condition if first is false
+    return(plotly::ggplotly(plot))
+  } else {
+    ggsave(plot = plot, filename = paste0("figures/", plot, ".png"))
+    return(knitr::include_graphis(paste0("figures/", plot, ".png")))
+  }
+}
+
+## Set figure width if pdf
+if(output_format == 'pdf')
+  knitr::opts_chunk$set(out.width = 4)
 ```
+
 
 Welcome to Public Health 783. This is where you'll find my notes for the biostatistics part of this class for Fall 2019. 
 
