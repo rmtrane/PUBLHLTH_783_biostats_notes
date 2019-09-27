@@ -10,6 +10,7 @@ git config --global user.name "rmtrane"
 
 git clone -b gh-pages https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git book-output
 cd book-output
+rm -r *
 cp -r ../_book/* ./
 cp -r ../lectures .
 git add --all *

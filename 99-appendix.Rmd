@@ -4,5 +4,6 @@
 
 **Lecture 1 (9/12)** [slides](./lectures/lecture01/lec01_slides.html)
 
+**Lecture 2 (9/26)** [slides](./lectures/lecture02/lec02_slides.html)
 
 # References {-}
