@@ -5,6 +5,7 @@ date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
+geometry: "left=3cm,right=3cm,top=3cm,bottom=3cm"
 bibliography: refs.bib
 biblio-style: apalike
 always_allow_html: yes
@@ -50,18 +51,18 @@ full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
 output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
 
 ## My ggplotly function
-my_ggplotly <- function(plot, output_format = output_format, ...){
-  if (interactive() || output_format == 'html'){ ## double | to only check second condition if first is false
-    return(plotly::ggplotly(plot))
+my_ggplotly <- function(PP, out_for = output_format, ...){
+  if (interactive() || out_for == 'html'){ ## double | to only check second condition if first is false
+    return(plotly::ggplotly(PP))
   } else {
-    ggsave(plot = plot, filename = paste0("figures/", plot, ".png"))
-    return(knitr::include_graphis(paste0("figures/", plot, ".png")))
+    ggsave(PP, filename = paste0("figures/", deparse(substitute(PP)), ".png"))
+    return(knitr::include_graphics(paste0("figures/", deparse(substitute(PP)), ".png")))
   }
 }
 
 ## Set figure width if pdf
 if(output_format == 'pdf')
-  knitr::opts_chunk$set(out.width = 4)
+  knitr::opts_chunk$set(out.width = 2, fig.width = 2)
 ```
 
 
@@ -85,7 +86,6 @@ Now, I know that noone wants to do that -- who has the time to send an email jus
 | Spelling/grammatical error | 1 |
 | Math error | 2 |
 | Conceptual nonsense in either text or math | 3 |
-
 
 <!-- Current number of points obtained: -->
 
