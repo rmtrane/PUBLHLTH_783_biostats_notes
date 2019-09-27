@@ -172,8 +172,7 @@ marital_hist <- ggplot(full_show, aes(x = marital)) +
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-marital_hist %>% 
-  my_ggplotly()
+my_ggplotly(marital_hist)
 ```
 
 This can easily be turned into a bar chart of the relative frequencies. 
@@ -365,7 +364,7 @@ bmi_hist <- full_show %>%
                        minor_breaks = seq(0, 175, by = 1)) +
     scale_y_continuous(expand = expand_scale(mult = c(0,0), add = c(0,20))) 
 
-my_ggplotly(plot = bmi_hist)
+my_ggplotly(bmi_hist)
 
 ```
 
