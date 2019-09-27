@@ -173,7 +173,7 @@ marital_hist <- ggplot(full_show, aes(x = marital)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 marital_hist %>% 
-  plotly::ggplotly()
+  my_ggplotly()
 ```
 
 This can easily be turned into a bar chart of the relative frequencies. 
@@ -188,7 +188,7 @@ show_martial_rel <- ggplot(full_show, aes(x = marital)) +
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-plotly::ggplotly(show_martial_rel)
+my_ggplotly(show_martial_rel)
 ```
 
 
@@ -308,7 +308,7 @@ boxplot_gender_height <- full_show %>%
     scale_y_continuous(limits = c(0, NA)) + 
     labs(x = 'Gender')
 
-plotly::ggplotly(boxplot_gender_height)
+my_ggplotly(boxplot_gender_height)
 ```
 
 You can use the figure below to decipher the box plot:
@@ -336,9 +336,12 @@ boxplot_explanation <- ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13
         axis.text = element_blank())
 
 ggsave(boxplot_explanation, filename = "figures/boxplot_explanation.png")
+```
 
+```{r}
 knitr::include_graphics("figures/boxplot_explanation.png")
 ```
+
 
 As you see on the boxplots of the SHOW data, it is a great tool to visualize continuous data when you have a lot of it. In a simple figure we can see that 
 
@@ -358,12 +361,12 @@ At first, the *histogram* looks a lot like a bar chart, but there are a few very
 bmi_hist <- full_show %>% 
   ggplot(aes(x = bmi)) +
     geom_histogram(binwidth = 5, boundary = 0) + 
-    #coord_cartesian(xlim = c(20, 30))
     scale_x_continuous(breaks = seq(0, 175, by = 10),
                        minor_breaks = seq(0, 175, by = 1)) +
     scale_y_continuous(expand = expand_scale(mult = c(0,0), add = c(0,20))) 
 
-plotly::ggplotly(bmi_hist)
+my_ggplotly(plot = bmi_hist)
+
 ```
 
 The main differences from a bar chart is that 
