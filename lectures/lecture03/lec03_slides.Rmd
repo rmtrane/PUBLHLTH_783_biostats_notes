@@ -88,3 +88,136 @@ What is
 --
 
 - $P(B \text{ and } C)$?
+
+---
+layout: true
+
+# Introduction to Probability
+
+## Example: Framingham Heart Study
+
+---
+
+What is the probability of developing Coronary Heart Disease over ten years?
+
+--
+
+You either develop the disease, or you do not, so.... $\frac{1}{2}$? 
+
+--
+
+Of course not! Why doesn't definition 1 work here?
+--
+ Outcomes not equally likely!
+ 
+So instead, think about what would happen if we "repeat the experiment an infinite number of times"...
+
+Before we can do that, specify what "the experiment" is.
+
+--
+
+Experiment = a randomly chosen individual develops CHD over a ten year period. 
+
+---
+
+Can't really do that... BUT we can pretend the FHS sample IS the population, and randomly choose individuals from this "population". 
+
+```{r include = FALSE}
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+```
+
+```{r include = FALSE, eval = FALSE}
+framingham_CHD_sample <- framingham %>% 
+  sample_n(size = 10000, replace = TRUE)
+
+write_rds(framingham_CHD_sample,
+          path = 'framingham_CHD_sample.Rds')
+
+is <- c(1:9, 
+        seq(10, 90, by = 10),
+        seq(100, 900, by = 100),
+        seq(1000, 10000, by = 1000))
+
+for(i in is){
+  tmp <- framingham_CHD_sample %>% 
+    filter(row_number() <= i) %>% 
+    janitor::tabyl(TenYearCHD) %>% 
+    mutate(TenYearCHD = as.character(TenYearCHD)) %>% 
+    ggplot(aes(x = TenYearCHD, y = percent)) +
+      geom_bar(data = data.frame(x = c('0','1'), y = c(0,0)), 
+               stat = 'identity',
+               aes(x = x, y = y),
+               alpha = 0) +
+      geom_bar(stat = 'identity') + 
+      geom_text(aes(label = n, y = 0.07),
+                fontface = 'bold', size = 8) + 
+      scale_y_continuous(limits = c(0,1), breaks = seq(0, 1, by = 0.1)) +
+      labs(x = 'TenYearCHD', y = 'proportion',
+           title = paste0('Number of repetitions:\n', i)) + 
+      theme(plot.title = element_text(size = 18, face = 'bold'))
+  
+  ggsave(tmp, filename = paste0('CHD_figures/', str_pad(i, width = 5, side = 'left', pad = '0'), '.jpg'),
+         width = 7, height = 7)
+}
+
+system("ffmpeg -framerate 3 -pattern_type glob -i 'CHD_figures/*.jpg' -c:v libx264 CHD_prob_anim.mp4 -y")
+```
+
+<center>
+  <video controls width="450" height="450">
+    <source src="CHD_prob_anim.mp4" type="video/mp4">
+  </video>
+</center>
+
+
+---
+
+```{r}
+if(!exists('framingham_CHD_sample'))
+  framingham_CHD_sample <- read_rds('framingham_CHD_sample.Rds')
+```
+
+
+So from the above, we would estimate $P(\text{develops CHD over ten years}) = `r mean(framingham_CHD_sample[['TenYearCHD']])`$. 
+
+In this case, we can actually get the exact probability (because we "know" the entire population): 
+
+```{r}
+framingham %>% 
+  janitor::tabyl(TenYearCHD) %>% 
+  janitor::adorn_totals() %>% 
+  knitr::kable(format = 'html')
+```
+
+In general, we would estimate the probability in this way: the proportion of the sample with the attribute of interest. 
+
+---
+layout: false
+
+Moral of the story: probabilities dictate the results of sampling (when done right).
+--
+ I.e. using probability theory, we can find out what to expect from sampling.
+
+This allows us to judge if differences in samples are "as expected", or "out of the ordinary". 
+
+---
+layout: true
+
+# Random Variables
+
+---
+
+We introduce *random variables* to
+
+* formalize the notion of an experiment
+
+* simplify notation 
+
+* have a rigorous way of discussing probabilities
+
+
+
+
+
