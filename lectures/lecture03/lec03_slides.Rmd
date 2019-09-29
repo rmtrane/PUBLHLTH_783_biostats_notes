@@ -231,14 +231,30 @@ Conducting the experiment results in a *realization* of the random variable.
 
 Examples: 
 
-1. $X = \text{flip of a coin}$. Possible outcomes: heads and tails. 
+1. $X = \text{flip of a coin}$. Possible outcomes:
+--
+ heads and tails. 
 
 --
 
-2. $X = \text{sex of randomly chosen individual}$. Possible outcomes: male and female.
+2. $X = \text{sex of randomly chosen individual}$. Possible outcomes:
+--
+ male and female.
 
 --
 
-3. $X = \text{educational level of randomly chosen individual from the FHS}$. Possible outcomes: `r sort(unique(framingham$education), na.last = T)`.
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. Possible outcomes:
+--
+ `r sort(unique(framingham$education), na.last = T)`.
+
+--
+
+4. $X = \text{height of randomly chosen 783 student}$. Possible outcomes:
+--
+ any number greater than $0$.
+
+---
+
+Talk about probabilities of different outcomes.
 
 
