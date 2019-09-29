@@ -19,11 +19,11 @@ link-citations: yes
 \newcommand{\SD}{\text{SD}}
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = T)
 
 library(tidyverse)
 library(ggthemes)
-library(distributions)
+library(distributions3)
 
 if(!exists("figures"))
   dir.create("figures")
@@ -63,6 +63,8 @@ my_ggplotly <- function(PP, out_for = output_format, ...){
 ## Set figure width if pdf
 if(output_format == 'pdf')
   knitr::opts_chunk$set(out.width = 2, fig.width = 2)
+
+options(DT.options = list(scrollX = TRUE))
 ```
 
 Welcome to Public Health 783. This is where you'll find my notes for the biostatistics part of this class for Fall 2019. 

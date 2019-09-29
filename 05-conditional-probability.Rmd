@@ -4,8 +4,6 @@ So far, we have talked about probabilities in a context where no additional info
 
 A useful concept in these cases is the concept of *conditional probabilities*. In a nutshell, conditional probabilities deal with the chances of something happening given something else has already happened. If we consider two events, $A$ and $B$, then we write $P(A | B)$ for the conditional probability of $A$ given that $B$ has happened, and read it as "the (conditional) probability of $A$ given $B$". 
 
-
-
 ## Example: roll a die 
 
 Previously, we considered the probabilities associated with the roll of a die. We found that the probability of rolling a six is $\frac{1}{6}$. What if we somehow knew that the outcome turned out to be an even number, but simply didn't know which even number? Well, using this information, we know there are only three possible outcomes, namely $2,4,6$. They are all equally likely, so using definition \@ref(def:prob-def-1), we find that the probability of rolling a six given the roll comes up even is 
@@ -27,6 +25,7 @@ dep_sev_by_marital %>%
 ```
 
 To find the conditional probability, you basically narrow down the universe you operate in. Instead of asking "how many individuals have mild depression out of all individuals?" you ask "how many individuals have mild depression out of **individuals that are divorced**?". So, in other words, all you worry about is the column in the table corresponding to the divorced subjects. We estimate the conditional probability of having a mild depression given the subject is divorced as $P(\text{mild depression} | \text{divorced}) = \frac{76}{416} \approx `r round(76/416, digits = 3)`$. 
+
 
 ```{r}
 emph_col <- which(str_detect(colnames(dep_sev_by_marital), "Divorced"))
@@ -217,7 +216,7 @@ Events A and B are NOT independent. The probability a random stranger is taller 
 
 We will work with two definitions of independence. (Fortunately, they are equivalent, i.e. if one holds, the other holds.)
 
-```{definition, label = 'ind1',echo = TRUE}
+```{definition, label = 'ind1', echo = TRUE}
 Two events are independent if and only if $P(A \text{ and } B) = P(A) P(B)$.
 ```
 
@@ -299,3 +298,4 @@ So $P(A)\cdot P(B) \approx `r round(2075*1477/3376^2, digits = 4)`$, which is no
 While definition \@ref(def:ind1) is very useful when doing math, it might not make a whole lot of sense intuitively. Definition \@ref(def:ind2), on the other hand, aligns with our intuitive understanding of independence. 
 
 Intuitively, two events, $A$ and $B$, are independent if $A$ provides no information about $B$, and vice versa. Now, if $A$ provides no information about $B$, then what would the difference between $P(B)$ and $P(B|A)$ be? Remember, the latter is basically the probability of $B$ if $A$ happens. But if $A$ and $B$ are independent, $A$ provides no information about $B$, so the probability of $B$ doesn't change if $A$ happens. 
+
