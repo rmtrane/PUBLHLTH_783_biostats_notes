@@ -255,6 +255,15 @@ Examples:
 
 ---
 
-Talk about probabilities of different outcomes.
+Talk about probabilities of different outcomes: 
 
+1. $X = \text{flip of a coin}$. What is $P(X = \text{heads})$?
+
+2. $X = \text{sex of randomly chosen individual}$. What is $P(X = \text{male})$?
+
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. What is $P(X \in \{\text{1,3,4}\})$? ($X$ is either 1,3, or 4)
+
+4. $X = \text{height of randomly chosen 783 student}$. What is $P(X \ge 180\text{cm})$?
+
+---
 

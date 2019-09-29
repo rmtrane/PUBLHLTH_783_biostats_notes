@@ -220,19 +220,19 @@ show_gender <- full_show %>%
   select(id, gender) %>% 
   filter(!is.na(gender))
 
-true_prop <- mean(show_gender$gender)
+true_prop <- mean(str_detect(show_gender$gender, 'Male'))
 
 samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
 
 gender_props <- samples_gender %>% 
   group_by(i) %>% 
-  summarise(props = mean(gender))
+  summarise(props = mean(str_detect(gender, 'Male')))
 
 show_gender %>% 
   ggplot(aes(x = gender)) + 
-    geom_histogram(aes(y = ..count../nrow(show_gender)), binwidth = 0.5) + 
-    scale_x_continuous(breaks = c(0,1),
-                       minor_breaks = NULL) + 
+    geom_bar(aes(y = ..count../nrow(show_gender))) + 
+    # scale_x_continuous(breaks = c(0,1),
+    #                    minor_breaks = NULL) + 
     scale_y_continuous('Proportion',
                        expand = expand_scale(mult = c(0, 0.025)))
 ```
@@ -249,6 +249,8 @@ gender_props_histogram <- gender_props %>%
     geom_vline(aes(color = 'True prop', xintercept = true_prop), linetype = 'dashed') + 
     scale_color_discrete("", direction = -1) +
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+
+my_ggplotly(gender_props_histogram)
 ```
 
 Again, it looks pretty normal! How can that be?!
@@ -263,6 +265,7 @@ Say we are interested in the relative risk of being severely depressed between m
 ```{r cache = TRUE}
 show_depr_by_gender <- full_show %>% 
   select(id, depression_severity_binary, gender) %>% 
+  mutate(gender = as.numeric(str_detect(gender, 'Male'))) %>% 
   filter(complete.cases(.))
 
 # dat <- show_depr_by_gender
@@ -293,20 +296,28 @@ logRR_var <- show_depr_by_gender %>%
   mutate(var_contribution = (`0`/`1`)/sample_size_RR) %>% 
   pull(var_contribution) %>% sum
   
+if(file.exists('data/R_output/samples_RR.Rds')){
+  samples_RR <- read_rds('data/R_output/samples_RR.Rds')
+} else {
+  samples_RR <- map_dfr(1:N, function(x){ 
+    show_depr_by_gender %>% 
+      #group_by(gender) %>% 
+      sample_n(size = sample_size_RR) %>% 
+      mutate(i = x)
+  })
+  write_rds(x = samples_RR, path = 'data/R_output/samples_RR.Rds')
+}
   
-
-samples_RR <- map_dfr(1:N, function(x){ 
-  show_depr_by_gender %>% 
-    #group_by(gender) %>% 
-    sample_n(size = sample_size_RR) %>% 
-    mutate(i = x)
-})
-
-RRs <- samples_RR %>% 
-  group_by(i) %>% 
-  nest() %>%
-  ungroup() %>% 
-  mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+if(file.exists('data/R_output/RRs.Rds')){
+  RRs <- read_rds('data/R_output/RRs.Rds')
+} else {
+  RRs <- samples_RR %>% 
+    group_by(i) %>% 
+    nest() %>%
+    ungroup() %>% 
+    mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+  write_rds(x = RRs, path = 'data/R_output/RRs.Rds')
+}
 ```
 
 We create simple random samples of size `r sample_size_RR`. The first sample consists of the following individuals: 
@@ -314,7 +325,8 @@ We create simple random samples of size `r sample_size_RR`. The first sample con
 ```{r}
 samples_RR %>% 
   filter(i == 1) %>% 
-  left_join(full_show) %>% 
+  left_join(full_show %>% 
+              mutate(gender = str_detect(gender, 'Male') %>% as.numeric())) %>% 
   select(-i) %>% 
   knitr::kable()
 ```
@@ -391,11 +403,17 @@ OR <- function(dat, trt, out){
 
 true_OR <- OR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
 
-ORs <- samples_RR %>% 
-  group_by(i) %>% 
-  nest() %>% 
-  mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
-  ungroup()
+if(file.exists('data/R_output/ORs.Rds')){
+  ORs <- read_rds('data/R_output/ORs.Rds')
+} else {
+  ORs <- samples_RR %>% 
+    group_by(i) %>% 
+    nest() %>% 
+    mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
+    ungroup()
+  
+  write_rds(x = ORs, 'data/R_output/ORs.Rds')
+}
 
 ORs %>% 
   ggplot(aes(x = OR)) + 
@@ -492,6 +510,4 @@ gender_props_histogram +
 To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/).
 
 ### Distributions of Common Estimators
-
-
 
