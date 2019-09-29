@@ -5,8 +5,10 @@ date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
+geometry: "left=3cm,right=3cm,top=3cm,bottom=3cm"
 bibliography: refs.bib
 biblio-style: apalike
+always_allow_html: yes
 link-citations: yes
 ---
 
@@ -23,6 +25,8 @@ library(tidyverse)
 library(ggthemes)
 library(distributions)
 
+if(!exists("figures"))
+  dir.create("figures")
 
 project_folder <- str_split(getwd(), pattern = '783_biostat_notes', simplify = TRUE)[,1] %>% 
   paste0("/783_biostat_notes")
@@ -42,6 +46,23 @@ scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
 
 ## Load data sets used
 full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
+
+## Get output format to decide if plotly can be used
+output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+
+## My ggplotly function
+my_ggplotly <- function(PP, out_for = output_format, ...){
+  if (interactive() || out_for == 'html'){ ## double | to only check second condition if first is false
+    return(plotly::ggplotly(PP))
+  } else {
+    ggsave(PP, filename = paste0("figures/", deparse(substitute(PP)), ".png"))
+    return(knitr::include_graphics(paste0("figures/", deparse(substitute(PP)), ".png")))
+  }
+}
+
+## Set figure width if pdf
+if(output_format == 'pdf')
+  knitr::opts_chunk$set(out.width = 2, fig.width = 2)
 ```
 
 Welcome to Public Health 783. This is where you'll find my notes for the biostatistics part of this class for Fall 2019. 
@@ -64,3 +85,25 @@ Now, I know that noone wants to do that -- who has the time to send an email jus
 | Spelling/grammatical error | 1 |
 | Math error | 2 |
 | Conceptual nonsense in either text or math | 3 |
+
+<!-- Current number of points obtained: -->
+
+```{r include=FALSE, eval=FALSE}
+point_system <- tibble(Type = c("Spelling/grammatical error", "Math error", "Conceptual nonsense in either text or math"),
+                       Points = c(1,2,3))
+tribble(
+  ~Mistake, ~Points,
+  '"materiale" instead of "material', 1,
+  '"popoulation" instead of "population"', 1,
+  '"popoulation" instead of "population"', 1,
+  'missing comma: "show how we, in each case, ..."', 1,
+  'missing comma: "In general, when we talk about data, ...', 1,
+  'wrong denominator in P(mild depression | divorced)', 2
+) %>%
+  left_join(point_system) %>%
+  select(Type, Mistake, Points) %>%
+  janitor::as_tabyl() %>%
+  janitor::adorn_totals() %>%
+  pander::pander()
+```
+
