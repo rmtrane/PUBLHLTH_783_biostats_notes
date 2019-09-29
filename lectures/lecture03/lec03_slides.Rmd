@@ -209,6 +209,8 @@ layout: true
 
 ---
 
+## Why "Random Variables"?
+
 We introduce *random variables* to
 
 * formalize the notion of an experiment
@@ -217,7 +219,26 @@ We introduce *random variables* to
 
 * have a rigorous way of discussing probabilities
 
+---
 
+## What is a "Random Variable"?
 
+A "random variable" is a variable tied to the outcome of an experiment. 
+
+The value of it is unknown and uncertain before the experiment is conducted. 
+
+Conducting the experiment results in a *realization* of the random variable. 
+
+Examples: 
+
+1. $X = \text{flip of a coin}$. Possible outcomes: heads and tails. 
+
+--
+
+2. $X = \text{sex of randomly chosen individual}$. Possible outcomes: male and female.
+
+--
+
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. Possible outcomes: `r sort(unique(framingham$education), na.last = T)`.
 
 
