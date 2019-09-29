@@ -1,0 +1,66 @@
+--- 
+title: "Biostatistics in Public Health"
+author: "Ralph Trane"
+date: "Fall 2019</br>(last compiled: `r Sys.Date()`)"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: refs.bib
+biblio-style: apalike
+link-citations: yes
+---
+
+# Introduction to Notes
+
+\newcommand{\Var}{\text{Var}}
+\newcommand{\var}{\text{var}}
+\newcommand{\SD}{\text{SD}}
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(ggthemes)
+library(distributions)
+
+
+project_folder <- str_split(getwd(), pattern = '783_biostat_notes', simplify = TRUE)[,1] %>% 
+  paste0("/783_biostat_notes")
+
+create_path <- function(sub_folder, proj_folder = project_folder){
+  paste(proj_folder, sub_folder, sep = '/')
+}
+
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+## Load data sets used
+full_show <- read_csv(file = 'data/SHOW_subset_of_vars.csv')
+```
+
+Welcome to Public Health 783. This is where you'll find my notes for the biostatistics part of this class for Fall 2019. 
+
+These notes are meant to be a supplement to lectures and @ls. If you have any doubts as to what parts of the book I think are more important, this is a good place to look. There's a good chance that if it is not included here, I do not care too much about it. That being said, things included here might not be elaborated to a satisfying extent, and therefore I do *NOT* recommend that you rely solely on these notes, but rather use them in conjunction with the book, and, just as importantly, lectures. 
+
+I want to emphasize that these notes are not exhaustive, but are meant to complement lectures. We simply won't have time to cover everything in the amount of detail I would like. Therefore, I will use these notes to write down some thoughts on certain topics that I think you might as well read outside the classroom. At times I will ask you to read sections before showing up to lectures. Other times, I won't even make the material available to you until after lectures. There's good reason for that. Some things are easier to explain when you have already seen them before. Other concepts can be scary on paper, and are best introduced by another human being. In either case, it is extremely important that you show up to lectures.
+
+Finally, note that this collection is a living thing. It will change throughout the semester as we move along. Sometimes I might go back and clarify sections, if it seems to be necessary. At the beginning of the class you'll only find the first part, but as we make our way through, I will publish more notes on the topics to be covered later. 
+
+## Bounty Program {-}
+
+As already mentioned, this is a living document. Furthermore, it is very much so the first version. Therefore, there will inevitably be mistakes. Hopefully, most of them will be minor, but I would be surprised if there isn't a few major ones here and there. Therefore, I really hope that you will all help me out and let me know whenever you find mistakes, no matter how small they might seem.
+
+
+Now, I know that noone wants to do that -- who has the time to send an email just to let some fool know they can't spell "stastitics". But it's important to me to gradually improve these notes, and often being made aware of small mistakes opens up ones eyes to bigger ones. So to incentivize you to report mistakes, I have decided to start a bounty program: if you as a group gather more than 20 points (see below on how to collect points), there will be a reward at the end of the semester! If you find a mistake, simply shoot me an [email](mailto:rtrane@wisc.edu), let me know where the mistake is, and what type you think it is. 
+
+| Type of Mistake | Points | 
+|-----------------|--------|
+| Spelling/grammatical error | 1 |
+| Math error | 2 |
+| Conceptual nonsense in either text or math | 3 |

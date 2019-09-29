@@ -321,7 +321,8 @@ Rejoice in newfound knowledge!
 
 Say we wanted to answer this question. Only one way to obtain the "Truth&trade;". It's a simple three-step procedure:
 
-1. Ask the people in your population of interest they ever smoked, and if they have developed lung cancer. 
+1. Ask the people in your population of interest if they have ever smoked, and if they have developed lung cancer. 
+
 
 2. Calculate incidence rates
 
@@ -376,10 +377,8 @@ Where should you live
 2. Use public records to get age of death for a good sample of people
 
 3. What would be a good quantity to look at in the sample?
-
 --
-
-probably the average age of death
+ probably the average age of death
 
 ---
 
@@ -532,15 +531,11 @@ This is what enables us to describe the variability of sampling
 The art of extrapolating from a sample to the population.
 
 SUPER HARD!
---
- To make it easier, we make assumptions. 
 
---
+To make it easier, we make assumptions. 
 
-This also means that if our assumptions are off, everything is off. 
---
- Therefore, important to state **AND** check your assumptions!
- 
+This also means that if our assumptions are off, everything is off. Therefore, important to state **AND** check your assumptions!
+
 ???
 
 This is where decisions come into play. Subjective what assumptions you're willing to accept, and checking assumptions is often very hard and very subjective 
@@ -561,10 +556,12 @@ This is where decisions come into play. Subjective what assumptions you're willi
     - If unlikely, evidence **against** the hypothesis
     - If likely, evidence **for** the hypothesis
 
-* Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory
+* Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory?
 
---
+ 
+???
+
+This is where decisions come into play. Subjective what assumptions you're willing to accept, and checking assumptions is often very hard and very subjective 
 
 How do we get an idea of how much would the quantity would vary with repetition? 
-
 
