@@ -1,0 +1,497 @@
+# Estimators and their distributions
+
+```{r}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+In [Part I](#discrete), we discussed how we can describe and summarize collected data. Different research questions lead you to collect different types of data, and depending on the type of data, there are different ways to present it. 
+
+So far in this part, we've talked about this super abstract concepts, such as probability [random variables](#random-variables) and [distributions](#a-few-important-distributions) that at have nothing to do with the real world. So why did we spent so much time talking about these things? 
+
+In this section, we will see how random variables and distributions can help us answer questions about the data we collect in the real world. With a few assumptions we will be able to talk about probabilities of real world events, and later on we will use these probabilities to answer questions such as "is it likely that the mean heights of adult men and women in the US are the same?" 
+
+## What is an Estimator?
+
+Recall the setup: on one hand, we have a population that we are interested in. In this population, there's some feature that we would like to learn more about. This could be either a continuous measurement (such as height, blood pressure, glucose level, etc), or discrete (marital status, disease status, etc). If we could go out and simply inspect every individual in this population, we could learn the truth. We could find out exactly what proportion of the population have a certain disease, what is the mean glucose level among non-diabetics, and so on. Unfortunately, this is not feasible. 
+
+What we do instead is we get a sample of individuals from the population. We do this in a way that ensures that this sample is representative of the population, meaning things we might observe in the sample are close to what we would observe in the population, if we had the chance. 
+
+After collecting a representative sample, we think for a second about exactly what *parameter* of the population is of interest to us, and then we pick "something" we can actually calculate based on our sample that is close to the parameter of interest. This "something" is what we call the *estimator* -- it is our best guess of what the parameter is based on a sample.
+
+An important thing to realize here is that **an estimator is a random varaible**. The specific value of it depends on the sample we get, which by nature is random. Therefore, repeating the experiment leads to a different value of the estimator. The hope is that the estimator doesn't vary too much when repeating the experiment, and that the estimator is actually close to the true value of the population parameter. 
+
+Since an estimator is a random variable, we can talk about the distribution of an estimator. This plays a crucial role when creating confidence intervals and testing hypotheses, as we will see later on in the course. To find the distribution of an estimator, one can take two routes: 
+
+1. perform the experiment over and over and over and over again, each time calculating the observed value of the estimator, then drawing a histogram, which in the end will give you the distribution of the estimator,
+2. make some assumptions, do some math.
+
+The first strategy, as stated here, is not super useful -- we can't possibly afford to repeat every single experiment we do enough times to get enough observed values of the estimator to actually draw a histogram that provides any insights. However, we can do this for made up data, and it turns out that we can tweak this strategy a tiny bit to make it not only useful in practice, but super powerful. 
+
+The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(properties-of-random-variables) and THE coolest theorem we see in this class, namely the Central Limit Theorem. 
+
+The rest of this section will proceed as follows: first, we'll see a few examples of common estimators. Then, we will explore the distributions of those estimators through simulations and using the SHOW data set as our population. Then we will briefly discuss how to adjust strategy 1 above to make it useful in a practical setting, and finally we will take a look at the Central Limit Theorem, and how we can apply that to back up the distributions we found for different estimators through simulations.
+
+## Common Estimators
+
+Some things we are often interested in and their estimators:
+
+| Parameter of Interest (most commonly used symbol)         | Estimator Name                    | Notation and Formula                                      |
+|:---------------------------------------------------------:|:---------------------------------:|:---------------------------------------------------------:|
+| Mean of a feature ($\mu$)                                 | Sample average                    | $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$                  |
+| Variance of a feature ($\sigma^2$)                        | Sample variance                   | $S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$      |
+| Standard deviation ($\sigma$)                             | Sample standard deviation         | $S = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2}$ |
+| Probability of random individual having a disease ($\pi$) | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+| Proportion of individuals with disease ($\pi$)            | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+
+As you can see in the table above, most of the estimators we will consider here are pretty much what you would expect. If you are interested in the mean of the population, you look at the average (or *mean*) of the sample. Interested in the proportion of individuals with a disease in the population? Consider the proportion with that disease in your sample. 
+
+### Examples
+
+In the following examples, we'll play a game of pretend: pretend that the SHOW cohort is the *entire* population, and that we would like to estimate different things in this population.  
+
+#### Estimating Mean Height {-}
+
+```{r cache = TRUE}
+show_heights <- full_show %>% 
+  select(id, height) %>% 
+  filter(!is.na(height))
+
+true_mean <- mean(show_heights$height, na.rm = T)
+true_var <- var(show_heights$height, na.rm = T)
+
+N <- 10000
+sample_size <- 20
+
+samples <- map_dfr(1:N, function(x) sample_n(show_heights, size = sample_size) %>% mutate(i = x))
+
+height_averages <- samples %>% 
+  group_by(i) %>% 
+  summarise(average = mean(height)) %>% 
+  ungroup()
+```
+
+Say I ask you to estimate the mean height of the subjects in the SHOW population. I won't show you the entire population, but I will let you pick a simple random sample of size `r sample_size` from the population. You do just that, and you get the following sample.
+
+```{r}
+samples %>% filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+
+Based on this sample, what would be your best guess as to what the true mean height of the entire population is? Since the sample is a simple random sample, you would probably go with the average: `r samples %>% filter(i == 1) %>% summarise(m = mean(height)) %>% pull(m)`. But how certain are you that your estimate is a good? What's to say that it's not super far from the true population mean height? 
+
+One way to answer this question is by thinking about the distribution of the average of `r sample_size` samples. If we can get an idea of what the distribution of this is compared to the true population mean height (which we know in this case, since the SHOW cohort is the entire population), then we can maybe say something about how likely we are to be "close" to the population mean. To get a better idea of what the distribution of the sample average is, we can create many, many samples of size `r sample_size` from the population, calculate the average height for each of them, and then create a histogram. Since we have the entire population available, we can also calculate the true population mean height, and then see how the distribution of the sample average compares. 
+
+So, let us do just that. First of all, the true population mean height is `r mean(full_show$height, na.rm = T)`, which is simply the average of ALL subjects in the population. Furthermore, we can consider the distribution of the individual heights:
+
+
+```{r pop-dist-height, fig.cap = "Population distribution of height"}
+ggplot(show_heights, aes(x = height)) + 
+  geom_histogram(aes(y = ..density..),
+                 bins = floor(N/200)) +
+  geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') + 
+  scale_color_discrete("", direction = -1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+Now, the first sample we got gave us an average of `r height_averages %>% filter(i == 1) %>% pull(average)`. We resample from the population, and this time end up with this sample:
+
+```{r}
+samples %>% 
+  filter(i == 2) %>% 
+  select(-i) %>% 
+  left_join(full_show) %>% 
+  knitr::kable()
+```
+
+As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
+
+```{r height-averages-histogram, fig.cap = "Distribution of average heights.", cache = TRUE}
+height_averages_histogram <- height_averages %>% 
+  ggplot(aes(x = average)) + 
+    geom_histogram(bins = floor(N/200),
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') + 
+    scale_color_discrete("", direction = -1) + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+
+height_averages_histogram
+```
+
+A few things to note here: 
+
+1. Look how nicely the distribution is centered around the true population mean! This mean that using the sample average as an estimator of the true population mean might not be an entirely bad idea: in general, we are more likely to get an average that is "close" to the truth!
+2. The shape of that distribution looks an awful lot like a normal distribution, don't you think? Coincidence? Maybe. Maybe not...
+3. This histogram is a lot narrower than that of the actual heights. To really see that, the figure below shows both distributions overlayed one another. This tells us that to get a good idea of the true mean population height, it's a much better idea to create a sample of `r sample_size` subjects and use their average as your best guess than to simply sample a single individual, and use their height. Probably not surprising. But if you think of the height of a single individual as "an average of a sample of size 1", and the true value as "an anverage of a sample of size $\infty$" (here, $\infty$ equals the total population), then you might realize a pattern: the small sample size (sample size of 1) is worse than the medium sample size (`r sample_size`), which is worse than the ideal sample size ($\infty$). It seems that your guess gets better as you increase the sample size... Coincidence? Maybe. Maybe not... 
+
+```{r}
+ggplot(show_heights, aes(x = height)) +
+  geom_histogram(data = height_averages, 
+                 aes(x = average, y = ..density.., alpha = "Distribution of Averages"),
+                 #alpha = 0.5,
+                 bins = floor(N/100)) + 
+  geom_histogram(aes(y = ..density.., alpha = 'Distribution of Heights in the Population'),
+                 bins = floor(N/200)) + 
+  geom_vline(aes(color = 'True mean', xintercept = true_mean), linetype = 'dashed') +
+  scale_alpha_manual("", values = c(0.7, 0.5)) + 
+  scale_color_discrete("", direction = -1) +  
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+#### Estimating Mean Depression Score {-}
+
+Of the three bullet points above, the one that to me is the most surprising is the second one. Points 1 and 3 seem pretty intuitive: the former says that the average is a good substitute for the mean, the third that bigger sample size is better. Not exactly mind blowing. The second one, however, is more intriguing, although in the previous case, maybe not so much. After all, the distribution of the population (i.e. the distribution of all heights, shown in \@ref(fig:pop-dist-height)) looks a whole lot like a normal distribution in the first place. 
+
+Let's take a look at what happens if we consider something that is nothing like a normal distribution. Let's say we would like to estimate the mean depression score in the population. The procedure is the same as before. Take a sample, calculate the average, repeat a bunch of times to get a good approximation of the distribution.
+
+```{r cache = TRUE}
+show_depression_scores <- full_show %>% 
+  select(id, depression_score) %>% 
+  filter(!is.na(depression_score))
+
+true_mean_dep_score <- mean(show_depression_scores$depression_score)
+true_var_dep_score <- var(show_depression_scores$depression_score)
+
+sample_size_dep <- 50
+
+samples_dep_scores <- map_dfr(1:N, function(x) sample_n(show_depression_scores, size = sample_size_dep) %>% mutate(i = x))
+
+dep_score_averages <- samples_dep_scores %>% 
+  group_by(i) %>% 
+  summarise(average = mean(depression_score),
+            t_stat = sqrt(sample_size_dep)*(mean(depression_score) - true_mean_dep_score)/sd(depression_score))
+```
+
+Here, we take samples of `r sample_size_dep`. The first sample came out to consist of the following subjects: 
+
+```{r}
+samples_dep_scores %>% 
+  filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+The average depression score in this sample is `r dep_score_averages %>% filter(i == 1) %>% pull(average)`. Rinse and repeat `r N` times. 
+
+Before we take a look at the distribution of all the averages, let's consider the distribution of the depression scores in the entire population.
+
+```{r}
+ggplot(show_depression_scores, aes(x = depression_score)) + 
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 0.5) +
+  geom_vline(aes(color = 'True mean', xintercept = true_mean_dep_score), linetype = 'dashed') + 
+  scale_color_discrete("", direction = -1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+This is nothing like a normal distribution at all! By nature, this distribution is discrete (each observation is a score from 0 to 25), and it is not symmetrical around the mean. But take a look at what the distribution of the averages looks like:
+
+```{r cache = TRUE}
+dep_score_averages_histogram <- dep_score_averages %>% 
+  ggplot(aes(x = average)) + 
+    geom_histogram(bins = floor(N/200),
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True mean', xintercept = true_mean_dep_score), linetype = 'dashed') + 
+    scale_color_discrete("", direction = -1) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+
+dep_score_averages_histogram
+```
+
+1. Pretty symmetrical.
+2. Centered around the true mean.
+3. Looks pretty bell-shaped to me.
+
+In other words, saying that this distribution is (at least approximately) normal does not seem like a stretch to me! 
+
+
+#### Estimating Proportion of Men {-}
+
+Next, let's consider what to do if we were instead interested in the proportion of the population that are men From a simple random sample of size `r sample_size`, I would argue that the best guess for the true proportion of women in the population is the sample proportion: the number of women out of the total number of individuals in the sample. Seems intuitively sound. Let's got through the same motion that we did with the means above: sample a bunch of times from the population, each time calculate the sample proportion, then consider the histogram. 
+
+First, the true distribution of the gender variable in the data. Here, $0$ is stand-in for women, $1$ stand-in for men.
+
+```{r cache = TRUE}
+show_gender <- full_show %>% 
+  select(id, gender) %>% 
+  filter(!is.na(gender))
+
+true_prop <- mean(show_gender$gender)
+
+samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
+
+gender_props <- samples_gender %>% 
+  group_by(i) %>% 
+  summarise(props = mean(gender))
+
+show_gender %>% 
+  ggplot(aes(x = gender)) + 
+    geom_histogram(aes(y = ..count../nrow(show_gender)), binwidth = 0.5) + 
+    scale_x_continuous(breaks = c(0,1),
+                       minor_breaks = NULL) + 
+    scale_y_continuous('Proportion',
+                       expand = expand_scale(mult = c(0, 0.025)))
+```
+
+We see that the true proportion of the population that are men is `r round(mean(show_gender$gender), digits = 2)`. 
+
+Next, let's take a look at the distribution of sample proportions. 
+
+```{r cache = TRUE}
+gender_props_histogram <- gender_props %>% 
+  ggplot(aes(x = props)) + 
+    geom_histogram(binwidth = 1/sample_size,
+                   aes(y = ..density..)) + 
+    geom_vline(aes(color = 'True prop', xintercept = true_prop), linetype = 'dashed') + 
+    scale_color_discrete("", direction = -1) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+```
+
+Again, it looks pretty normal! How can that be?!
+
+The truth is, as we will see later on, a proportion is really not that different from an average. Since the gender variable is $1$ for all men, and $0$ for all women, then the proportion of men is really calculated as $\frac{1}{n}\sum_{i=1}^n g_i$, where $g_i$ is $1$ if the $i$'th subject is male, and $0$ otherwise. So, the proportion is really an average, and therefore it might not be that big of a surprise that the distribution of the sample proportions is approximately normal. 
+#### Estimating Relative Risk {-}
+
+So far, we've seen three examples, but they've really all dealt with one estimator: namely the average. (As mentioned, even the proportion can be considered an average.) Let's turn to something that does NOT turn out to be normally distributed. 
+
+Say we are interested in the relative risk of being severely depressed between men and women. It seems reasonable that a good estimate of the relative risk in the population is simply the relative risk in the sample we get. Let's take a look. 
+
+```{r cache = TRUE}
+show_depr_by_gender <- full_show %>% 
+  select(id, depression_severity_binary, gender) %>% 
+  filter(complete.cases(.))
+
+# dat <- show_depr_by_gender
+# trt <- quo(gender)
+# out <- quo(depression_severity_binary)
+
+RR <- function(dat, trt, out){
+  
+  trt <- enquo(trt)
+  out <- enquo(out)
+  
+  tmp <- dat %>% 
+    count(!!trt, !!out) %>% 
+    group_by(!!trt) %>% 
+    mutate(totals = sum(n)) %>% 
+    filter(!!out == 1) %>% 
+    summarise(R = n/totals)
+
+  return(filter(tmp, !!trt == 1)$R/filter(tmp, !!trt == 0)$R)
+}
+
+sample_size_RR <- 50
+
+true_RR <- RR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+logRR_var <- show_depr_by_gender %>% 
+  count(gender, depression_severity_binary) %>% 
+  spread(depression_severity_binary, n) %>% 
+  mutate(var_contribution = (`0`/`1`)/sample_size_RR) %>% 
+  pull(var_contribution) %>% sum
+  
+  
+
+samples_RR <- map_dfr(1:N, function(x){ 
+  show_depr_by_gender %>% 
+    #group_by(gender) %>% 
+    sample_n(size = sample_size_RR) %>% 
+    mutate(i = x)
+})
+
+RRs <- samples_RR %>% 
+  group_by(i) %>% 
+  nest() %>%
+  ungroup() %>% 
+  mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+```
+
+We create simple random samples of size `r sample_size_RR`. The first sample consists of the following individuals: 
+
+```{r}
+samples_RR %>% 
+  filter(i == 1) %>% 
+  left_join(full_show) %>% 
+  select(-i) %>% 
+  knitr::kable()
+```
+
+To find the relative risk, we create the 2 by 2 contingency table for `gender` and `depression_severity_binary`:
+
+```{r}
+samples_RR %>% 
+  filter(i == 1) %>% 
+  mutate(gender = if_else(gender == 0, 'Female', 'Male')) %>% 
+  janitor::tabyl(depression_severity_binary, gender) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  knitr::kable()
+```
+
+The relative risk is then calculated as 
+
+$
+\begin{align}
+  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx `r round(RRs[["RR"]][1], digits = 2)`.
+\end{align}
+$
+
+As before, we repeat this many, many times, and plot the results as a histogram, which gives us an approximate distribution of the relative risk in a sample of `r sample_size_RR` subjects.
+
+```{r}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = RR)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/200)) + 
+    geom_vline(aes(xintercept = true_RR, color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+The first thing we probably notice is that this is not a normal distribution. It is not symmetrical, and therefore also not bell-shaped. However, it is very nicely distributed around the true population relative risk. 
+
+So, for the first time we end up with something that is not normally distributed. This is not in and of itself a huge problem, but it does make life a bit harder later on. In this particular case, however, there is a very simple fix: instead of considering the relative risk, consider $\log(RR)$, the log transformed relative risk:
+
+```{r cache = TRUE}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = log(RR))) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    # stat_function(fun = dnorm, args = list(mean = log(true_RR), sd = sqrt(logRR_var))) + 
+    geom_vline(aes(xintercept = log(true_RR), color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+Looks pretty normal, huh? We will (ab)use this fact later on. 
+
+#### Estimating Odds Ratios {-}
+
+Here we repeat the previous section, but estimating the odds ratio instead of the relative risk. Same comments apply.
+
+```{r cache = TRUE}
+OR <- function(dat, trt, out){
+  trt <- enquo(trt)
+  out <- enquo(out)
+  
+  tmp <- dat %>% 
+    count(!!trt, !!out) %>%
+    group_by(!!trt) %>% 
+    mutate(p = n/sum(n)) %>% 
+    select(-n) %>% 
+    spread(!!out, p) %>% 
+    mutate(Odds = `1`/`0`)
+  
+  return(filter(tmp, !!trt == 1)$Odds/filter(tmp, !!trt == 0)$Odds)
+}
+
+true_OR <- OR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+
+ORs <- samples_RR %>% 
+  group_by(i) %>% 
+  nest() %>% 
+  mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
+  ungroup()
+
+ORs %>% 
+  ggplot(aes(x = OR)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    geom_vline(aes(xintercept = true_OR, color = 'True RR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    labs(color = '')
+```
+
+Definitely not normal. But if we log transform...
+
+```{r cache = TRUE}
+logOR_var <- show_depr_by_gender %>% 
+  count(gender, depression_severity_binary) %>% 
+  group_by(gender) %>% 
+  mutate(group_total = sum(n),
+         expected_xi = n/group_total * sample_size_RR,
+         var_contribution = 1/expected_xi) %>% 
+  pull(var_contribution) %>% 
+  sum
+
+
+ORs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = log(OR))) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    stat_function(fun = dnorm, args = list(mean = log(true_OR), sd = sqrt(logOR_var))) + 
+    geom_vline(aes(xintercept = log(true_OR), color = 'True OR'), linetype = 'dashed') + 
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    labs(color = '')
+```
+
+
+## Deriving Distributions in Practice
+
+In the previous section, we considered quite a few examples of estimators, and saw how we can get a very good idea of exactly what the distribution of an estimator is *when we have the entire population at our disposal*. This is basically never the case. Even if we had a way of getting in touch with the entire popoulation, and create thousands and thousands of simple random samples, it is very unlikely we would have the time and funds to do so. So, in practice, we have to do something else to find the distribution of the estimator we're interested in. Here, we will discuss how to do so using what I think is *the* coolest result we will encounter in this class, namely the *Central Limit Theorem*.
+
+
+### The Central Limit Theorem
+
+Let's jump right to it, and state the Central Limit Theorem:
+
+```{theorem, "The Central Limit Theorem", echo = TRUE}
+Let $X_1, X_2, ..., X_n$ be a simple random sample from a population with mean $\mu$ and variance $\sigma^2$ (i.e. $E(X_i) = \mu$ and $\Var(X_i) = \sigma^2$ for all $i$). Then, as long as $n$ is large enough, the *average* $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$ is approximately $N(\mu, \sigma^2 / n)$.
+```
+
+So what's so special about this? It's a rather simple setup: if you have a simple random sample of size "big enough", then the average is going to be normally distributed with mean $\mu$ and variance $\sigma^2/n$. But think about this for a second: there are no assumptions on where you start, and yet we get that we end up with something that is normally distributed! 
+
+Let's revisit the examples from above.
+
+#### Estimating Mean Height {-}
+
+We saw previously that if we create `r N` samples from the SHOW population, calculate the average height of each sample, and then create a histogram of all these averages, it would result in something like figure \@ref(fig:height-averages-histogram). Just by looking at this, we observed it looked a lot like a normal distribution. Now, with the CLT at hand, we can actually find the exact normal distribution that it follows. 
+
+Since we know the true mean and variance (the mean and variance of the entire population), we can find the specific normal distribution that the CLT tells us this distribution should be much like. 
+
+From the SHOW population, we find that the mean height is $\mu = `r mean(show_heights[["height"]])`$, and the variance is $\sigma^2 = `r var(show_heights[["height"]])`$. So, since the sample size here was $n = `r sample_size`$, the CLT tells us that $\bar{X} \sim N(`r true_mean`, `r true_var`/`r sample_size`)$. How does this fit the histogram? The black line below is that exact normal distribution. Fits pretty well, if you ask me.
+
+```{r}
+height_averages_histogram +
+  stat_function(fun = dnorm, args = list(mean = true_mean, sd = sqrt(true_var)/sqrt(sample_size)))
+```
+
+
+#### Estimating Mean Depression Score {-}
+
+We argued above that the fact that the average heights follow a normal distribution isn't all that surprising. But we also saw that the mean depression score actually looks like something that is normally distributed. Well, again, we can use the CLT to calculate the normal distribution it should follow.
+
+The mean depression score in the entire population is `r round(true_mean_dep_score, digits = 2)`, and the variance of the depression scores in the population is `r round(true_var_dep_score, digits = 2)`. So, the average depression score of our samples (that have sample size `r sample_size_dep`), should follow a normal distribution with mean `r round(true_mean_dep_score, digits = 2)` and variance `r round(true_var_dep_score, digits = 2)/sample_size_dep`. 
+
+```{r}
+dep_score_averages_histogram + 
+  stat_function(fun = dnorm, args = list(mean = true_mean_dep_score, sd = sqrt(true_var_dep_score/sample_size_dep)))
+```
+
+Again, pretty spot on!
+
+#### Estimating Proportion of Men {-}
+
+For completion, we consider the last example from above to which the CLT applies. When estimating the proportion of men in the population, the sample proportion also follows a normal distribution, and again we can calculate the mean and variance of that distribution. 
+
+```{r cache = TRUE}
+gender_props_histogram +
+    stat_function(fun = dnorm,
+                  args = list(mean = true_prop,
+                              sd = sqrt(true_prop*(1-true_prop)/sample_size)))
+```
+
+
+#### Even more examples for the curious {-}
+
+To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/).
+
+### Distributions of Common Estimators
+
+
+
