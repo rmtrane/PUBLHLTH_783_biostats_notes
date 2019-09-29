@@ -98,7 +98,8 @@ tribble(
   '"popoulation" instead of "population"', 1,
   '"popoulation" instead of "population"', 1,
   'missing comma: "show how we, in each case, ..."', 1,
-  'missing comma: "In general, when we talk about data, ...', 1
+  'missing comma: "In general, when we talk about data, ...', 1,
+  'wrong denominator in P(mild depression | divorced)', 2
 ) %>%
   left_join(point_system) %>%
   select(Type, Mistake, Points) %>%
