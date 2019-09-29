@@ -1,10 +1,10 @@
 bookdown::gitbook:
   split_by: chapter
-  css: style.css
+  css: css/extra.css
   config:
     toc:
       before: |
-        <li><a href="./" style="font-size: 19px;"><i>Biostatistics in PUBLHLTH 783</i></a></li>
+        <li><a href="./"><b>Public Health 783: Biostatistics</b></a></li>
       after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
       collapse: section
