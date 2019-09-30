@@ -126,22 +126,22 @@ The specificity is the answer to the question "what is the probability the test 
 
 Similarly, we can talk about the *positive predictive value*. Where the sensitivity is the probability that the test is positive if the patient has the disease, the positive predictive value is the probability that a patient has the disease if the test comes back positive. 
 
-Let us again consider the Down Syndrome data. Since the negative predictive value is the probability a child is healthy given the test was negative, it calculated as the proportion of children with negative tests that actually were healthy. So,
+Let us again consider the Down Syndrome data. Since the positive predictive value is the probability a child has Down Syndrome given the test is positive, it is calculated as the proportion of children with positive tests that actually had the disease. So,
 
 \begin{align*}
-  \text{Positive Predictive Value} &= P(\text{child healthy } | \text{ test negative}) \\
-                                   &= \frac{4449}{4450} \\
-                                   &= 0.999.
+  \text{Positive Predictive Value} &= P(\text{child diseased } | \text{ test positive}) \\
+                                   &= \frac{9}{360} \\
+                                   &= 0.025.
 \end{align*}
 
 
-Similarly, since the negative positive predictive value is the probability a child has Down Syndrome given the test was positive, it is calculated as the proportion of children with positive tests that actually has Down Syndrome. So, 
+Similarly, the negative predictive value is the probability a child is healthy given the test was negative. This is calculated as the proportion of children with negative tests that actually are healthy. So, 
 
 
 \begin{align*}
-  \text{Negative Predictive Value} &= P(\text{child diseased } | \text{ test positive}) \\
-                                   &= \frac{9}{360} \\
-                                   &= 0.025.
+  \text{Negative Predictive Value} &= P(\text{child healthy } | \text{ test negative}) \\
+                                   &= \frac{4449}{4450} \\
+                                   &= 0.999.
 \end{align*}
 
 
