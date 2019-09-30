@@ -54,8 +54,7 @@ Note that in both cases 1) we have specified the probabilities of all possible o
 
 Using the latter distribution, we can calculate all sorts of probabilities: 
 
-$$
-\begin{align}
+\begin{align*}
   P(X = 3 \text{ or } X = 4) &= 0.025 + 0.025 = 0.05 \\
   & \\
   P(X < 3) &= 0.9 + 0.025 = 0.925 \\
@@ -63,8 +62,7 @@ $$
   P(3 < X < 5) &= 0.025 \\
   & \\
   P(X = 2 \text{ and } X = 5) &= 0
-\end{align}
-$$
+\end{align*}
 
 <!-- Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes.  -->
 
@@ -272,14 +270,13 @@ pander::pander(mean_discrete_example)
 
 Then we can calculate the expected value of $X$: 
 
-$$
-\begin{align}
+\begin{align*}
   E(X) &= \sum_{i = 1}^4 x_i P(X = x_i) \\
        &= 1 \cdot P(X = 1) + 2 \cdot P(X = 2) + 6 \cdot P(X = 6) + 12 \cdot P(X = 12) \\
        &= 1\cdot 0.2 + 2\cdot 0.1 + 6 \cdot 0.6 + 12 \cdot 0.1 \\
        &= 5.2.
-\end{align}
-$$
+\end{align*}
+
 
 So what does this mean? It means that if we perform an experiment that results in a realization of the random variable $X$ many, many, many times, the average of all outcomes is going to be close to $5.2$.  
 
@@ -329,14 +326,12 @@ Working with the variance of random variables is not quite as simple as working 
 
 Combining (1) and (3) above tells us that, if $X$ and $Y$ are independent, then 
 
-$$
-\begin{align}
+\begin{align*}
 \Var(X - Y) &= \Var(X + (-Y)) \\
             &= \Var(X) + \Var(-Y) \\
             &= \Var(X) + (-1)^2 \Var(Y) \\
             &= \Var(X) + \Var(Y).
-\end{align}
-$$
+\end{align*}
 
 Don't forget this!!
 
@@ -384,16 +379,15 @@ $$
 
 and 
 
-$$
-\begin{align}
+
+\begin{align*}
   \Var(X) &= \sum_{i=1}^2 P(X = x_i) \cdot (x_i - E(X))^2 \\
           &= P(X = 0)\cdot (0 - p)^2 + P(X = 1)\cdot (1 - p)^2 \\
           &= (1 - p)\cdot p^2 + p\cdot (1 - p)^2 \\
           &= (1-p)\cdot(p^2 + p\cdot(1-p)) \\
           &= (1-p)\cdot(p^2 + p - p^2) \\
           &= (1-p)\cdot p.
-\end{align}
-$$
+\end{align*}
 
 So it is actually rather simple to find the expected value and variance of a Bernoulli random variable, if we know the probability of success ($p$). 
 
@@ -407,7 +401,7 @@ Let's think for a second about what possible values $Y$ can take. If all $n$ Ber
 
 Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
 
-```{r binomial_example, eval = FALSE, include = FALSE}
+```{r binomial_example, include = FALSE}
 binom_n <- 50000
 binom_n_print <- format(binom_n, scientific = F)
 
@@ -482,25 +476,22 @@ As mentioned, the expected value is basically the long run average. So, if we ca
 
 If we use the rules of expectation and variance from the previous section, we can find the exact expected value and variance of a binomial random variable with size $n$ and probability of success $p$. Since $Y \sim \text{Binomial}(n,p)$ if $Y = X_1 + ... + X_n$, where $X_i \sim \text{Bernoulli}(p)$ and all $X_i$'s are independent, we have that 
 
-$$
-\begin{align}
+
+\begin{align*}
   E(Y) &= E(X_1 + ... + X_n) && \\
        &= E(X_1) + ... + E(X_n) && \\
        &= p + ... p && (E(X_i) = p \text{ since } X_i \sim \text{Bernoulli}(p)) \\
        &= n\cdot p, &&
-\end{align}
-$$
+\end{align*}
 
 and 
 
-$$
-\begin{align}
+\begin{align*}
   \Var(Y) &= \Var(X_1 + ... + X_n) && \\
           &= \Var(X_1) + ... + \Var(X_n) && (\text{since all } X_i's \text{ are independent}) \\
           &= p\cdot(1-p) + ... + p\cdot(1-p) && (\text{since } X_i \sim \text{Bernoulli}(p)) \\
           &= n\cdot p \cdot (1-p). &&
-\end{align}
-$$
+\end{align*}
 
 These two equations really emphasize that a Binomial random variable is really just $n$ Bernoulli's: notice how both the expected value and the variance is $n$ times that of a single Bernoulli random variable!
 
@@ -548,19 +539,18 @@ As the names of the parameters suggest, the actual expected value and variance o
 
 One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(properties-of-random-variables), we get that 
 
-$$\begin{aligned}
+
+\begin{align*}
   E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\
   E(Y_2) &= E(a\cdot X) = a E(X) = a\cdot \mu,
-\end{aligned}$$
+\end{align*}
 
 and 
 
-$$
-\begin{aligned}
+\begin{align*}
   \Var(Y_1) &= \Var(X+a) = \Var(X) = \sigma^2, \\
   \Var(Y_2) &= \Var(a\cdot X) = a^2 \Var(X) = a^2 \sigma^2.
-\end{aligned}
-$$
+\end{align*}
 
 So $X + a \sim N(\mu + a, \sigma^2)$, and $a\cdot X \sim N(a\cdot \mu, a^2 \sigma^2)$. 
 

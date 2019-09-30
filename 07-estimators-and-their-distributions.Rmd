@@ -378,11 +378,9 @@ samples_RR %>%
 
 The relative risk is then calculated as 
 
-$
-\begin{align}
+\begin{align*}
   \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx `r round(RRs[["RR"]][1], digits = 2)`.
-\end{align}
-$
+\end{align*}
 
 As before, we repeat this many, many times, and plot the results as a histogram, which gives us an approximate distribution of the relative risk in a sample of `r sample_size_RR` subjects.
 
