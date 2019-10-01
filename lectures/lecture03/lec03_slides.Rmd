@@ -1,8 +1,8 @@
 ---
-title: "Biostats Lecture 3: Introduction to Probability"
+title: "Biostats Lecture 3: Introduction to Probability, Random Variables, and Distributions."
 subtitle: "Public Health 783"
 author: "Ralph Trane"
-institute: "University of Wisconsin--Madison<br><br>"
+institute: "University of Wisconsin--Madison<br>"
 date: "Fall 2019"
 output:
   xaringan::moon_reader:
@@ -23,6 +23,8 @@ output:
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, dpi=300, cache = TRUE)
 
 options(DT.options = list(scrollX = TRUE))
+
+pander::panderOptions('round', 4)
 
 library(tidyverse)
 library(viridis)
@@ -45,18 +47,17 @@ framingham <- read_csv("../../data/Framingham/framingham.csv") %>%
 
 # Learning Objectives
 
-1.
+1. Familiarize ourselves with concepts within probability theory
+
+2. Introduce Random Variables, and hint at why this concept will be useful
+
+3. Introduce distributions, and take a look at certain properties of certain distributions
 
 ---
 layout: true
 
 # Introduction to Probability
 
----
-
-.center[
-## Motivational Spiel
-]
 ---
 
 ## Definitions
@@ -197,8 +198,8 @@ In general, we would estimate the probability in this way: the proportion of the
 ---
 
 Moral of the story: probabilities dictate the results of sampling (when done right).
---
- I.e. using probability theory, we can find out what to expect from sampling.
+
+I.e. using probability theory, we can find out what to expect from sampling.
 
 This allows us to judge if differences in samples are "as expected", or "out of the ordinary". 
 
@@ -223,7 +224,7 @@ We introduce *random variables* to
 
 ## What is a "Random Variable"?
 
-A "random variable" is a variable tied to the outcome of an experiment. 
+A *random variable* is a variable tied to the outcome of an experiment. 
 
 The value of it is unknown and uncertain before the experiment is conducted. 
 
@@ -263,7 +264,7 @@ Talk about probabilities of different outcomes:
 
 2. $X = \text{sex of randomly chosen individual}$. What is $P(X = \text{male})$?
 
-3. $X = \text{educational level of randomly chosen individual from the FHS}$. What is $P(X \in \{\text{1,3,4}\})$? ($X$ is either 1,3, or 4)
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. What is $P(X \in \{\text{1,3,4}\})$? ( $X$ is either 1,3, or 4)
 
 4. $X = \text{height of randomly chosen 783 student}$. What is $P(X \ge 180 \text{cm})$?
 
@@ -371,20 +372,22 @@ How do we find $\text{SD}(X)$?
 
 ### Useful Properties: 
 
+$X$ and $Y$ are random variables, $a$ is a constant (i.e. some fixed number).
+
 \begin{align}
 E(a\cdot X) &= a E(X) \\
+E(a) &= a \\
 E(X + Y) &= E(X) + E(Y) \\
 & \\
 \text{Var}(a \cdot X) &= a^2 \text{Var}(X) \\
+\text{Var}(a) &= 0 \\
 \text{Var}(X + Y) &= \text{Var}(X) + \text{Var}(Y) \\
 & (\text{IF } X \text{ and } Y \text{ are independent})
 \end{align}
 
 What is $\text{Var}(X - Y)$?
-
 --
-
-$\text{Var}(X - Y) = \text{Var}(X) + \text{Var}(Y)$. Don't forget this!
+ $\text{Var}(X - Y) = \text{Var}(X) + \text{Var}(Y)$. Don't forget this!
 
 ---
 layout: true
@@ -413,8 +416,6 @@ Examples:
 --
 
 If $X \sim \text{Bernoulli}(p)$, then
-
---
 
 $$
   E(X) = p,
@@ -454,18 +455,19 @@ For a few different values of $n$ and $p$, the Binomial distribution has the fol
 binom_examples <- tibble(x = rep(0:25, 3),
                          size = rep(c(10, 25, 17), each = 26),
                          prob = rep(c(0.3, 0.6, 0.8), each = 26)) %>% 
-  mutate(p = dbinom(x = x, size = size, prob = prob),
+  mutate(P = dbinom(x = x, size = size, prob = prob),
+         p = round(P, digits = 5),
          binom = paste0("N = ", size, ", p = ", prob))
 
 binom_ex_plot <- ggplot(binom_examples,
-       aes(x = x, y = p)) + 
+       aes(x = x, y = P, label = p)) + 
   geom_histogram(stat = 'identity', width = 1) + 
   facet_wrap(~binom, ncol = 1) +
   scale_x_continuous('y', breaks = 0:25) +
   scale_y_continuous('P(Y = y)') 
 #binom_ex_plot
 
-plotly::ggplotly(binom_ex_plot)
+plotly::ggplotly(binom_ex_plot, tooltip =  'label')
 ```
 
 
@@ -476,7 +478,7 @@ layout: true
 
 ---
 
-For a continuous distribution, can we specify the probability of every single possible outcome?
+For a continuous variable, can we specify the probability of every single possible outcome?
 --
  No, because number of outcomes is uncountable!
 
@@ -485,13 +487,13 @@ Instead, specify a curve.
 ---
 
 ```{r}
-X <- Normal(mu = 4, sigma = 1)
+X <- Normal(mu = 170, sigma = 15)
 
 X_samples <- tibble(x = random(X, n = 1000000)) %>% mutate(i = row_number())
 ```
 
 
-Observe $10$ realizations of a random variable $X$, draw a histogram with $10$ bins.
+Observe the height of $10$ individuals, draw a histogram with $10$ bins.
 
 .center[
 
@@ -501,8 +503,8 @@ normal_histogram <- function(I = 10, bins = 10){
          aes(x = x)) + 
     geom_histogram(bins = bins, boundary = 0,
                    aes(y = ..density..)) + 
-    scale_x_continuous(limits = c(floor(min(X_samples$x)), ceiling(max(X_samples$x))),
-                       breaks = floor(min(X_samples$x)):ceiling(max(X_samples$x)))
+    scale_x_continuous(limits = c(90, 240),
+                       breaks = seq(90, 240, by = 10))
 }
 
 normal_histogram()
@@ -510,7 +512,7 @@ normal_histogram()
 ]
 ---
 
-Observe $100$ realizations, draw a histogram with $20$ bins.
+Observe the height of $100$ individuals, draw a histogram with $20$ bins.
 
 .center[
 
@@ -522,7 +524,7 @@ normal_histogram(I = 100, bins = 20)
 
 ---
 
-Observe $1000$ realizations, draw a histogram with $75$ bins.
+Observe the height of $1000$ individuals, draw a histogram with $75$ bins.
 
 .center[
 
@@ -534,7 +536,7 @@ normal_histogram(I = 1000, bins = 75)
 
 ---
 
-Observe $10000$ realizations, draw a histogram with $100$ bins
+Observe the height of $10000$ individuals, draw a histogram with $100$ bins
 
 .center[
 
@@ -546,7 +548,7 @@ normal_histogram(I = 10000, bins = 100)
 
 ---
 
-Observe $10000$ realizations, draw a histogram with $125$ bins.
+Observe the height of $100000$ individuals, draw a histogram with $125$ bins.
 
 .center[
 
@@ -558,7 +560,7 @@ normal_histogram(I = 100000, bins = 125)
 
 ---
 
-Let's try with $1000000$ realizations, and $150$ bins. 
+Observe the height of $1000000$ individuals, and $150$ bins. 
 
 .center[
 
@@ -575,7 +577,7 @@ The data here was simulated from a normal distribution with mean `r X[['mu']]` a
 
 ```{r fig.width=5, fig.height = 5, out.width = 400}
 ggplot(data = NULL, 
-       aes(x = seq(-1, 9, by = 0.01))) + 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
   stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
                 color = 'red', size = 1) +
   labs(x = 'x', y = 'density')
@@ -604,8 +606,49 @@ In words: the distribution of a continuous RV is the curve that appears when a h
 
 Probability = area under the curve. 
 
-What is $P()$
+What is $P(X \le 160)$?
 
+It is the shaded area on the following figure
+
+.center[
+```{r out.width = 450, fig.width = 4, fig.height = 3}
+ggplot(data = NULL, 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                size = 1) + 
+  geom_area(aes(x = seq(X$mu - 3*X$sigma, 160, by = 0.1),
+                y = dnorm(seq(X$mu - 3*X$sigma, 160, by = 0.1), mean = X$mu, sd = X$sigma)),
+            alpha = 0.75) +
+  labs(x = 'x', y = 'Density')
+```
+
+]
+
+---
+
+### Probabilities from a curve
+
+Probability = area under the curve. 
+
+What is $P(172 < X < 185)$?
+
+--
+
+It is the shaded area on the following figure
+
+.center[
+```{r out.width = 450, fig.width = 4, fig.height = 3}
+ggplot(data = NULL, 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                size = 1) + 
+  geom_area(aes(x = seq(172, 185, by = 0.1),
+                y = dnorm(seq(172, 185, by = 0.1), mean = X$mu, sd = X$sigma)),
+            alpha = 0.75) +
+  labs(x = 'x', y = 'Density')
+```
+
+]
 
 
 ---
@@ -622,7 +665,7 @@ The Normal Distribution (also known as the Gaussian Distribution) is a continuou
 It is specified using two parameters: the mean $\mu$, and the variance $\sigma^2$. If $X$ follows a normal distribution with mean $\mu$, and variance $\sigma^2$, we write $X \sim N(\mu, \sigma^2)$. 
 
 .center[
-```{r out.width = 300}
+```{r out.width = 500, fig.width = 4, fig.height = 3}
 ggplot(data = tibble(x = seq(-5, 8, by = 0.01)),
        aes(x = x)) + 
   stat_function(fun = dnorm,
@@ -638,3 +681,193 @@ ggplot(data = tibble(x = seq(-5, 8, by = 0.01)),
 ```
 
 ]
+
+
+---
+
+#### Properties
+
+The Normal Distribution has a quite a few really nice properties. If $X \sim N(\mu_X, \sigma_X^2)$ and $Y \sim N(\mu_Y, \sigma_Y^2)$, then
+
+1. the sum $X + Y$ is also normally distributed, and if they are independent $X + Y \sim N(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)$,
+
+2. $X + a \sim N(\mu_X + a, \sigma_X^2)$, and $a\cdot X \sim N(a\cdot \mu_X, a^2 \sigma_X^2)$ where $a$ is some constant,
+
+3. $\frac{X - \mu_X}{\sigma_X} \sim N(0,1)$. $N(0,1)$ is called the *standard normal distribution*. 
+
+---
+
+```{r fig.height = 2, fig.width = 4, out.width = 700}
+Y <- Normal(-30, 10)
+normal_sims <- X_samples %>% 
+  sample_n(10000) %>% 
+  mutate(y = random(Y, nrow(.)),
+         `X+Y` = x + y,
+         `X-Y` = x - y,
+         `Standardize X` = (x - mean(x))/sd(x),
+         `Standardize Y` = (y - mean(y))/sd(y)) %>% 
+  select(-i) %>%
+  rename(X = x, Y = y) %>% 
+  gather(key = 'Variable', value = 'value') %>% 
+  mutate(mean = case_when(Variable == 'X' ~ X$mu,
+                          Variable == 'Y' ~ Y$mu,
+                          Variable == 'X+Y' ~ X$mu + Y$mu,
+                          Variable == 'X-Y' ~ X$mu - Y$mu,
+                          str_detect(Variable, 'Standardize') ~ 0,
+                          TRUE ~ NA_real_),
+         var = case_when(Variable == 'X' ~ X$sigma^2,
+                          Variable == 'Y' ~ Y$sigma^2,
+                          Variable == 'X+Y' ~ X$sigma^2 + Y$sigma^2,
+                          Variable == 'X-Y' ~ X$sigma^2 + Y$sigma^2,
+                          str_detect(Variable, 'Standardize') ~ 1,
+                          TRUE ~ NA_real_),
+         Variable = factor(Variable,
+                           levels = c('X', 'Y', 'X+Y', 'X-Y', 'Standardize X', 'Standardize Y'))) %>% 
+  group_by(Variable) %>% 
+  mutate(emp_mean = mean(value),
+         emp_var = var(value))
+```
+
+Say we observe $10000$ realizations of random variables $X$ and $Y$. We will now take a look at $X + Y$, $X - Y$, $\frac{X - \bar{X}}{\text{SD}(X)}$, and $\frac{X - \bar{X}}{\text{SD}(X)}$.
+
+First, this is the data. 
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  select(Variable, value) %>% 
+  mutate(i = row_number()) %>% 
+  spread(Variable, value) %>% 
+  mutate_at(vars(X,Y), round, digits = 2) %>% 
+  select(-i) %>% 
+  DT::datatable(options = list(pageLength = 5, lengthMenu = c(5)))
+```
+
+---
+
+Let's take a look at the variables $X$, and $Y$.
+
+.center[
+```{r out.width = 600, fig.width = 6, fig.height = 2}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+
+---
+
+How does $X+Y$ compare?
+
+.center[
+```{r fig.height = 2, fig.width = 6, out.width = 900}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X+Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+How does $X+Y$ compare?
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X+Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+---
+
+How does $X-Y$ compare?
+
+.center[
+```{r fig.height = 2, fig.width = 6, out.width = 900}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X-Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+How does $X-Y$ compare?
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X-Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+
+---
+
+And what if we standardize, i.e. subtract the mean, and divide by the standard deviation? 
+
+.center[
+```{r fig.height = 4, fig.width = 4, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'Standardize X', 'Standardize Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2)
+```
+]
+
+---
+
+.pull-left[
+```{r fig.height = 4, fig.width = 3, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2, scales = 'free_y')
+```
+]
+
+.pull-right[
+```{r fig.height = 4, fig.width = 3, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('Standardize X', 'Standardize Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2, scales = 'free_y')
+```
+]
+
+---
+
+And what if we standardize, i.e. subtract the mean, and divide by the standard deviation? 
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'Standardize X', 'Standardize Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
