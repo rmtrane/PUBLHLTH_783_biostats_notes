@@ -61,9 +61,9 @@ prenatal_screening <- tibble(`Fetus Status` = c('Affected', 'Affected', 'Unaffec
 prenatal_screening_DT <- prenatal_screening %>% 
   janitor::as_tabyl() %>% 
   janitor::adorn_totals(where = c('row', 'col')) %>% 
-  DT::datatable(options = list(dom = "t", ordering = FALSE), 
+  DT::datatable(options = list(dom = "t", ordering = FALSE, scrollX = FALSE), 
                 rownames = FALSE,
-                width = 10)
+                width = 500)
 
 prenatal_screening_DT
 ```
@@ -107,9 +107,10 @@ tibble(`Fetus Status` = c('Affected', 'Affected', 'Unaffected', 'Unaffected'),
   arrange(`Screening Test Result`) %>% 
   janitor::as_tabyl() %>% 
   janitor::adorn_totals(where = c('row', 'col')) %>% 
-  DT::datatable(options = list(dom = "t", ordering = FALSE), 
+  DT::datatable(options = list(dom = "t", ordering = FALSE, scrollX = FALSE), 
                 rownames = FALSE,
-                width = 10)
+                width = 500)
+
 ```
 
 
@@ -140,8 +141,6 @@ Similarly, the negative predictive value is the probability a child is healthy g
                                    &= \frac{4449}{4450} \\
                                    &= 0.999.
 \end{align*}
-
->>>>>>> master
 
 ## Bayes' Theorem
 
