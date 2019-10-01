@@ -406,6 +406,9 @@ binom_n_print <- format(binom_n, scientific = F)
 
 n <- 10
 if(!file.exists("data/R_output/binom_outcomes.Rds")){
+  if(!dir.exists("data/R_output"))
+    dir.creates("data/R_output")
+  
   binom_outcomes <- tibble(i = 1:binom_n,
                            Numeric = map(i, function(...) as.numeric(rbernoulli(n))),
                            HTs = map_chr(Numeric, function(x) if_else(x == 1, "H", "T") %>% 
