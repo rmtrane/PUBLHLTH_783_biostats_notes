@@ -54,8 +54,7 @@ Note that in both cases 1) we have specified the probabilities of all possible o
 
 Using the latter distribution, we can calculate all sorts of probabilities: 
 
-$$
-\begin{align}
+\begin{align*}
   P(X = 3 \text{ or } X = 4) &= 0.025 + 0.025 = 0.05 \\
   & \\
   P(X < 3) &= 0.9 + 0.025 = 0.925 \\
@@ -63,14 +62,12 @@ $$
   P(3 < X < 5) &= 0.025 \\
   & \\
   P(X = 2 \text{ and } X = 5) &= 0
-\end{align}
-$$
+\end{align*}
 
 <!-- Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes.  -->
 
 <!-- Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data.  -->
 
-<!-- --- -->
 
 <!-- The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve. -->
 
@@ -127,7 +124,7 @@ Remember how we interpret probabilities per definition \@ref(def:prob-def-2) ("t
 
 The animation below illustrates this. Here we pretend that we observe the outcome of a random variable $X$ many, many times. We continuously draw a histogram of the values we've seen so far. 
 
-<video controls>
+<video controls width="500px">
   <source src="exponential_distr_animation.mp4" type="video/mp4">
 </video>
 
@@ -245,8 +242,7 @@ ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>%
 
 How about the area between $1$ and $2$? This is `r round(cdf_Z(2) - cdf_Z(1), digits = 3)`. Between $1.5$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.5), digits = 3)`. Between $1.9$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.9), digits = 3)`. Between $1.995$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.995), digits = 3)`. As you can see, the closer we get to the "interval" $2$ to $2$, the smaller the area. In fact, if you take the limit, the area is $0$. 
 
->>>>>>> random-vars
-## Properties of Random Variables
+## Properties of Random Variables {#prop-of-RVs}
 
 When we talk about random variables, there is a great deal of uncertainty involved, since (by design) we do not know exactly what values the random variables will take after a conducted experiment. Similarly, we cannot be sure that repeating an experiment results in the same outcomes of the random variables simply since they are, as the name strongly implies, random. However, if we have some information about the random variable we're interested in, we can talk about some very important features of the random variable. The two we will talk about here are the *expected value* and *variance/standard deviation* of random variables. 
 
@@ -272,14 +268,14 @@ pander::pander(mean_discrete_example)
 
 Then we can calculate the expected value of $X$: 
 
-$$
-\begin{align}
+
+\begin{align*}
   E(X) &= \sum_{i = 1}^4 x_i P(X = x_i) \\
        &= 1 \cdot P(X = 1) + 2 \cdot P(X = 2) + 6 \cdot P(X = 6) + 12 \cdot P(X = 12) \\
        &= 1\cdot 0.2 + 2\cdot 0.1 + 6 \cdot 0.6 + 12 \cdot 0.1 \\
        &= 5.2.
-\end{align}
-$$
+\end{align*}
+
 
 So what does this mean? It means that if we perform an experiment that results in a realization of the random variable $X$ many, many, many times, the average of all outcomes is going to be close to $5.2$.  
 
@@ -329,14 +325,12 @@ Working with the variance of random variables is not quite as simple as working 
 
 Combining (1) and (3) above tells us that, if $X$ and $Y$ are independent, then 
 
-$$
-\begin{align}
+\begin{align*}
 \Var(X - Y) &= \Var(X + (-Y)) \\
             &= \Var(X) + \Var(-Y) \\
             &= \Var(X) + (-1)^2 \Var(Y) \\
             &= \Var(X) + \Var(Y).
-\end{align}
-$$
+\end{align*}
 
 Don't forget this!!
 
@@ -373,27 +367,26 @@ Things people often forget:
 
 ### The Bernoulli Distribution 
 
-
 In example \@ref(examples-random-variables) above, we consider flipping a coin. Such an experiment, i.e. one with only two possible outcomes, is often referred to as a *Bernoulli experiment*, and the random variable $X$ is referred to as a *Bernoulli random variable*. The "probability of success" (you get to pick your favorite outcome as a success) is often denoted $p$. As a shorthand for such a random variable, we write $X \sim \text{Bernoulli}(p)$, which is read as "$X$ follows a Bernoulli distribution with probability parameter $p$" or "$X$ is Bernoulli distributed with parameter $p$". Phrases like these can sometimes sound scary and complex, but all it means is that the random variable $X$ can only take on two different outcomes, and the probability of $X$ being one of the two outcomes is $p$, the probability of it being the other is $1-p$. (Important note: remember that the sum of all probabilities has to be $1$, so if the probability of one outcome is $p$, and there are only two possible outcomes, then the probability of the other outcome must be $1-p$. This way of thinking is something we will use over and over again.)
 
-Using the properties discussed in section \@ref(properties-of-random-variables), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
+Using the properties discussed in section \@ref(prop-of-RVs), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
 
-$$
+\[
   E(X) = \sum_{i=1}^2 x_i \cdot P(X = x_i) = 0 \cdot P(X = 0) + 1 \cdot P(X = 1) = p,
-$$
+\]
 
 and 
 
-$$
-\begin{align}
+
+\begin{align*}
   \Var(X) &= \sum_{i=1}^2 P(X = x_i) \cdot (x_i - E(X))^2 \\
           &= P(X = 0)\cdot (0 - p)^2 + P(X = 1)\cdot (1 - p)^2 \\
           &= (1 - p)\cdot p^2 + p\cdot (1 - p)^2 \\
           &= (1-p)\cdot(p^2 + p\cdot(1-p)) \\
           &= (1-p)\cdot(p^2 + p - p^2) \\
           &= (1-p)\cdot p.
-\end{align}
-$$
+\end{align*}
+
 
 So it is actually rather simple to find the expected value and variance of a Bernoulli random variable, if we know the probability of success ($p$). 
 
@@ -407,7 +400,7 @@ Let's think for a second about what possible values $Y$ can take. If all $n$ Ber
 
 Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
 
-```{r binomial_example, eval = FALSE, include = FALSE}
+```{r binomial_example}
 binom_n <- 50000
 binom_n_print <- format(binom_n, scientific = F)
 
@@ -432,7 +425,7 @@ Since it's impossible to flip $n$ coins (for what is $n$?), we have to pick a re
 DT::datatable(binom_outcomes %>% select(-i))
 ```
 
-Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{# experiments with } Y = 2}{\text{# experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
+Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{number of experiments with } Y = 2}{\text{number of experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
 
 ```{r}
 binom_outcomes %>% 
@@ -482,25 +475,22 @@ As mentioned, the expected value is basically the long run average. So, if we ca
 
 If we use the rules of expectation and variance from the previous section, we can find the exact expected value and variance of a binomial random variable with size $n$ and probability of success $p$. Since $Y \sim \text{Binomial}(n,p)$ if $Y = X_1 + ... + X_n$, where $X_i \sim \text{Bernoulli}(p)$ and all $X_i$'s are independent, we have that 
 
-$$
-\begin{align}
+
+\begin{align*}
   E(Y) &= E(X_1 + ... + X_n) && \\
        &= E(X_1) + ... + E(X_n) && \\
        &= p + ... p && (E(X_i) = p \text{ since } X_i \sim \text{Bernoulli}(p)) \\
        &= n\cdot p, &&
-\end{align}
-$$
+\end{align*}
 
 and 
 
-$$
-\begin{align}
+\begin{align*}
   \Var(Y) &= \Var(X_1 + ... + X_n) && \\
           &= \Var(X_1) + ... + \Var(X_n) && (\text{since all } X_i's \text{ are independent}) \\
           &= p\cdot(1-p) + ... + p\cdot(1-p) && (\text{since } X_i \sim \text{Bernoulli}(p)) \\
           &= n\cdot p \cdot (1-p). &&
-\end{align}
-$$
+\end{align*}
 
 These two equations really emphasize that a Binomial random variable is really just $n$ Bernoulli's: notice how both the expected value and the variance is $n$ times that of a single Bernoulli random variable!
 
@@ -546,21 +536,21 @@ As the names of the parameters suggest, the actual expected value and variance o
 
 #### Linear Combination of Normal with Constant
 
-One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(properties-of-random-variables), we get that 
+One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(props-of-RVs), we get that 
 
-$$\begin{aligned}
+\begin{align*}
   E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\
   E(Y_2) &= E(a\cdot X) = a E(X) = a\cdot \mu,
-\end{aligned}$$
+\end{align*}
 
 and 
 
-$$
-\begin{aligned}
+
+\begin{align*}
   \Var(Y_1) &= \Var(X+a) = \Var(X) = \sigma^2, \\
   \Var(Y_2) &= \Var(a\cdot X) = a^2 \Var(X) = a^2 \sigma^2.
-\end{aligned}
-$$
+\end{align*}
+
 
 So $X + a \sim N(\mu + a, \sigma^2)$, and $a\cdot X \sim N(a\cdot \mu, a^2 \sigma^2)$. 
 

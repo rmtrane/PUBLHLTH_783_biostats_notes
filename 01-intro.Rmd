@@ -80,3 +80,4 @@ The first approach is refered to as testing a *statistical hypothesis*, or *null
 
 This has all been very abstract (and I think I got carried away in that last paragraph). We'll see examples of this over and over again throughout the semester, so hopefully it'll be easier to comprehend as we go along. 
 
+

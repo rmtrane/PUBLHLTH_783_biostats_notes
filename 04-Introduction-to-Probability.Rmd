@@ -6,7 +6,7 @@ Loosely based on @ls chapter 5.
 
 A *probability* is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 **always** occurs, while an event with probability of 0 **never** occurs. Every number in between are a bit harder to interpret. 
 
-For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there's a 0.5 (i.e. 50\%) chance of rain tomorrow? We can only observe if it rains tomorrow or not once, so the probability surely must be 0 (it doesn't rain) or 1 (it rains), right?
+For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there's a 0.5 (i.e. 50\%) chance of rain tomorrow? We can only observe if it rains tomorrow once, so the probability surely must be 0 (it doesn't rain) or 1 (it rains), right?
 
 ## Definitions
 
@@ -24,7 +24,7 @@ We often refer to the numerator in this fraction as the number of favorable outc
 
 I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: "IF all outcomes are equally likely". We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption. 
 
-The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and by far most boring, examples in the history of statistics. However, they are super useful for two reasons: 
+The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and (by far!!) most boring examples in the history of statistics. However, they are super useful for two reasons: 
 
 1. They are so simple that it is possible to better grasp what's going on
 2. A lot of more complicated examples can be simplified by comparing them to these two
@@ -35,16 +35,16 @@ The best way to become comfortable with this definition is by considering a few 
 
 We want to find the probability $P(\text{coin comes up heads})$. A natural assumption is that when flipping a coin, heads and tails are the only outcomes^[i.e. it is NOT possible for the coin to land on the side], and they are equally likely. Therefore, 
 
-\begin{align}
-  P(\text{coin comes up heads}) &= \frac{\text{# possible outcomes that come up heads}}{\text{# possible outcomes}} \\
+\begin{align*}
+  P(\text{coin comes up heads}) &= \frac{\text{number of possible outcomes that come up heads}}{\text{number of possible outcomes}} \\
   &= \frac{1}{2} \\
   &= 0.5.
-\end{align}
+\end{align*}
 
 Similarly, one can find the probability that the coin comes up tails:
 
 \begin{align}
-  P(\text{coin comes up tails}) &= \frac{\text{# possible outcomes that come up tails}}{\text{# possible outcomes}} \\
+  P(\text{coin comes up tails}) &= \frac{\text{number of possible outcomes that come up tails}}{\text{number of possible outcomes}} \\
   &= \frac{1}{2} \\
   &= 0.5.
 \end{align}
@@ -179,5 +179,3 @@ full_show %>%
   select(-valid_percent, `Depression Severity` = depression_severity, Count = n, `Estimated Probability` = percent) %>% 
   pander::pander()
 ```
-
-

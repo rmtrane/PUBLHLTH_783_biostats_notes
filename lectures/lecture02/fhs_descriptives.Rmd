@@ -1,0 +1,465 @@
+---
+title: "Framingham Heart Study"
+author: "Ralph Trane"
+date: "9/25/2019"
+output: 
+  html_document: 
+    code_folding: hide
+---
+
+<style>
+.column-left{
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+.column-right{
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+</style>
+
+```{r warning=FALSE, message = FALSE}
+## Set code chunk option defaults
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+## Load packages needed
+library(tidyverse)
+library(viridis)
+
+## Set theme for plots (only works when you load ggplot2, which can be done using library(ggplot2) OR with library(tidyverse))
+theme_set(theme_bw())
+
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+## Import data and manipulate a bit
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+```
+
+## Introduction
+
+About FHS:
+
+* Started in 1948 to investigate cardiovascular disease (CVD)
+
+* At the time, little was known about CVD, but death rates were increasing
+
+* Researchers recruited 5,209 men and women between the ages of 30 and 62
+
+* Subjects returned every two years for detailed medical history and physical examinations
+
+* In 1971, enrolled 5,124 new subjects - offspring of the original subjects!
+
+* In 2002, started enrolling third generation!
+
+Side note: Beaver Dam Eye Study here in Wisconsin is very similar. They are now on their third generation of subjects as well. 
+
+Subset of FHS data (from [kaggle](https://www.kaggle.com/amanajmera1/framingham-heart-study-dataset)). Data from `r nrow(framingham)` subjects collected over a 10 year period. Outcome: risk factors for developing Coronary Heart Disease (CHD).
+
+```{r}
+## Set options for DT
+options(DT.options = list(scrollX = TRUE))
+
+## Print data using DT::datatable
+framingham %>% 
+  DT::datatable()
+```
+
+## Categorical variables
+
+```{r}
+cat_vars <- c('gender', 'currentSmoker', 'BPMeds', 'prevalentStroke', 'prevalentHyp', 'diabetes', 'TenYearCHD')
+
+ord_vars <- 'education'
+
+cont_vars <- setdiff(colnames(framingham), c(cat_vars, ord_vars))
+```
+
+The categorical variables in this data set: ``r paste(cat_vars, collapse = ', ')``.
+
+Ordinal variables: ``r paste(ord_vars, collapse = ', ')``. 
+
+First thing to do: summarize these variables using tables of frequencies. 
+
+```{r results='hide'}
+## Change categorical variables to categorical variables
+framingham <- framingham %>% 
+  mutate_at(vars({cat_vars}), as.character) %>% 
+  mutate(education = fct_explicit_na(as_factor(education), na_level = 'NA'))
+
+## Create tables for all discrete variables
+cat_tables <- framingham %>% 
+  select({c(cat_vars, ord_vars)}) %>% 
+  gather(key = 'Variable') %>% 
+  nest(data = value) %>% 
+  mutate(tables = map(data, function(x){
+    x %>% 
+      janitor::tabyl(value) %>% 
+      janitor::adorn_totals() %>% 
+      select(-contains('valid')) %>% 
+      rename(Frequency = n, `Relative Frequency` = percent)
+  }))
+
+## Print without relative frequencies
+cat_tables$tables %>% 
+  map(~.x %>% select(-`Relative Frequency`)) %>% 
+  set_names(cat_tables$Variable) %>% 
+  pander::pander()
+```
+
+<div class="column-left">
+```{r echo = FALSE}
+cat_tables$tables %>% 
+  map(~.x %>% select(-`Relative Frequency`)) %>% 
+  set_names(cat_tables$Variable) %>% 
+  head(n = length(.)/2) %>% 
+  pander::pander()
+```
+</div>
+
+<div class="column-right">
+```{r echo = FALSE}
+cat_tables$tables %>% 
+  map(~.x %>% select(-`Relative Frequency`)) %>% 
+  set_names(cat_tables$Variable) %>% 
+  tail(n = length(.)/2) %>% 
+  pander::pander()
+```
+</div>
+
+To find relative frequencies: divide frequencies by total. This gives us an opportunity to see if any variables are very skewed (i.e. some categories very rare), assess how much data is missing, etc. 
+
+```{r results='hide'}
+cat_tables$tables %>% 
+  set_names(cat_tables$Variable) %>% 
+  pander::pander()
+```
+
+<div class="column-left">
+```{r echo = FALSE}
+cat_tables$tables %>% 
+  set_names(cat_tables$Variable) %>% 
+  head(n = length(.)/2) %>% 
+  pander::pander()
+```
+</div>
+
+<div class="column-right">
+```{r echo = FALSE}
+cat_tables$tables %>% 
+  set_names(cat_tables$Variable) %>% 
+  tail(n = length(.)/2) %>% 
+  pander::pander()
+```
+</div>
+
+**Q**: Why do we care about the relative frequencies, when they are so closely related to the frequency counts? 
+
+**A**: For comparisons. 
+
+Consider frequency counts of male vs. female smokers. There are more female non-smokers than male non-smokers... but that could just be because there are more female than male subjects! 
+
+```{r}
+framingham %>% 
+  janitor::tabyl(gender, currentSmoker) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  rename(`gender \\\\ currentSmoker` = gender) %>% 
+  pander::pander()
+```
+
+If we revert to relative frequencies, it becomes easier to compare across groups.
+
+
+```{r}
+framingham %>% 
+  janitor::tabyl(gender, currentSmoker) %>% 
+  janitor::adorn_percentages(denominator = 'row') %>% 
+  janitor::adorn_totals('col') %>% 
+  rename(`gender \\\\ currentSmoker` = gender) %>% 
+  pander::pander()
+```
+
+## Graphical Representation
+
+Too many tables, not enough figures!
+
+Best way to display categorical data: bar chart!
+
+```{r fig.width = 7, fig.height = 12}
+bar_charts <- framingham %>% 
+  select({c(cat_vars, ord_vars)}) %>% 
+  gather(key = 'Variable') %>% 
+  ggplot(aes(x = value)) +
+    facet_wrap(~Variable, scales = 'free', ncol = 2) +
+    geom_bar() + 
+    labs(y = 'Frequency')
+
+plotly::ggplotly(bar_charts)
+```
+
+Can easily do the same with relative frequencies:
+
+```{r fig.width = 7, fig.height = 12}
+bar_charts_rel <- framingham %>% 
+  select({c(cat_vars, ord_vars)}) %>% 
+  gather(key = 'Variable') %>% 
+  group_by(Variable) %>% 
+  count(value) %>% 
+  mutate(y = n/sum(n)) %>% 
+  ggplot(aes(x = value, y = y)) +
+    facet_wrap(~Variable, scales = 'free_x', ncol = 2) +
+    geom_bar(stat = 'identity') + 
+    labs(y = 'Relative Frequency', x = '')
+
+plotly::ggplotly(bar_charts_rel)
+```
+
+As you might notice, the bar charts displaying frequencies and relative frequencies look very similar... actually the only change is the scale on the y-axis. Again, the real benefit of using relative frequencies is when comparing between groups. 
+
+```{r}
+gender_smoker <- framingham %>% 
+  group_by(gender, currentSmoker) %>% 
+  summarise(Frequency = n()) %>% 
+  group_by(gender) %>% 
+  mutate(`Relative Frequency` = Frequency/sum(Frequency)) 
+
+plotly::ggplotly(ggplot(gender_smoker, 
+                        aes(x = gender, y = Frequency, fill = currentSmoker)) + 
+                   geom_bar(position = 'dodge', stat = 'identity'))
+```
+
+```{r}
+plotly::ggplotly(
+  ggplot(gender_smoker, 
+         aes(x = gender, y = `Relative Frequency`, fill = currentSmoker)) + 
+    geom_bar(position = 'dodge', stat = 'identity') + 
+    lims(y = c(0, 1))
+)
+```
+
+Maybe `education` influences ones decision to smoke? From the frequencies it seems that more people in education category 1 smoke than in any other category. Does that mean you're more likely to smoke if you're in education category 1? 
+
+```{r}
+education_smoker <- framingham %>% 
+  group_by(education, currentSmoker) %>% 
+  summarise(Frequency = n()) %>% 
+  group_by(education) %>% 
+  mutate(`Relative Frequency` = Frequency/sum(Frequency)) 
+
+plotly::ggplotly(
+  ggplot(education_smoker, 
+         aes(x = education, y = Frequency, fill = currentSmoker)) + 
+    geom_bar(position = 'dodge', stat = 'identity')
+)
+```
+
+Overall, most people are in education category 1, which means that we cannot simply compare frequencies across categories. If we convert to relative frequencies, however, such a comparison is much easier. 
+
+```{r}
+plotly::ggplotly(
+  ggplot(education_smoker, 
+         aes(x = education, y = `Relative Frequency`, fill = currentSmoker)) + 
+    geom_bar(position = 'dodge', stat = 'identity') + 
+    lims(y = c(0, 1))
+)
+```
+
+We see that if you are in categories 1 or 3 you're more likely to be a non-smoker, whereas if you are in category 2, you're more likely to be a smoker. 
+
+**BREAK**
+
+## Continuous variables
+
+The continuous variables in this data set: ``r paste(cont_vars, collapse=',')``.
+
+For continuous variables, we want to get an idea of the *location* and *spread* of the observations. Often measured by mean and variance (/standard deviation), or median and IQR/range.
+
+```{r}
+not_missing <- function(x, ...) sum(!is.na(x))
+framingham %>%
+  select({cont_vars}) %>% 
+  gather(key = 'Variable') %>% 
+  group_by(Variable) %>% 
+  summarise_at(vars(value), 
+               list(`n not missing` = not_missing,
+                    Mean = mean,
+                    Variance = var,
+                    SD = sd,
+                    Median = median,
+                    Min = min, 
+                    Max = max,
+                    IQR = IQR),
+               na.rm = T) %>% 
+  pander::pander()
+```
+
+Mean and variance are often visualized using a histogram. Below are histograms for all the different variables. Notice what differences in means and variances result in. 
+
+```{r results = 'asis'}
+histogram_data <- framingham %>% 
+  select({cont_vars}) %>% 
+  gather(value = 'value', key = 'Variable')
+
+binwidths <- c(5, 5, 15, 10, 5, 2.5, 5, 5) %>% set_names(cont_vars)
+  
+hists <- htmltools::tagList()
+
+for (var in cont_vars){
+  hist <- histogram_data %>% 
+    filter(Variable == var) %>% 
+    ggplot(aes(x = value)) + 
+      geom_histogram(boundary = 0, binwidth = binwidths[var]) + 
+      geom_text(data = histogram_data %>% 
+                  filter(Variable == var) %>% 
+                  summarise(text = paste0('Mean: ', round(mean(value, na.rm = T), digits = 3), '\n',
+                                          'SD: ', round(sd(value, na.rm = T), digits = 3)),
+                            x = 0.9*max(value, na.rm = T),
+                            y = 600),
+                aes(x = x, y = y, label = text)) +
+      labs(x = var, y = 'Frequency')
+  
+  hists[[var]] <- plotly::ggplotly(hist)
+}
+
+hists
+```
+
+Notice how the histograms display frequencies for each chosen bin. This is also often translated into relative frequencies by... dividing by the total number of observations. As with the categorical variables, relative frequencies makes it easier to compre between groups. 
+
+Let's consider all variables, but broken down by gender:
+
+```{r}
+cont_summaries_by_gender <- framingham %>% 
+  select({cont_vars}, gender) %>% 
+  gather(value = 'value', key = 'Variable',
+         cont_vars) %>% 
+  group_by(gender, Variable) %>% 
+  summarise_at(vars(value), 
+               list(`n not missing` = not_missing,
+                    Mean = mean,
+                    Variance = stats::var,
+                    SD = sd,
+                    Median = median,
+                    Min = min,
+                    Max = max,
+                    IQR = IQR),
+               na.rm = T) %>% 
+  arrange(Variable, gender) %>% 
+  mutate_if(is.numeric,
+            round, digits = 3)
+
+DT::datatable(cont_summaries_by_gender)
+```
+
+Let's take a closer look at the `totChol` variable. How do you relate mean and standard deviation to the histograms? 
+
+```{r}
+totChol_hists <- framingham %>% 
+  ggplot(aes(x = totChol, fill = gender)) + 
+    geom_histogram(aes(y = binwidths['totChol']*..density..),
+                   boundary = 0,
+                   position = 'identity', binwidth = binwidths['totChol']) + 
+    facet_grid(gender~.) + 
+    geom_text(data = framingham %>% 
+                group_by(gender) %>% 
+                summarise(text = paste('Mean: ', round(mean(totChol, na.rm = T), digits = 3), '\n',
+                                       'SD: ', round(sd(totChol, na.rm = T), digits = 3)),
+                          x = 600, y = 0.1),
+              aes(x = x, y = y, label = text)) +
+    geom_vline(data = framingham %>% 
+                 group_by(gender) %>% 
+                 summarise(x = mean(totChol, na.rm = T)),
+               aes(xintercept = x), color = 'red', linetype = 'dashed') +
+    labs(y = 'Relative Frequencies', caption = 'red dotted line is mean') + 
+    theme(legend.position = 'none')
+
+plotly::ggplotly(
+  totChol_hists
+)
+```
+
+
+What if we consider `cigsPerDay`? You still like the mean as the measure of location?
+
+```{r}
+cigsPerDay_hists <- framingham %>% 
+  ggplot(aes(x = cigsPerDay, fill = gender)) + 
+    geom_histogram(aes(y = ..density..*binwidths['cigsPerDay']),
+                   boundary = 0,
+                   position = 'identity', binwidth = binwidths['cigsPerDay']) + 
+    facet_grid(gender~.) + 
+    geom_text(data = framingham %>% 
+                group_by(gender) %>% 
+                summarise(text = paste('Mean: ', round(mean(cigsPerDay, na.rm = T), digits = 3), '\n',
+                                       'SD: ', round(sd(cigsPerDay, na.rm = T), digits = 3)),
+                          x = 40, y = 0.5),
+              aes(x = x, y = y, label = text)) +
+    geom_vline(data = framingham %>% 
+                 group_by(gender) %>% 
+                 summarise(x = mean(cigsPerDay, na.rm = T)),
+               aes(xintercept = x), color = 'red', linetype = 'dashed') +
+    labs(y = 'Relative Frequencies', caption = 'red dotted line is mean') + 
+    theme(legend.position = 'none')
+
+plotly::ggplotly(cigsPerDay_hists)
+```
+
+Maybe for the male group, but I don't like it for females. The problem here is that the data is very skewed -- there are way more values close to zero than there are large values. In these situations, we often prefer the median and range/IQR. These values are best depicted using the box plot. Here's the 'answer key' to a general boxplot:
+
+```{r fig.width = 8, fig.height = 4}
+ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
+       aes(x = 1, y = y)) + 
+  geom_boxplot(width = 0.5) + 
+  geom_text(data = data.frame(y = c(1.5,5,10,13,15,20,24),
+                               labels = c("outliers", "minimum\n(excluding outliers)",
+                                          "lower quartile", "median", "upper quartile", 
+                                          "maximum\n(excluding outliers)", "outlier")),
+            aes(x = 1.75, label = labels),
+            hjust = 0) +
+  geom_segment(data = data.frame(y = c(1.5,1.5,5,10,13,15,20,24),
+                                 yend = c(1,2,5,10,13,15,20,24)),
+               aes(x = 1.65, xend = c(1.1, 1.1, 1.1, 1.35, 1.35, 1.35, 1.1, 1.1),
+                   y = y, yend = yend),
+               arrow = arrow(length = unit(0.03, "npc")),
+               color = 'darkred') +
+  theme_minimal() +
+  labs(x = '', y = '') +
+  scale_x_continuous("", limits = c(0,2.2)) +
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(),
+        plot.margin=grid::unit(c(0,0,0,0), "mm"))
+```
+
+
+
+```{r}
+boxplots_contvars <- framingham %>% 
+  select({cont_vars}, gender) %>% 
+  gather(value = 'value', key = 'Variable',
+         cont_vars)
+
+boxplots <- htmltools::tagList()
+
+for (var in cont_vars){
+  tmp <- boxplots_contvars %>% 
+    filter(Variable == var) %>% 
+    ggplot(aes(x = gender, y = value, fill = gender)) + 
+      geom_boxplot(alpha = 0.75) + 
+      theme(legend.position = 'none') +
+      lims(y = c(0, NA)) +
+      labs(x = '', title = var)
+  
+  boxplots[[var]] <- plotly::ggplotly(tmp)
+}
+
+boxplots
+```
+
+

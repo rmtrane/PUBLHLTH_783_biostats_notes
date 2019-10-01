@@ -1,0 +1,873 @@
+---
+title: "Biostats Lecture 3: Introduction to Probability, Random Variables, and Distributions."
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ration: '16:9'
+      navigation:
+        scroll: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, dpi=300)
+
+options(DT.options = list(scrollX = TRUE))
+
+pander::panderOptions('round', 4)
+
+library(tidyverse)
+library(viridis)
+library(distributions3)
+
+## Set theme for plots (only works when you load ggplot2, which can be done using library(ggplot2) OR with library(tidyverse))
+theme_set(theme_bw())
+
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+
+```
+
+# Learning Objectives
+
+1. Familiarize ourselves with concepts within probability theory
+
+2. Introduce Random Variables, and hint at why this concept will be useful
+
+3. Introduce distributions, and take a look at certain properties of certain distributions
+
+---
+layout: true
+
+# Introduction to Probability
+
+---
+
+## Definitions
+
+We talk about probabilities in regards to outcomes of an experiment. 
+
+Two definitions. We will mainly be working with the second, but the first is included for completeness. 
+
+1. If all outcomes are equally likely:
+$$
+  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}
+$$
+2. In general: the long run proportion of times the event occurs if the experiment is repeated an *infinite number of times*
+
+
+---
+
+## Example: roll a die
+
+Let $A = \{\text{roll is a 4}\}$, $B = \{\text{roll is a 1 or 5}\}$, and $C = \{\text{roll is even}\}$.
+
+What is 
+
+- $P(A)$, $P(B)$, and $P(C)$?
+
+--
+
+- $P(A \text{ OR } B)$, and $P(A \text{ OR } C)$? 
+
+--
+
+- $P(B \text{ and } C)$?
+
+---
+layout: true
+
+# Introduction to Probability
+
+## Example: Framingham Heart Study
+
+---
+
+What is the probability of developing Coronary Heart Disease over ten years?
+
+--
+
+You either develop the disease, or you do not, so.... $\frac{1}{2}$? 
+
+--
+
+Of course not! Why doesn't definition 1 work here?
+--
+ Outcomes not equally likely!
+ 
+So instead, think about what would happen if we "repeat the experiment an infinite number of times"...
+
+Before we can do that, specify what "the experiment" is.
+
+--
+
+Experiment = a randomly chosen individual develops CHD over a ten year period. 
+
+---
+
+Can't really do that... BUT we can pretend the FHS sample IS the population, and randomly choose individuals from this "population". 
+
+```{r include = FALSE}
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+```
+
+```{r include = FALSE, eval = FALSE}
+framingham_CHD_sample <- framingham %>% 
+  sample_n(size = 10000, replace = TRUE)
+
+write_rds(framingham_CHD_sample,
+          path = 'framingham_CHD_sample.Rds')
+
+is <- c(1:9, 
+        seq(10, 90, by = 10),
+        seq(100, 900, by = 100),
+        seq(1000, 10000, by = 1000))
+
+for(i in is){
+  tmp <- framingham_CHD_sample %>% 
+    filter(row_number() <= i) %>% 
+    janitor::tabyl(TenYearCHD) %>% 
+    mutate(TenYearCHD = as.character(TenYearCHD)) %>% 
+    ggplot(aes(x = TenYearCHD, y = percent)) +
+      geom_bar(data = data.frame(x = c('0','1'), y = c(0,0)), 
+               stat = 'identity',
+               aes(x = x, y = y),
+               alpha = 0) +
+      geom_bar(stat = 'identity') + 
+      geom_text(aes(label = n, y = 0.07),
+                fontface = 'bold', size = 8) + 
+      scale_y_continuous(limits = c(0,1), breaks = seq(0, 1, by = 0.1)) +
+      labs(x = 'TenYearCHD', y = 'proportion',
+           title = paste0('Number of repetitions:\n', i)) + 
+      theme(plot.title = element_text(size = 18, face = 'bold'))
+  
+  ggsave(tmp, filename = paste0('CHD_figures/', str_pad(i, width = 5, side = 'left', pad = '0'), '.jpg'),
+         width = 7, height = 7)
+}
+
+system("ffmpeg -framerate 3 -pattern_type glob -i 'CHD_figures/*.jpg' -c:v libx264 CHD_prob_anim.mp4 -y")
+```
+
+<center>
+  <video controls width="400" height="400">
+    <source src="CHD_prob_anim.mp4" type="video/mp4">
+  </video>
+</center>
+
+
+---
+
+```{r}
+if(!exists('framingham_CHD_sample'))
+  framingham_CHD_sample <- read_rds('framingham_CHD_sample.Rds')
+```
+
+
+So from the above, we would estimate $P(\text{develops CHD over ten years}) = `r mean(framingham_CHD_sample[['TenYearCHD']])`$. 
+
+In this case, we can actually get the exact probability (because we "know" the entire population): 
+
+```{r}
+framingham %>% 
+  janitor::tabyl(TenYearCHD) %>% 
+  janitor::adorn_totals() %>% 
+  knitr::kable(format = 'html')
+```
+
+In general, we would estimate the probability in this way: the proportion of the sample with the attribute of interest. 
+
+---
+
+Moral of the story: probabilities dictate the results of sampling (when done right).
+
+I.e. using probability theory, we can find out what to expect from sampling.
+
+This allows us to judge if differences in samples are "as expected", or "out of the ordinary". 
+
+---
+layout: true
+
+# Random Variables
+
+---
+
+## Why "Random Variables"?
+
+We introduce *random variables* to
+
+* formalize the notion of an experiment
+
+* simplify notation 
+
+* have a rigorous way of discussing probabilities
+
+---
+
+## What is a "Random Variable"?
+
+A *random variable* is a variable tied to the outcome of an experiment. 
+
+The value of it is unknown and uncertain before the experiment is conducted. 
+
+Conducting the experiment results in a *realization* of the RV.
+
+Distinguish between discrete and continuous RVs.
+
+Examples: 
+
+1. $X = \text{flip of a coin}$. Possible outcomes:
+--
+ heads and tails. Discrete RV.
+
+--
+
+2. $X = \text{sex of randomly chosen individual}$. Possible outcomes:
+--
+ male and female. Discrete RV.
+
+--
+
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. Possible outcomes:
+--
+ `r sort(unique(framingham$education), na.last = T)`. Discrete RV.
+
+--
+
+4. $X = \text{height of randomly chosen 783 student}$. Possible outcomes:
+--
+ any number greater than $0$. Continuous RV.
+
+---
+
+Talk about probabilities of different outcomes: 
+
+1. $X = \text{flip of a coin}$. What is $P(X = \text{heads})$?
+
+2. $X = \text{sex of randomly chosen individual}$. What is $P(X = \text{male})$?
+
+3. $X = \text{educational level of randomly chosen individual from the FHS}$. What is $P(X \in \{\text{1,3,4}\})$? ( $X$ is either 1,3, or 4)
+
+4. $X = \text{height of randomly chosen 783 student}$. What is $P(X \ge 180 \text{cm})$?
+
+To calculate these probabilities, we specify the *distribution* of the random variable. 
+
+---
+layout: true
+
+# Random Variables 
+
+## Distributions
+
+---
+
+The distribution specifies the probabilities of all possible outcomes. For discrete RVs, specify probability of every possible outcome.
+
+**Example:** $X$ follows 
+
+.pull-left[
+
+| X = x | P(X = x) | 
+|:-----:|:--------:|
+| 1 | 0.2 | 
+| 3 | 0.5 |
+| 7 | 0.1 |
+| 8 | 0.2 |
+]
+
+.pull-right[
+
+$P(X = 3) = ?$
+
+$P(X \in \{1,8\}) = ?$
+ 
+$P(X = 9) = ?$
+
+$P(X \text{ is even}) = ?$
+
+]
+
+General properties of distributions: 
+
+* all probabilities are between $0$ and $1$
+* the sum of all probabilities must be $1$
+
+---
+layout: true
+
+# Random Variables
+
+## Expected Value and Variance/Standard Deviation
+
+---
+
+Expected value of random variable: 'long run average'. I.e. if we observe the outcome of the random variable 'an infinite number of times', $E(X)$ is the average. 
+
+Variance: 'long run variance' 
+
+For discrete random variables: 
+
+\begin{align*}
+  E(X) &= \sum_{i=1}^n P(X = x_i) \cdot x_i \\
+  \text{Var}(X) &= \sum_{i=1}^n P(X = x_i) \cdot ( x_i - E(X))^2
+\end{align*}
+
+---
+
+**Example:**
+
+.pull-left[
+
+$X$ follows 
+
+| X = x | P(X = x) | 
+|:-----:|:--------:|
+| 1 | 0.2 | 
+| 3 | 0.5 |
+| 7 | 0.1 |
+| 8 | 0.2 |
+
+What is $E(X)$ and $\text{Var}(X)$?
+]
+
+.pull-right[
+\begin{align*}
+\hspace{-2cm}
+E(X) &= 1 \cdot 0.2 + 3 \cdot 0.5 + \\
+      &\hspace{2.5cm} 7 \cdot 0.1 + 8 \cdot 0.2 \\
+     &= 4 \\
+     &\\
+\hspace{-2cm}
+\text{Var}(X) &= 0.2 \cdot (1-4)^2 + 0.5 \cdot (3-4)^2 + \\
+              & \hspace{2.5cm}0.1 \cdot (7-4)^2 + 0.2 \cdot (8-4)^2 \\
+              &= 6.4
+\end{align*}
+]
+
+--
+
+How do we find $\text{SD}(X)$?
+--
+ $\text{SD}(X) = \sqrt{\text{Var}(X)} = \sqrt{6.4} \approx 2.53$.
+
+---
+
+### Useful Properties: 
+
+$X$ and $Y$ are random variables, $a$ is a constant (i.e. some fixed number).
+
+\begin{align}
+E(a\cdot X) &= a E(X) \\
+E(a) &= a \\
+E(X + Y) &= E(X) + E(Y) \\
+& \\
+\text{Var}(a \cdot X) &= a^2 \text{Var}(X) \\
+\text{Var}(a) &= 0 \\
+\text{Var}(X + Y) &= \text{Var}(X) + \text{Var}(Y) \\
+& (\text{IF } X \text{ and } Y \text{ are independent})
+\end{align}
+
+What is $\text{Var}(X - Y)$?
+--
+ $\text{Var}(X - Y) = \text{Var}(X) + \text{Var}(Y)$. Don't forget this!
+
+---
+layout: true
+
+# Discrete Random Variables & Distributions
+
+---
+
+## The Bernoulli Distribution
+
+$X$ follows a Bernoulli distribution if it only has two potential outcomes, success (often denoted 1) or failure (often denoted 0). 
+
+We write $X \sim \text{Bernoulli}(p)$ (read: X follows a Bernoulli distribution with probability of success $p$.)
+
+By definition, $P(X = 1) = p$. So, $P(X = 0) =$
+--
+ $1-p$
+ 
+--
+
+Examples: 
+
+* $X_i$ is the sex of a subject $i$ (male, female)
+* $X_i$ is the disease status of subject $i$ (diseased, healthy)
+
+--
+
+If $X \sim \text{Bernoulli}(p)$, then
+
+$$
+  E(X) = p,
+$$
+
+and
+
+$$
+  \text{Var}(X) = p\cdot(1-p).
+$$
+
+---
+
+### The Binomial Distribution
+
+$Y$ follows a Binomial distribution if it is the sum of $n$ independent Bernoulli variables with same probability of success $p$. 
+
+In other words, the number of successful trials out of $n$ Bernoulli trials. 
+
+In math: if $X_1, X_2, ..., X_n \sim \text{Bernoulli}(p)$ are independent, and $Y = X_1 + X_2 + ... + X_n$, then $Y \sim \text{Binomial}(n, p)$.  
+
+We call $n$ the size parameter, $p$ probability of success.
+
+Possible values of $Y$?
+--
+ $0, 1, 2, ..., n$.
+
+What is $E(Y)$? $\text{Var}(Y)$? 
+
+---
+
+### The Binomial Distribution
+
+For a few different values of $n$ and $p$, the Binomial distribution has the following forms:
+
+```{r echo = FALSE, out.height = 425, out.width = 600, out.extra='style="display:block; margin-left:auto; margin-right:auto;"'}
+binom_examples <- tibble(x = rep(0:25, 3),
+                         size = rep(c(10, 25, 17), each = 26),
+                         prob = rep(c(0.3, 0.6, 0.8), each = 26)) %>% 
+  mutate(P = dbinom(x = x, size = size, prob = prob),
+         p = round(P, digits = 5),
+         binom = paste0("N = ", size, ", p = ", prob))
+
+binom_ex_plot <- ggplot(binom_examples,
+       aes(x = x, y = P, label = p)) + 
+  geom_histogram(stat = 'identity', width = 1) + 
+  facet_wrap(~binom, ncol = 1) +
+  scale_x_continuous('y', breaks = 0:25) +
+  scale_y_continuous('P(Y = y)') 
+#binom_ex_plot
+
+plotly::ggplotly(binom_ex_plot, tooltip =  'label')
+```
+
+
+---
+layout: true 
+
+# Continuous Random Variables & Distributions
+
+---
+
+For a continuous variable, can we specify the probability of every single possible outcome?
+--
+ No, because number of outcomes is uncountable!
+
+Instead, specify a curve. 
+
+---
+
+```{r}
+X <- Normal(mu = 170, sigma = 15)
+
+X_samples <- tibble(x = random(X, n = 1000000)) %>% mutate(i = row_number())
+```
+
+
+Observe the height of $10$ individuals, draw a histogram with $10$ bins.
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram <- function(I = 10, bins = 10){
+  ggplot(data = X_samples %>% filter(i <= I),
+         aes(x = x)) + 
+    geom_histogram(bins = bins, boundary = 0,
+                   aes(y = ..density..)) + 
+    scale_x_continuous(limits = c(90, 240),
+                       breaks = seq(90, 240, by = 10))
+}
+
+normal_histogram()
+```
+]
+---
+
+Observe the height of $100$ individuals, draw a histogram with $20$ bins.
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = 100, bins = 20)
+```
+
+]
+
+---
+
+Observe the height of $1000$ individuals, draw a histogram with $75$ bins.
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = 1000, bins = 75)
+```
+
+]
+
+---
+
+Observe the height of $10000$ individuals, draw a histogram with $100$ bins
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = 10000, bins = 100)
+```
+
+]
+
+---
+
+Observe the height of $100000$ individuals, draw a histogram with $125$ bins.
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = 100000, bins = 125)
+```
+
+]
+
+---
+
+Observe the height of $1000000$ individuals, and $150$ bins. 
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = 1000000, bins = 150)
+```
+
+]
+---
+
+The data here was simulated from a normal distribution with mean `r X[['mu']]` and variance `r X[['sigma']]^2`. This distribution looks like this:
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+ggplot(data = NULL, 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                color = 'red', size = 1) +
+  labs(x = 'x', y = 'density')
+```
+
+]
+---
+
+If we overlay it:
+
+.center[
+
+```{r fig.width=5, fig.height = 5, out.width = 400}
+normal_histogram(I = Inf, bins = 150) +
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                color = 'red', size = 1)
+```
+
+]
+
+In words: the distribution of a continuous RV is the curve that appears when a histogram with narrow bars of many, many, many observations is drawn. 
+
+---
+
+### Probabilities from a curve
+
+Probability = area under the curve. 
+
+What is $P(X \le 160)$?
+
+It is the shaded area on the following figure
+
+.center[
+```{r out.width = 450, fig.width = 4, fig.height = 3}
+ggplot(data = NULL, 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                size = 1) + 
+  geom_area(aes(x = seq(X$mu - 3*X$sigma, 160, by = 0.1),
+                y = dnorm(seq(X$mu - 3*X$sigma, 160, by = 0.1), mean = X$mu, sd = X$sigma)),
+            alpha = 0.75) +
+  labs(x = 'x', y = 'Density')
+```
+
+]
+
+---
+
+### Probabilities from a curve
+
+Probability = area under the curve. 
+
+What is $P(172 < X < 185)$?
+
+--
+
+It is the shaded area on the following figure
+
+.center[
+```{r out.width = 450, fig.width = 4, fig.height = 3}
+ggplot(data = NULL, 
+       aes(x = seq(X$mu - 3*X$sigma, X$mu + 3*X$sigma, by = X$sigma/100))) + 
+  stat_function(fun = dnorm, args = list(mean = X$mu, sd = X$sigma),
+                size = 1) + 
+  geom_area(aes(x = seq(172, 185, by = 0.1),
+                y = dnorm(seq(172, 185, by = 0.1), mean = X$mu, sd = X$sigma)),
+            alpha = 0.75) +
+  labs(x = 'x', y = 'Density')
+```
+
+]
+
+
+---
+layout: true
+
+# Continuous Random Variables & Distributions
+
+### The Normal Distribution
+
+---
+
+The Normal Distribution (also known as the Gaussian Distribution) is a continuous distribution.
+
+It is specified using two parameters: the mean $\mu$, and the variance $\sigma^2$. If $X$ follows a normal distribution with mean $\mu$, and variance $\sigma^2$, we write $X \sim N(\mu, \sigma^2)$. 
+
+.center[
+```{r out.width = 500, fig.width = 4, fig.height = 3}
+ggplot(data = tibble(x = seq(-5, 8, by = 0.01)),
+       aes(x = x)) + 
+  stat_function(fun = dnorm,
+                aes(color = 'N(2,4)'),
+                args = list(mean = 2, sd = 2)) + 
+  stat_function(fun = dnorm,
+                aes(color = 'N(-2,1)'),
+                args = list(mean = -2, sd = 1)) +
+  stat_function(fun = dnorm,
+                aes(color = 'N(0,5)'),
+                args = list(mean = 0, sd = sqrt(5))) +
+  scale_color_discrete("")
+```
+
+]
+
+
+---
+
+#### Properties
+
+The Normal Distribution has a quite a few really nice properties. If $X \sim N(\mu_X, \sigma_X^2)$ and $Y \sim N(\mu_Y, \sigma_Y^2)$, then
+
+1. the sum $X + Y$ is also normally distributed, and if they are independent $X + Y \sim N(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)$,
+
+2. $X + a \sim N(\mu_X + a, \sigma_X^2)$, and $a\cdot X \sim N(a\cdot \mu_X, a^2 \sigma_X^2)$ where $a$ is some constant,
+
+3. $\frac{X - \mu_X}{\sigma_X} \sim N(0,1)$. $N(0,1)$ is called the *standard normal distribution*. 
+
+---
+
+```{r fig.height = 2, fig.width = 4, out.width = 700}
+Y <- Normal(-30, 10)
+normal_sims <- X_samples %>% 
+  sample_n(10000) %>% 
+  mutate(y = random(Y, nrow(.)),
+         `X+Y` = x + y,
+         `X-Y` = x - y,
+         `Standardize X` = (x - mean(x))/sd(x),
+         `Standardize Y` = (y - mean(y))/sd(y)) %>% 
+  select(-i) %>%
+  rename(X = x, Y = y) %>% 
+  gather(key = 'Variable', value = 'value') %>% 
+  mutate(mean = case_when(Variable == 'X' ~ X$mu,
+                          Variable == 'Y' ~ Y$mu,
+                          Variable == 'X+Y' ~ X$mu + Y$mu,
+                          Variable == 'X-Y' ~ X$mu - Y$mu,
+                          str_detect(Variable, 'Standardize') ~ 0,
+                          TRUE ~ NA_real_),
+         var = case_when(Variable == 'X' ~ X$sigma^2,
+                          Variable == 'Y' ~ Y$sigma^2,
+                          Variable == 'X+Y' ~ X$sigma^2 + Y$sigma^2,
+                          Variable == 'X-Y' ~ X$sigma^2 + Y$sigma^2,
+                          str_detect(Variable, 'Standardize') ~ 1,
+                          TRUE ~ NA_real_),
+         Variable = factor(Variable,
+                           levels = c('X', 'Y', 'X+Y', 'X-Y', 'Standardize X', 'Standardize Y'))) %>% 
+  group_by(Variable) %>% 
+  mutate(emp_mean = mean(value),
+         emp_var = var(value))
+```
+
+Say we observe $10000$ realizations of random variables $X$ and $Y$. We will now take a look at $X + Y$, $X - Y$, $\frac{X - \bar{X}}{\text{SD}(X)}$, and $\frac{X - \bar{X}}{\text{SD}(X)}$.
+
+First, this is the data. 
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  select(Variable, value) %>% 
+  mutate(i = row_number()) %>% 
+  spread(Variable, value) %>% 
+  mutate_at(vars(X,Y), round, digits = 2) %>% 
+  select(-i) %>% 
+  DT::datatable(options = list(pageLength = 5, lengthMenu = c(5)))
+```
+
+---
+
+Let's take a look at the variables $X$, and $Y$.
+
+.center[
+```{r out.width = 600, fig.width = 6, fig.height = 2}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+
+---
+
+How does $X+Y$ compare?
+
+.center[
+```{r fig.height = 2, fig.width = 6, out.width = 900}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X+Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+How does $X+Y$ compare?
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X+Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+---
+
+How does $X-Y$ compare?
+
+.center[
+```{r fig.height = 2, fig.width = 6, out.width = 900}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X-Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 1)
+```
+]
+
+---
+
+How does $X-Y$ compare?
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'X-Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+
+
+---
+
+And what if we standardize, i.e. subtract the mean, and divide by the standard deviation? 
+
+.center[
+```{r fig.height = 4, fig.width = 4, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'Standardize X', 'Standardize Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2)
+```
+]
+
+---
+
+.pull-left[
+```{r fig.height = 4, fig.width = 3, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2, scales = 'free_y')
+```
+]
+
+.pull-right[
+```{r fig.height = 4, fig.width = 3, out.width = 400}
+normal_sims %>% 
+  filter(Variable %in% c('Standardize X', 'Standardize Y')) %>% 
+  ggplot(aes(x = value)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = 75) + 
+    facet_wrap(Variable~., nrow = 2, scales = 'free_y')
+```
+]
+
+---
+
+And what if we standardize, i.e. subtract the mean, and divide by the standard deviation? 
+
+```{r}
+normal_sims %>% 
+  filter(Variable %in% c('X', 'Y', 'Standardize X', 'Standardize Y')) %>% 
+  select(-value) %>% unique() %>% 
+  knitr::kable(format = 'html', digits = 3)
+```
+

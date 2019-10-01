@@ -248,7 +248,6 @@ People get away with bad practices (on purpose or accidentially):
 
 .center[
   <img src="./images/bad_science.png" height="400px">
-
   Full paper (from 2009) can be found [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2685008/)  
 ]
 
@@ -555,11 +554,40 @@ This is where decisions come into play. Subjective what assumptions you're willi
     - If likely, evidence **for** the hypothesis
 
 * Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory?
+--
+
+How do we get an idea of how much this quantity would vary with repetition? 
+
+
+--
+
+This also means that if our assumptions are off, everything is off. 
+--
+ Therefore, important to state **AND** check your assumptions!
 
  
 ???
 
 This is where decisions come into play. Subjective what assumptions you're willing to accept, and checking assumptions is often very hard and very subjective 
 
+---
 
+## Work Flow:
+
+* Want to test hypothesis
+
+* Take sample from population
+
+* Calculate quantity of interest
+
+* Ask: *IF* the hypothesis is true, how likely are we to see what we saw
+
+    - If unlikely, evidence **against** the hypothesis
+    - If likely, evidence **for** the hypothesis
+
+* Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory
+
+--
+
+How do we get an idea of how much would the quantity would vary with repetition? 
 
