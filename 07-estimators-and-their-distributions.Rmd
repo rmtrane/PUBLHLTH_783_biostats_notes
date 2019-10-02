@@ -276,7 +276,7 @@ We see that the true proportion of the population that are men is `r round(mean(
 Next, let's take a look at the distribution of sample proportions. 
 
 ```{r}
-gender_props_histogram <- gender_props %>% 
+gender_props %>% 
   ggplot(aes(x = props)) + 
     geom_histogram(binwidth = 1/sample_size,
                    aes(y = ..density..)) + 
@@ -330,19 +330,31 @@ logRR_var <- show_depr_by_gender %>%
   pull(var_contribution) %>% sum
   
   
+if(!file.exists('data/R_output/samples_RR.Rds')){
+  samples_RR <- map_dfr(1:N, function(x){ 
+    show_depr_by_gender %>% 
+      #group_by(gender) %>% 
+      sample_n(size = sample_size_RR) %>% 
+      mutate(i = x)
+  })
+  
+  readr::write_rds(samples_RR, path = 'data/R_output/samples_RR.Rds')
+} else {
+  samples_RR <- readr::read_rds(path = 'data/R_output/samples_RR.Rds')
+}
 
-samples_RR <- map_dfr(1:N, function(x){ 
-  show_depr_by_gender %>% 
-    #group_by(gender) %>% 
-    sample_n(size = sample_size_RR) %>% 
-    mutate(i = x)
-})
+if(!file.exists('data/R_output/RRs.Rds')){
+  RRs <- samples_RR %>% 
+    group_by(i) %>% 
+    nest() %>%
+    ungroup() %>% 
+    mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+  
+  readr::write_rds(RRs, path = 'data/R_output/RRs.Rds')
+} else {
+  RRs <- readr::read_rds(path = 'data/R_output/RRs.Rds')
+}
 
-RRs <- samples_RR %>% 
-  group_by(i) %>% 
-  nest() %>%
-  ungroup() %>% 
-  mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
 ```
 
 We create simple random samples of size `r sample_size_RR`. The first sample consists of the following individuals: 
@@ -426,17 +438,23 @@ OR <- function(dat, trt, out){
 
 true_OR <- OR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
 
-ORs <- samples_RR %>% 
-  group_by(i) %>% 
-  nest() %>% 
-  mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
-  ungroup()
+if(!file.exists('data/R_output/ORs.Rds')){
+  ORs <- samples_RR %>% 
+    group_by(i) %>% 
+    nest() %>% 
+    mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
+    ungroup()
+  
+  readr::write_rds(ORs, path = 'data/R_output/ORs.Rds')
+} else {
+  ORs <- readr::read_rds(path = 'data/R_output/ORs.Rds')
+}
 
 ORs %>% 
   ggplot(aes(x = OR)) + 
     geom_histogram(aes(y = ..density..),
                    bins = floor(N/300)) + 
-    geom_vline(aes(xintercept = true_OR, color = 'True RR'), linetype = 'dashed') + 
+    geom_vline(aes(xintercept = true_OR, color = 'True OR'), linetype = 'dashed') + 
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
     labs(color = '')
 ```
@@ -452,6 +470,12 @@ logOR_var <- show_depr_by_gender %>%
          var_contribution = 1/expected_xi) %>% 
   pull(var_contribution) %>% 
   sum
+
+p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
+p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)
+
+logOR_var <- sum(1/(c(p_male*sample_size_RR, (1-p_male)*sample_size_RR,
+                     p_female*sample_size_RR, (1-p_female)*sample_size_RR)))
 
 
 ORs %>% 
