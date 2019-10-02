@@ -536,7 +536,7 @@ As the names of the parameters suggest, the actual expected value and variance o
 
 #### Linear Combination of Normal with Constant
 
-One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(props-of-RVs), we get that 
+One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(prop-of-RVs), we get that 
 
 \begin{align*}
   E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\
