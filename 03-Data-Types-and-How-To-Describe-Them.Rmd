@@ -1,13 +1,16 @@
 # (PART) Data Types and Descriptive Statistics {-}
 
-# Before we get started... {-} 
+# Before we get started...
 
-This section is very minimal. I decided to go that route because 1) this is the "easiest" part of the materiale in the sense that there isn't a lot of things to really understand and think about, and 2) it is objectively speaking very, very, very boring... So, when you find my notes insufficient, take a look at Chapter 4 in [@ls]. 
+This section is very minimal. I decided to go that route because 1) this is the "easiest" part of the material in the sense that there isn't a lot of things to really understand and think about, and 2) it is objectively speaking very, very, very boring... So, when you find my notes insufficient, take a look at Chapter 4 in [@ls]. 
 
 **Learning Objectives**
 
-1. 
+1. Understand why descriptive statistics is important, and useful
 
+2. Know the difference between discrete and continuous variables/data
+
+3. Have some ideas of which summaries and figures are appropriate for different types of data
 
 
 # Why Descriptive Statistics?
@@ -16,7 +19,7 @@ This section is very minimal. I decided to go that route because 1) this is the 
 
 Often when conducting an experiment, what we are actually interested in is using the sample we obtain to say something about the general population. If we, for example, enroll 200 patients in a study to find out if a new drug works, we're not *really* interested in whether or not it works for those 200 patients specifically, but more so if it works for any individual from the population in general. With that in mind, the whole concept of descriptive statistics might not seem very (1) exciting, (2) useful, or (3) necessary. While (1) is highly subjective, (2) very much so depends on the specific situation, there is little question that it is in fact necessary. 
 
-Recall our general setup for any statistical analysis: we have some question about some feature of a population. To answer this question, we go get a sample of the popoulation. If this is a good sample, the characteristics of this sample mimic those of the general population. If this is the case, then the hope is that we can draw conclusions about the sample, and generalize them to the general population. Conversely, if that is *not* the case, then no matter how convincing the evidence we find in the sample is for or against our hypotheses, it tells us nothing about the general popoulation. 
+Recall our general setup for any statistical analysis: we have some question about some feature of a population. To answer this question, we go get a sample of the population. If this is a good sample, the characteristics of this sample mimic those of the general population. If this is the case, then the hope is that we can draw conclusions about the sample, and generalize them to the general population. Conversely, if that is *not* the case, then no matter how convincing the evidence we find in the sample is for or against our hypotheses, it tells us nothing about the general population. 
 
 ```{r, general-population, echo = FALSE, engine = 'tikz', caption = "Recall the general setup: a sample is drawn from the population of interest."}
 \begin{tikzpicture}
@@ -51,9 +54,9 @@ Recall our general setup for any statistical analysis: we have some question abo
 
 So how do we make sure the sample is representative of the population? The first step is to make sure our sampling scheme is good. Ideally, we sample completely at random, meaning that every single individual in the population has the same chance of ending up in the sample. As you might be able to guess, this is rarely the case, but if the sampling is done right it is either approximately true, or the sampling is done in a way that any biases introduced can be accounted for in the analysis.^[**Full disclaimer**: sampling is hard. As in really, really, really hard. Very smart people spend a lot of time on making sure different sampling schemes work. It is well beyond the scope of this course, and me, how the details of this work out.] Most commonly, sampling is done in such a way that the "equal chance" assumption isn't too crazy. But how do we know if this is actually the case? 
 
-The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See [@liu_womens_2016] for a more thorough discussion of the exclusion of women in particular.] For this particular reason, producing descriptive statistics is often the first step in any data analysis.
+The truth is, we don't really. What we can do, though, is describe the sample we obtain. That way we can make sure we don't generalize any results to an inappropriate population. Historically, this mistake has been made over and over again in medical research when excluding women and ethnic minorities from studies.^[See @liu_womens_2016 for a more thorough discussion of the exclusion of women in particular.] For this particular reason, producing descriptive statistics is often the first step in any data analysis.
 
-The rest of this section will go through different types of data, and show how we in each case can describe (or summarize, if you will) the specific type of data. 
+The rest of this section will go through different types of data, and show how we, in each case, can describe (or summarize, if you will) the specific type of data. 
 
 In general, when we talk about data we often refer to *variables*. Variables are simply (and very vaguely) *things we measure*. You will see examples which hopefully helps understand exactly what is meant by a variable. 
 
@@ -106,19 +109,12 @@ SHOW_cat_freqs <- full_show %>%
       tabyl(Value) %>% 
       rename(Frequency = n,
              `Relative Frequency` = percent) %>% 
-      select(-valid_percent) 
-    
-    if("D" %in% x$Value){
-      tmp %>% 
-        mutate(Value = factor(Value, levels = c(sort(as.numeric(unique(Value))), "D"))) %>% 
-        arrange(Value) %>% 
-        adorn_totals()
-    } else {
-      tmp %>% 
-        mutate(Value = factor(Value, levels = sort(as.numeric(unique(Value))))) %>% 
-        arrange(Value) %>% 
-        adorn_totals()
-    }
+      select(-valid_percent) %>% 
+      mutate(order = str_extract(Value, pattern = "\\[.+\\]") %>%
+               str_remove_all(pattern = "\\[|\\]") %>% 
+               as.numeric()) %>% 
+      arrange(order) %>% 
+      select(-order)
   })
 
 SHOW_cat_freqs %>% 
@@ -141,9 +137,10 @@ Relative frequencies are useful when trying to compare the values of a specific 
 full_show %>% 
   tabyl(gender, marital) %>% 
   adorn_percentages() %>% 
+  adorn_rounding(digits = 3) %>% 
   adorn_totals(where = "col") %>% 
   adorn_ns() %>% 
-  knitr::kable()
+  pander::pander()
 ```
 
 The table above shows the relative frequencies of marital status within each gender (frequency counts in parentheses). So we can see that the relative frequencies of men and women in the different groups are very close to each other. If you just look at the raw frequencies, this would not be obvious. 
@@ -167,24 +164,30 @@ Discrete data is often best presented using a bar chart of either frequency coun
 Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data. 
 
 ```{r}
-ggplot(full_show, aes(x = marital)) + 
+marital_hist <- ggplot(full_show, aes(x = marital)) + 
   geom_bar(width = 0.75) + 
   labs(x = 'Martial Status', y = "Frequency Counts") +
   scale_y_continuous(limits = c(0, max(table(full_show$marital))) + c(0,3), 
                      expand = expand_scale(mult = c(0, 0.1), add = c(0,0))) + 
-  theme_bw()
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+my_ggplotly(marital_hist)
 ```
 
 This can easily be turned into a bar chart of the relative frequencies. 
 
 ```{r}
-ggplot(full_show, aes(x = marital)) + 
+show_martial_rel <- ggplot(full_show, aes(x = marital)) + 
   geom_bar(aes(y = ..count../sum(..count..)), 
            width = 0.75) + 
   scale_y_continuous(limits = c(0,1), 
                      expand = c(0,0)) +
   labs(x = 'Martial Status', y = "Relative Frequency") + 
-  theme_bw()
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+my_ggplotly(show_martial_rel)
 ```
 
 
@@ -256,26 +259,38 @@ My favorite graphs to use with continuous data are scatter plots, boxplots, and 
 A scatter plot is only really useful when you are considering the relationship between two variables where at least one is continuous. For example, consider the variables `height` and `weight` from the SHOW data. A scatter plot shows potential relationships between the two. Unsurprisingly, it seems that there is a positive correlation between the two -- i.e. when one goes up, so does the other. 
 
 ```{r}
-full_show %>% 
+scatter_height_weight <- full_show %>% 
   ggplot(aes(x = height, y = weight)) + 
     geom_point(alpha = 0.3)
+
+ggsave(scatter_height_weight, filename = "figures/scatter_height_weight.png")
+
+knitr::include_graphics("figures/scatter_height_weight.png")
 ```
 
 
 You can also utilize scatter plots when one of the variables is categorical. For example, we could be interested in the relationship between height and gender. 
 
 ```{r}
-full_show %>% 
+scatter_gender_height <- full_show %>% 
   ggplot(aes(x = gender, y = height)) + 
     geom_point(alpha = 0.5)
+
+ggsave(scatter_gender_height, filename = "figures/scatter_gender_height.png")
+
+knitr::include_graphics("figures/scatter_gender_height.png")
 ```
 
 In this case, it can be beneficial to add a bit of jitter to the plot in the direction of the categorical variable.
 
 ```{r}
-full_show %>% 
+jitter_gender_height <- full_show %>% 
   ggplot(aes(x = gender, y = height)) + 
     geom_jitter(height = 0, width = 0.3, alpha = 0.5)
+
+ggsave(jitter_gender_height, filename = "figures/jitter_gender_height.png")
+
+knitr::include_graphics('figures/jitter_gender_height.png')
 ```
 
 Even with a bit of jitter, it might be really hard to make anything of a scatter plot in this case, simply because we have "too much" data. In such a case, a boxplot might be a better choice. 
@@ -285,17 +300,20 @@ Even with a bit of jitter, it might be really hard to make anything of a scatter
 Boxplots are great when you have a lot of data. They show the data through a set of summaries, namely the quartiles, and indicates if there are any *outliers*. Below are boxplots for the height of the SHOW population by gender. 
 
 ```{r}
-full_show %>% 
+boxplot_gender_height <- full_show %>% 
   filter(!is.na(gender), !is.na(height)) %>% 
   ggplot(aes(x = as.character(gender), y = height)) + 
     geom_boxplot() + 
-    scale_y_continuous(limits = c(0, NA))
+    scale_y_continuous(limits = c(0, NA)) + 
+    labs(x = 'Gender')
+
+my_ggplotly(boxplot_gender_height)
 ```
 
 You can use the figure below to decipher the box plot:
 
-```{r}
-ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
+```{r boxplot_explanation}
+boxplot_explanation <- ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24)),
        aes(x = 1, y = y)) + 
   geom_boxplot(width = 0.5) + 
   geom_text(data = data.frame(y = c(1.5,5,10,13,15,20,24),
@@ -315,13 +333,18 @@ ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13,15,15,15,15,16,20,24))
   scale_x_continuous("", limits = c(0,2.2)) +
   theme(panel.grid = element_blank(),
         axis.text = element_blank())
+
+ggsave(boxplot_explanation, filename = "figures/boxplot_explanation.png")
+
+knitr::include_graphics("figures/boxplot_explanation.png")
 ```
+
 
 As you see on the boxplots of the SHOW data, it is a great tool to visualize continuous data when you have a lot of it. In a simple figure we can see that 
 
 * the median height is greater for men than women
 * there is generally a shift upwards for men compared to women
-* the 75% tallest men are all taller than the 75% of women (compare the bottom of the box for men with the top of the box for women)
+* the 75% tallest men are all taller than 75% of women (compare the bottom of the box for men with the top of the box for women)
 
 and much more. 
 
@@ -332,19 +355,32 @@ One thing I haven't told you is the answer to a very important, very hard questi
 At first, the *histogram* looks a lot like a bar chart, but there are a few very important differences. Before we go into details, lets take a look at a histogram. Below is a histogram of the depression scores in the SHOW data set.
 
 ```{r}
-full_show %>% 
+bmi_hist <- full_show %>% 
   ggplot(aes(x = bmi)) +
-    geom_histogram(binwidth = 1) + 
-    scale_y_continuous(expand = expand_scale(mult = c(0,0), add = c(0,20)))
+    geom_histogram(binwidth = 5, boundary = 0) + 
+    scale_x_continuous(breaks = seq(0, 175, by = 10),
+                       minor_breaks = seq(0, 175, by = 1)) +
+    scale_y_continuous(expand = expand_scale(mult = c(0,0), add = c(0,20))) 
+
+my_ggplotly(bmi_hist)
 ```
 
+The main differences from a bar chart is that 
+
+1. there are no gaps on the x-axis
+2. the *relative area* of a bar is the proportion of your sample that falls in the interval corresponding to that bar
+
+Later on, we will use the histogram to answer questions like "what is the probability a randomly chosen individual from the SHOW population has a BMI greater than 40?" or "between 20 and 30?" etc. This is simply done by dividing the area of the bars that are specified (for example all bars with BMI greater than 40) with the total area. 
+
+The histogram will be **super** important to us moving forward, so make sure you know how to decipher it!
 
 
 # Grey areas
 
-An example of a variable that could easily be mistaken as categorical is age. Often when we think about age, we think about this in terms of years, or months, or even days. In that sense, age is a variable with a number of possible values that we could technically count -- start with 0, 1, 2, 3, ..., 55, 56, 57, ... . However, this is NOT the natural structure of the variable, but rather a limitation of the way it is measured and recorded. Technically, age is the time from birth till now. 
+An example of a variable that could easily be mistaken as categorical is age. Often when we think about age, we think about this in terms of years, or months, or even days. In that sense, age is a variable with a number of possible values that we could technically count -- start with 0, 1, 2, 3, ..., 55, 56, 57, ... . However, this is NOT the natural structure of the variable, but rather a limitation of the way it is measured and recorded. Technically, age is the time from birth till now, which if we could measure it with *infinite* precision, could be any possible number^[positive, real number, for those of you who want to be specific] you can think of.
+
+Many other examples could be provided. In general, what's important to think about is the nature of the variable rather than what is measured. By nature, any measurement is going to be discrete, but some variables are continuous in nature. 
 
 
-
-This manuscript was prepared using the PECARN Core Data Project (PCDP) 2002-2014 (STUDY) Data Set obtained from UTAH, and does not necessarily reflect the opinions or views of the STUDY investigators or the Health Resources Services Administration (HRSA) Maternal Child Health Bureau (MCHB) Emergency Medical Services for Children (EMSC). The PECARN was funded by the HRSA/MCHB/EMSC.
+<!-- This manuscript was prepared using the PECARN Core Data Project (PCDP) 2002-2014 (STUDY) Data Set obtained from UTAH, and does not necessarily reflect the opinions or views of the STUDY investigators or the Health Resources Services Administration (HRSA) Maternal Child Health Bureau (MCHB) Emergency Medical Services for Children (EMSC). The PECARN was funded by the HRSA/MCHB/EMSC. -->
 

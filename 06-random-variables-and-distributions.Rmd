@@ -1,0 +1,747 @@
+# Random Variables and Distributions
+
+So far in this section, we've talked about probabilities, different ways of thinking about probabilities, and a bit about how to work with probabilities. In this section we will introduce a more formal framework for how to think about and handle uncertain events. By making a few assumptions about how things behave, we can calculate probabilities of events without observing them.
+
+## Random Variables
+
+A *random variable* is a variable where the value is not guarenteed in advance, but can take different values. 
+
+### Examples: random variables 
+
+Define a variable $X$ to be the outcome of a coin flip. Now, before we flip the coin, we do not know what value $X$ will take on -- it could be "heads" or it could be "tails". Once we flip the coin and observe the outcome, we say that we have a *realization* of the random variable $X$. 
+
+Another example would be if we let $Y$ be the height of a randomly chosen US adult. We don't know exactly what value it is, but we do know a few things about it. For example, it is much more likely to be around 5.5ft than it is to be around 7ft or below 4ft. When we do finally randomly select a US adult, and measure their height, we get a realization of this random variable. 
+
+A third example is if we let $Z$ denote the diabetes status of a randomly chosen US adult. This could take the values healthy, type I, or type II, and each will happen with some probability. 
+
+## Distributions
+
+As the example above was meant to illustrate, a random variable can really be anything you'd like. Whenever we talk about a random variable, we also talk about the probability of certain outcomes. If we can define a way to calculate probabilities of different outcomes of the random variable, we call this the *distribution* of the random variable. 
+
+Recall previously we talked about two kinds of variables: [discrete](#discrete) and [continuous](#continuous) variables. Likewise, we can consider both discrete and continuous *random* variables. Depending on the kind of random variable we're discussing, defining it's distribution is handled slightly differently. 
+
+The distribution of a random variable is super important for one reason: if you know the distribution, you know everything! The distribution allows you to calculate any probability you could ever be interested in, and therefore a lot of what follows has to do with specifying the distributions of different random variables. 
+
+### Discrete Distributions
+
+When we consider discrete random variables, its distribution is defined by specifying the probability of every single possible outcome. There are two things that are important to remember:
+
+1. all probabilities must be between $0$ and $1$,
+2. the sum of all probabilities must add up to $1$. 
+
+The second point above is important, and is sometimes super handy when trying to calculate probabilities of certain complicated events. The intuition behind it is pretty simple: something must happen. So the probability that something happens is $1$. 
+
+#### Examples:
+
+Let $X$ be a disrete random variables that can attain the values $1,2,3,4,5$. 
+
+One possible distribution $X$ could follow is given in the table below:
+
+```{r}
+tibble(x = 1:5, `P(X = x)` = c(0.2, 0.5, 0.1, 0.05, 0.15)) %>% 
+  pander::pander()
+```
+
+Another possible distribution is 
+
+```{r}
+tibble(x = 1:5,
+       `P(X = x)` = c(0.9, 0.025, 0.025, 0.025, 0.025)) %>% 
+  pander::pander()
+```
+
+Note that in both cases 1) we have specified the probabilities of all possible outcomes, 2) all probabilities are between $0$ and $1$, and 3) the probabilities add up to $1$. 
+
+Using the latter distribution, we can calculate all sorts of probabilities: 
+
+\begin{align*}
+  P(X = 3 \text{ or } X = 4) &= 0.025 + 0.025 = 0.05 \\
+  & \\
+  P(X < 3) &= 0.9 + 0.025 = 0.925 \\
+  & \\
+  P(3 < X < 5) &= 0.025 \\
+  & \\
+  P(X = 2 \text{ and } X = 5) &= 0
+\end{align*}
+
+<!-- Consider $X$ the outcome of a coin flip. The outcome of this can be one of two things: heads or tails. Now, let us pretend that this particular coin is NOT fair, i.e. it is not 50/50. Maybe the probability of getting tails is 0.4. Maybe the probability of getting heads is 0.1. For now, let the probability of getting heads be $p$, some number between 0 and 1. Then the probability of $X$ coming up as heads is $p$, and the probability it comes up as tails is $1-p$, since the sum of all probabilities has to be $1$. We write $P(X = \text{heads}) = p$ and $P(X = \text{tails}) = 1-p$. This is the distribution of $X$. In this case, all we need is the probability of the two outcomes.  -->
+
+<!-- Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data.  -->
+
+
+<!-- The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve. -->
+
+### Continuous distributions
+
+The distribution of a continuous variable is specified by a curve that covers all possible values of the variable. Where for a discrete distribution the sum of all probabilities must add up to $1$, for a continuous distribution the area under the curve must be $1$.
+
+Recall that the distribution of a random variable allows us to calculate probabilities of any possible events related to the random variable. 
+
+There are two questions we need to answer:
+
+1. How do we figure out what the curve looks like if we don't know the distributions?
+2. How do we use the curve to calculate probabilities?
+
+Let's start with the first question.
+
+```{r}
+Y <- Exponential(rate = 2)
+
+sample_of_Y <- tibble(x = random(Y, n = 1000000)) %>% 
+  mutate(i = row_number()) 
+
+
+
+hist_of_Y <- function(n_rows = 10){
+  n_rows <- min(n_rows, 1000000)
+  sample_of_Y %>% 
+    filter(i <= n_rows) %>% 
+    ggplot(aes(x = x)) + 
+      geom_histogram(aes(y = ..density..),
+                     binwidth = (max(sample_of_Y$x)/n_rows)^(1/2))
+  
+}
+
+frames <- c(10,
+            seq(from = 100, to = 1000, by = 100),
+            seq(from = 1000, to = 100000, by = 10000),
+            seq(from = 100000, to = 1000000, by = 100000))
+
+if (FALSE){
+  for (i in frames){
+    print(i)
+    ggsave(plot = hist_of_Y(i) + 
+             labs(title = paste("Number of observations:", format(i, scientific = F))) + 
+             theme(plot.title = element_text(hjust = 1)),
+           filename = paste0("histogram_of_exponential/", str_pad(format(i, scientific = F), width = 7, side = 'left', pad = '0'), ".jpg"))
+  }
+
+  system("ffmpeg -framerate 3 -pattern_type glob -i 'histogram_of_exponential/*.jpg' -c:v libx264 exponential_distr_animation.mp4 -y")
+}
+```
+
+Remember how we interpret probabilities per definition \@ref(def:prob-def-2) ("the long run proportion of times an event happens"), and how we noticed how proportions could be found using a [histogram](#histogram) (as the area of bars corresponding to the event divided by the total area). To find the distribution of a random variable, we would (if we could...) in some sense combine the two: observe the outcome of the random variable many, many, many times, then create a histogram with very narrow bars. 
+
+The animation below illustrates this. Here we pretend that we observe the outcome of a random variable $X$ many, many times. We continuously draw a histogram of the values we've seen so far. 
+
+<video controls width="500px">
+  <source src="exponential_distr_animation.mp4" type="video/mp4">
+</video>
+
+Notice how as we get more observations, we make the bars more and more narrow. In the end, it is not hard to imagine a curve where we once had bars. This "curve" is what is formally known as the *density* of the distribution of the random variable $X$. Below is the histogram of all $1,000,000$ observations shown with an exponential distribution with rate parameter 2 overlaid. This is actually the distribution I used to create the outcomes of $X$. This justifies this way of thining about the creation of a distribution. 
+
+```{r}
+Y_full_hist <- hist_of_Y(1000000) 
+
+Y_full_hist + 
+  geom_line(data = data.frame(x = seq(0.01, 7, by = 0.01)) %>% mutate(y = pdf(d = Y, x = x)),
+            aes(x = x, y = y, color = 'Exponential distribution (rate = 2)')) + 
+  scale_color_discrete('', direction = -1)
+```
+
+
+We have now seen how we can, at least theoretically, find the distribution of a random variable. You can imagine doing the same thing with real data, except we cannot observe the outcome as many times as we'd like. Below is the distribution of the height of participants in the show data. 
+
+```{r}
+height_hist <- ggplot(full_show %>% filter(!is.na(height)), 
+       aes(x = height)) + 
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 5, boundary = 0) + 
+  scale_x_continuous(breaks = seq(25, 225, by = 10))
+
+plotly::ggplotly(height_hist)
+```
+
+As we go along, the line between the "distribution" of a random variable, and the "histogram" of the observations will probably be blurred. That's okay. As we just saw, the histogram turns into the distribution with enough observations. In many ways, the histogram is our best guess to the distribution of a random variable (unless we're willing to make some assumption, as we'll see later). This is exactly why I like the histogram to display continuous data -- when you know the distribution, you know everything, and the histogram is the closest we can get to the distribution!
+
+So how do we use this information to calculate probabilities? Areas under the curve. Let's pretend the height of SHOW participants follows the distribution depicted below:
+
+```{r}
+height_pdf <- ggplot(data = full_show %>% 
+         filter(!is.na(height)) %>% 
+         summarize_at(vars('height'), 
+                      .funs = funs(mean, sd, min, max)) %>% 
+         mutate(height = map2(min, max, function(x,y){
+           seq(x, y, by = 0.01)
+         })) %>% 
+         unnest(cols = height),
+       aes(x = height, y = dnorm(x = height, mean = mean, sd = sd))) + 
+  geom_line() + 
+  labs(y = "Density")
+
+height_pdf
+```
+
+This seems to be an okay estimate for a distribution of the heights (compare it to the histogram above). Say we want to find the probability that $X$ the height of a randomly chosen participant is between $178$ cm and $190$ cm. We would do that by finding the area under the curve above. 
+
+```{r}
+height_pdf + 
+  geom_ribbon(data = tibble(height = seq(178, 190, by = 0.01)),
+              inherit.aes = FALSE,
+              aes(x = height, 
+                  ymin = 0,
+                  ymax = dnorm(height, 
+                               mean = mean(full_show$height, na.rm = T),
+                               sd = sd(full_show$height, na.rm = T))))
+```
+
+This is not easy to do for us mortals (in this particular case, no closed form for the area exists!). Fortunately, some very smart people came up with some very smart ways to do this numerically -- that is, approximate the area with great precision. We'll simply let computers do this for us. In this particular case, the area is `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)`, or just about `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)*100`\%. 
+
+(**NOTE**: the rest of this subsection (#random-variables) is not crucial for us, but is included for completeness. DO NOT panic if this seems super weird.)
+
+There is one more thing we need to wrap our heads around: the probability of a continuous random variable being any single number is $0$, no matter what number you choose. This might seem a weird -- how can the probability of observing a height of 6ft be $0$ when we actually observe people that are 6ft tall?! I'll try to provide to explanations: an "intuitive" explanation, and one based on math. Run with whichever makes more sense to you (or just take my word for it!)
+
+Remember when we first introduced the notion of continuous variables. We said that a [continuous variable](#continuous) is a variable that can take an infinite (and actually uncountable) number of values. In the case of height, we also argued that even though it can technically be any value between 0ft and [8ft 11.1in](https://www.guinnessworldrecords.com/world-records/tallest-man-ever), we won't ever be able to measure it with $100\%$ accuracy. So even though it *seems* like we observe an individual that is 6ft tall that is not the exact height of said individual. Now, we could measure their height with greater accuracy, but no matter how accurate our tools are, we never get $100\%$ accuracy. 
+
+From a mathematical point of view, consider a random variable $X$ that follows the following distribution:
+
+```{r}
+Z1 <- Normal(mu = -4, sigma = 3)
+Z2 <- Normal(mu = 2, sigma = 1)
+
+pdf_Z <- function(x) 0.5*pdf(Z1, x) + 0.5*pdf(Z2, x)
+cdf_Z <- function(x) 0.5*cdf(Z1, x) + 0.5*cdf(Z2, x)
+
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  labs(x = "X", y = "Density") 
+```
+
+
+Say we want to find the probability of $X$ being between $-1$ and $2$. We would find that as the shaded area below, which turns out to be `r round(cdf_Z(2) - cdf_Z(-1), digits = 3)`. 
+
+```{r}
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  geom_ribbon(data = tibble(x = seq(-1, 2, by = 0.01)) %>% 
+                mutate(z = pdf_Z(x)),
+              aes(ymin = 0, ymax = z)) + 
+  labs(x = "X", y = "Density") 
+```
+
+
+Now imagine we want to find the area of $X$ being between $0$ and $2$. This would be the shaded area below, which is `r round(cdf_Z(2) - cdf_Z(0), digits = 3)`
+
+```{r}
+ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>% 
+         mutate(z = pdf_Z(x)),
+       aes(x = x,
+           y = z)) + 
+  geom_line() + 
+  geom_ribbon(data = tibble(x = seq(0, 2, by = 0.01)) %>% 
+                mutate(z = pdf_Z(x)),
+              aes(ymin = 0, ymax = z)) + 
+  labs(x = "X", y = "Density") 
+```
+
+How about the area between $1$ and $2$? This is `r round(cdf_Z(2) - cdf_Z(1), digits = 3)`. Between $1.5$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.5), digits = 3)`. Between $1.9$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.9), digits = 3)`. Between $1.995$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.995), digits = 3)`. As you can see, the closer we get to the "interval" $2$ to $2$, the smaller the area. In fact, if you take the limit, the area is $0$. 
+
+## Properties of Random Variables {#prop-of-RVs}
+
+When we talk about random variables, there is a great deal of uncertainty involved, since (by design) we do not know exactly what values the random variables will take after a conducted experiment. Similarly, we cannot be sure that repeating an experiment results in the same outcomes of the random variables simply since they are, as the name strongly implies, random. However, if we have some information about the random variable we're interested in, we can talk about some very important features of the random variable. The two we will talk about here are the *expected value* and *variance/standard deviation* of random variables. 
+
+These two concepts can be a bit hard to wrap ones head around at first, but as we talk about them over and over agian, hopefully you will realize that they are not as abstract as they might first seem.
+
+### Expected Values of Random Variables 
+
+The expected value of a random variable is, intuitively, the long run average. I.e. if we repeat an experiment **an infinite number of times**, we can determine the expected value of a random variable as the average of all the realizations of said random variable. As an example, if we consider the random variable $X$ that is $0$ if a coin flip comes up heads, and $1$ if it comes up tails, we can imagine flipping a coin an infinite number of times, and calculating the average. The result would be that the expected value of $X$ is $0.5$. We write $E(X) = 0.5$. 
+
+Note: the expected value is also often referred to as the *mean* value. 
+
+For any discrete random variable where we know the distribution, we can find the expected value in the following way: $E(X) = x_1 \cdot P(X = x_1) + ... + x_n P(X = x_n) = \sum_{i=1}^n x_i P(X = x_i)$.^[**Note**: the symbol $\sum$ simply means "sum". So, when we write $\sum_{i=1}^n ...$ it simply means "take the expression ..., plug in the value when $i=1,2,3,...,n$, and then add them up". Example: $\sum_{i=1}^5 i = 1 + 2 + 3 + 4 + 5 = 15$. Example 2: if $x_1 = 1, x_2 = 6, x_3 = -2.9$, then $\sum_{i = 1}^3 x_i = 1 + 6 - 2.9 = 4.1$.]
+
+
+#### Example: expected value of discrete random variable 
+
+Let $X$ be a discrete random variable that can take the values $1,2,6$, and $12$. Let the probabilities of each outcome be as follows:
+
+```{r}
+mean_discrete_example <- tibble(x = c(1,2,6,12), `P(X = x)` = c(0.2, 0.1, 0.6, 0.1))
+pander::pander(mean_discrete_example)
+```
+
+Then we can calculate the expected value of $X$: 
+
+
+\begin{align*}
+  E(X) &= \sum_{i = 1}^4 x_i P(X = x_i) \\
+       &= 1 \cdot P(X = 1) + 2 \cdot P(X = 2) + 6 \cdot P(X = 6) + 12 \cdot P(X = 12) \\
+       &= 1\cdot 0.2 + 2\cdot 0.1 + 6 \cdot 0.6 + 12 \cdot 0.1 \\
+       &= 5.2.
+\end{align*}
+
+
+So what does this mean? It means that if we perform an experiment that results in a realization of the random variable $X$ many, many, many times, the average of all outcomes is going to be close to $5.2$.  
+
+---
+
+#### Example: expected value of a continuous random variable 
+
+In the continuous case, actually calculating the expected value isn't as easy as in the discrete case. Remember, when we specify a discrete distribution, we specify the probability of each possible outcome. When we specify a continuous distribution, we specify a curve over all the possible outcomes, and probabilities of specific events correspond to areas under the curve. This also means that it is impossible to use a formula like the one introduced for the discrete case above. Fortunately, the intuition is the same. The expected value is the long run average. 
+
+
+---
+
+#### Rules for working with expected values 
+
+Sometimes, it is very beneficial to be able to transform a random variable, or combine several random variables, into a new one, and work with that new random variable. Fortunately, dealing with the expected value of a large number of such transformations is pretty simple. 
+
+First, let's imagine we have a random variable $X$ with mean $E(X)$, and another random variable $Y$ with mean $E(Y)$. Perhaps we are interested in the sum of the two, so we construct a new random variable $Z = X + Y$.^[Example: maybe we sent out a survey to a bunch of households asking for the income of each adult in the household ($X$ and $Y$), and now we want to combine the two into a single total household income ($Z = X + Y$).] Finding the expected value of $Z$ is really simple: $E(Z) = E(X + Y) = E(X) + E(Y)$. In words: the expected value of a sum of random variables is simply the sum of expected values. 
+
+Another example: maybe we want to scale the outcome of the random variable $X$ by a constant $a$, and then consider the new random variable $Y = a\cdot X$.^[Example: maybe $X$ is the total household income found from a survey in Europe where the currency is Euro. We want to compare this to our study of household incomes in the U.S., but to do so we have to convert from Euro to US Dollars. Here, $X$ is the household income in Euro, $a$ the exchange rate from Euro to US Dollars, and $Y$ the household income in US Dollars.] Again, finding the expected value of the new random variable $Y$ is really simple: $E(Y) = E(aX) = a\cdot E(X)$. 
+
+One final thing I want to mention here: the expected value of a constant will always be the constant itself. Hopefully, this doesn't come as too much of a shock. The expected value is what we would *expect* from a random variable. If something is constant, it means it never changes, so we *expect* it to stay the same. So, if $a$ is a constant, $E(a) = a$. This can be combined with the first rule we talked about to give us that $E(X + a) = E(X) + E(a) = E(X) + a$. 
+
+
+### Variance/Standard Deviation of Random Variables 
+
+Where the expected value of a random variable tells us something about where the outcomes of the random variable tend to be located, the next measures we'll be looking at tell us something about how spread out the outcomes will be around the expected value.
+
+**Note**: most textbooks handle the variance and standard deviations as two distinct things. I don't like that. They are virtually two sides of the same coin, and I will deliberately handle the two at the same time. My reasoning for this is that, at least in my head, these two measures try to convey the same message, but to two different audiences. I will elaborate on this later, but try to keep in mind that these two measures are almost the same. 
+
+The *variance* of a random variable is a measure that tells us how much we expect the outcome of said random variable to vary from the expected value. As with the expected value, it is relatively simple to calculate this when we are dealing with simple discrete random variables. Let $X$ be a discrete random variable with possible outcomes $x_1, ..., x_n$, and the probability of $x_i$ is $P(X = x_i)$. Then the variance of $X$ is $\Var(X) = \sum_{i=1}^n P(X = x_i)(x_i - E(X))^2$. At first glance, this can look a bit intimidating, so let's try to break it down to better understand what's going on:
+
+
+1. It actually has the form of an expected value, i.e. it is a sum where each term is the product of the value of an outcome and the probability of that outcome. So, intuitively, this is not much different than an expected value, it's just an expected value of something else.
+2. That "something else" is $(x_i - E(X))^2$. This is representative of the distance from the outcome $x_i$ to the expected value...
+3. ... except, we square the distance. We do this because we want this measure to be representative of the variation of the data, and so we cannot allow positive and negative differences to cancel. Example: if we didn't square the differences, a random variable with possible outcomes $1,2,3$ each with probability $1/3$ would have variance $0$, but clearly there is some variation in the potential outcomes -- not all observations are the same. 
+
+So, loosely speaking, the variance is "a measure of expected distances from observations to the expected value". 
+
+
+#### Rules for working with variance 
+
+Working with the variance of random variables is not quite as simple as working with the expected value. This is due to the fact that the expected value is a simple average, whereas the variance is an average of squared differences. The result is the following set of rules: if $X$ and $Y$ are random variables, and $a$ is some fixed constant, then 
+
+1. $\Var(a\cdot X) = a^2 \Var(X)$,
+2. $\Var(a) = 0$,
+3. if $X$ and $Y$ are independent: $\Var(X+Y) = \Var(X) + \Var(Y)$.
+
+Combining (1) and (3) above tells us that, if $X$ and $Y$ are independent, then 
+
+\begin{align*}
+\Var(X - Y) &= \Var(X + (-Y)) \\
+            &= \Var(X) + \Var(-Y) \\
+            &= \Var(X) + (-1)^2 \Var(Y) \\
+            &= \Var(X) + \Var(Y).
+\end{align*}
+
+Don't forget this!!
+
+#### So what about that standard deviation? 
+
+So far we've talked about the variance, a bit about how to interpret it, and how to work with it for multiple random variables. But what about that other thing mentioned above, the standard deviation? 
+
+The standard deviation of a random variable is simply the square root of the variance: $\SD(X) = \sqrt{\Var(X)}$. As we saw above, the variance has some nice mathematical properties, such as the fact that it is basically an expected value, and that (when $X$ and $Y$ are independent) $\Var(X + Y) = \Var(X) + \Var(Y)$. Neither hold for the standard deviation. We lose both because of the square root. However, it is also because of the square root that we like using the standard deviation in certain situation.
+
+As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r round(mean(full_show$height*0.39, na.rm = T), digits = 2)` inches, and the variance is `r round(var(full_show$height*0.39, na.rm = T), digits = 2)`... ^inches^? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 inches^2^ a lot? We can't even really compare it to the mean because of the different units! The standard deviation fixes just that. It is still a measure of the "expected" variation, but it is measure on the original scale by taking the square root. So when we report a mean height of `r round(mean(full_show$height*0.39, na.rm = T), digits = 2)` inches with a standard deviation of `r round(sd(full_show$height*0.39, na.rm = T), digits = 2)` inches, this all of a sudden makes much more sense intuitively. 
+
+The moral of the story: both the variance and the standard deviation have a role in the world of statistics, but at different stages. The variance is very useful in the more mathematical parts of the field, while the standard deviation is easier to interpret. Luckily, going from one to the other is simple: $\Var(X) = \SD(X)^2$ and $\SD(X) = \sqrt{\Var(X)}$. Therefore, if you ever have one, you practically have both. Don't forget this, as it is a common mistake to plug in the variance to equations where it should have been the standard deviation, and vice versa. 
+
+
+### Things to remember when working with random variables 
+
+When working with random variables, $X$ and $Y$, these are the important rules:
+
+1. $E(X + Y) = E(X) + E(Y)$,
+2. if $a$ is some fixed number, $E(a\cdot X) = a\cdot E(X)$,
+3. if $a$ is some fixed number, $\Var(a \cdot X) = a^2 \Var(X)$,
+4. **IF** $X$ and $Y$ are independent, $\Var(X + Y) = \Var(X) + \Var(Y)$,
+5. **IF** $X$ and $Y$ are independent, $\Var(X - Y) = \Var(X) + \Var(Y)$. 
+
+Things people often forget:
+
+1. $E(X\cdot Y) \neq E(X)E(Y)$,
+2. $E\left(\frac{X}{Y}\right) \neq \frac{E(X)}{E(Y)}$,
+3. $\Var(X+Y) \neq \Var(X) + \Var(Y)$ if $X$ and $Y$ are not independent,
+4. $\Var(X - Y) \neq \Var(X) - \Var(Y)$,
+5. $\SD(X + Y) \neq \SD(X) + \SD(Y)$, even when $X$ and $Y$ are independent.
+
+## A Few Important Distributions
+
+### The Bernoulli Distribution 
+
+In example \@ref(examples-random-variables) above, we consider flipping a coin. Such an experiment, i.e. one with only two possible outcomes, is often referred to as a *Bernoulli experiment*, and the random variable $X$ is referred to as a *Bernoulli random variable*. The "probability of success" (you get to pick your favorite outcome as a success) is often denoted $p$. As a shorthand for such a random variable, we write $X \sim \text{Bernoulli}(p)$, which is read as "$X$ follows a Bernoulli distribution with probability parameter $p$" or "$X$ is Bernoulli distributed with parameter $p$". Phrases like these can sometimes sound scary and complex, but all it means is that the random variable $X$ can only take on two different outcomes, and the probability of $X$ being one of the two outcomes is $p$, the probability of it being the other is $1-p$. (Important note: remember that the sum of all probabilities has to be $1$, so if the probability of one outcome is $p$, and there are only two possible outcomes, then the probability of the other outcome must be $1-p$. This way of thinking is something we will use over and over again.)
+
+Using the properties discussed in section \@ref(prop-of-RVs), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
+
+\[
+  E(X) = \sum_{i=1}^2 x_i \cdot P(X = x_i) = 0 \cdot P(X = 0) + 1 \cdot P(X = 1) = p,
+\]
+
+and 
+
+
+\begin{align*}
+  \Var(X) &= \sum_{i=1}^2 P(X = x_i) \cdot (x_i - E(X))^2 \\
+          &= P(X = 0)\cdot (0 - p)^2 + P(X = 1)\cdot (1 - p)^2 \\
+          &= (1 - p)\cdot p^2 + p\cdot (1 - p)^2 \\
+          &= (1-p)\cdot(p^2 + p\cdot(1-p)) \\
+          &= (1-p)\cdot(p^2 + p - p^2) \\
+          &= (1-p)\cdot p.
+\end{align*}
+
+
+So it is actually rather simple to find the expected value and variance of a Bernoulli random variable, if we know the probability of success ($p$). 
+
+### The Binomial Distribution 
+
+Often times we are interested in things that can be viewed as a sum of Bernoulli random variables. Let's say we have $n$ independent (i.e. the outcome of one doesn't say anything about the rest) Bernoulli random variables ($X_1$, $X_2$, ..., $X_n$), all with probability of success $p$, and are interested in the sum of those $n$ variables $Y = X_1 + X_2 + ... + X_n$. For this to make sense, we let $X_i$ be $1$ if the corresponding "experiment" is a success, and $0$ if it is a failure. Now, we can think of the random variable $Y$ as either (1) the sum of independent Bernoulli random variables, or (2) the number of successes among $n$ independent trials with binary outcomes. It is this latter interpretation that makes the random variable $Y$ interesting. 
+
+When a random variable is the sum of $n$ independent Bernoulli random variables all with probability of success $p$, we say that $Y$ follows a Binomial distribution with size $n$ and probability of success $p$. We write $Y \sim \text{Binomial}(n,p)$. 
+
+Let's think for a second about what possible values $Y$ can take. If all $n$ Bernoulli experiments happen to come out as failures, then all $X_i$'s are $0$'s, and so $Y$ will also be $0$. The other extreme is if all $n$ Bernoulli experiments are successes, then all $X_i$'s are $1$'s, and $Y$ will be the sum of $n$ $1$'s, so $Y$ will be $n$. These are simply the two extremes - any number of the $X_i$'s can be $1$'s, so $Y$ can end up being any integer between $0$ and $n$, both included. The most likely scenarios are the integers closest to the middle. 
+
+Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
+
+```{r binomial_example}
+binom_n <- 50000
+binom_n_print <- format(binom_n, scientific = F)
+
+n <- 10
+if(!file.exists("data/R_output/binom_outcomes.Rds")){
+  binom_outcomes <- tibble(i = 1:binom_n,
+                           Numeric = map(i, function(...) as.numeric(rbernoulli(n))),
+                           HTs = map_chr(Numeric, function(x) if_else(x == 1, "H", "T") %>% 
+                                           paste(collapse = ",")),
+                           Y = map_dbl(Numeric, sum)) %>% 
+    select(i, HTs, Numeric, Y)
+  
+  readr::write_rds(binom_outcomes, path = "data/R_output/binom_outcomes.Rds")
+} else {
+   binom_outcomes <- readr::read_rds("data/R_output/binom_outcomes.Rds")
+}
+```
+
+Since it's impossible to flip $n$ coins (for what is $n$?), we have to pick a real integer. Let's pick $`r n`$. Similarly, it's impossible to flip $`r n`$ coins an infinite number of times, so let's just do it a bunch of times (i.e. $`r `$). What we are about to do is repeat an experiment (flip $`r n`$ coins) many, many ($`r binom_n_print`$) times. The first time we perform this experiment, we see `r binom_outcomes$HTs[1]`. When we translate this to $0$ and $1$, it looks like `r paste(binom_outcomes$Numeric[[1]], collapse = ",")`. So, the value of the binomial variable $Y$ is `r binom_outcomes$Y[1]`, since this is the number of heads. Rinse and repeat. The results of all $`r n`$ experiments are shown in the table below.
+
+```{r}
+DT::datatable(binom_outcomes %>% select(-i))
+```
+
+Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{number of experiments with } Y = 2}{\text{number of experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
+
+```{r}
+binom_outcomes %>% 
+  janitor::tabyl(Y) %>% 
+  rename(y = Y,
+         `Estimated Probability` = percent,
+         `# experiments with Y = y` = n) %>% 
+  pander::pander()
+```
+
+We see that the most probable outcomes are around the middle (4,5,6) with proportions above 0.20. 
+
+We can display this using a histogram. Even though this is actually a discrete random variable, the histogram can still be used to display the distribution, just make sure the binwidths are adjusted appropriately (in this case, width of $1$ is good since that ensures each bar corresponds to one possible outcome). 
+
+```{r}
+binom_outcomes_hist <- binom_outcomes %>%  
+  janitor::tabyl(Y) %>% 
+  ggplot(aes(x = Y, y = n)) + 
+    geom_bar(stat = 'identity', width = 1, col = 'black') +
+    scale_x_continuous(breaks = c(1:10)) +
+    theme_bw()
+
+
+plotly::ggplotly(binom_outcomes_hist)
+```
+
+
+When viewing this, the probability of a given outcome can be interpreted as the area of the corresponding bar divided by the total area. 
+
+As mentioned earlier, the distribution of a binomial random variable can also be calculated mathematically. We won't go into the details here, but I will leave you with the formulat: $P(Y = k) = {n \choose k}p^k (1-p)^{n-k}$^[${n \choose k}$ is read as "n choose k" and is the number of ways you can choose $k$ elements from $n$ elements. For example, the number of ways you can pick $2$ balls out of a basked of $3$ different balls is ${3 \choose 2}$. It can be calculated as ${n \choose k} = \frac{n!}{k!(n-k)!}$, where $n!$ ("$n$ factorial") is $n\cdot (n-1) \cdot (n-2) \cdot ... \cdot 2 \cdot 1$. By definition, $0! = 1$.]. Take a look at the calculated probabilities below, and compare them to the estimates we got by flipping $`r n`$ coins $`r binom_n_print`$ times. 
+
+As mentioned earlier, the distribution of a binomial random variable can also be calculated mathematically. We won't go into the details here, but I will leave you with the formula: $P(Y = k) = {n \choose k}p^k (1-p)^{n-k}$^[${n \choose k}$ is read as "n choose k" and is the number of ways you can choose $k$ elements from $n$ elements. For example, the number of ways you can pick $2$ balls out of a basked of $3$ different balls is ${3 \choose 2}$. It can be calculated as ${n \choose k} = \frac{n!}{k!(n-k)!}$, where $n!$ ("$n$ factorial") is $n\cdot (n-1) \cdot (n-2) \cdot ... \cdot 2 \cdot 1$. By definition, $0! = 1$.]. Take a look at the calculated probabilities below, and compare them to the estimates we got by flipping $`r n`$ coins $`r binom_n_print`$ times. 
+
+```{r}
+binom_outcomes %>% 
+  janitor::tabyl(Y) %>% 
+  mutate(Probability = dbinom(x = Y, size = 10, prob = 0.5)) %>% 
+  rename(y = Y,
+         `Estimated Probability` = percent,
+         `# experiments with Y = y` = n) %>% 
+  DT::datatable()
+```
+
+Pretty close! 
+
+As mentioned, the expected value is basically the long run average. So, if we calculate the average of all outcomes of $Y$ we get a good estimate of what the expected value of $Y$ is. Similarly, the variance of the outcomes is a good estimate of the variance of the random variable $Y$. From the data, $\bar{y} = `r mean(binom_outcomes[["Y"]])`$ and $s_Y^2 = `r var(binom_outcomes[["Y"]])`$. Remember those two numbers.
+
+If we use the rules of expectation and variance from the previous section, we can find the exact expected value and variance of a binomial random variable with size $n$ and probability of success $p$. Since $Y \sim \text{Binomial}(n,p)$ if $Y = X_1 + ... + X_n$, where $X_i \sim \text{Bernoulli}(p)$ and all $X_i$'s are independent, we have that 
+
+
+\begin{align*}
+  E(Y) &= E(X_1 + ... + X_n) && \\
+       &= E(X_1) + ... + E(X_n) && \\
+       &= p + ... p && (E(X_i) = p \text{ since } X_i \sim \text{Bernoulli}(p)) \\
+       &= n\cdot p, &&
+\end{align*}
+
+and 
+
+\begin{align*}
+  \Var(Y) &= \Var(X_1 + ... + X_n) && \\
+          &= \Var(X_1) + ... + \Var(X_n) && (\text{since all } X_i's \text{ are independent}) \\
+          &= p\cdot(1-p) + ... + p\cdot(1-p) && (\text{since } X_i \sim \text{Bernoulli}(p)) \\
+          &= n\cdot p \cdot (1-p). &&
+\end{align*}
+
+These two equations really emphasize that a Binomial random variable is really just $n$ Bernoulli's: notice how both the expected value and the variance is $n$ times that of a single Bernoulli random variable!
+
+Now let's calculate the expected value and variance of our little experiment. We flip a coin $`r n`$ times. The probability of success is $0.5$. So, $Y \sim \text{Binomial}(`r n`, 0.5)$, and therefore $E(Y) = `r n` \cdot 0.5 = `r n*0.5`$, and $\Var(Y) = `r n` \cdot 0.5 \cdot (1-0.5) = `r n*0.5*0.5`$. Remember what we got for the expected value and variance? Numbers very close to these.
+
+### Normal Distribution 
+
+The normal distribution is most definitely the most important distribution we will discuss in this class for one reason: The Central Limit Theorem. We'll get back to what this is later, but first let's try to become familiar with the normal distribution. 
+
+In contrast to the Bernoulli and Binomial distributions, the normal distribution is a continuous distribution, and therefore it is specified by a curve.
+
+The normal distribution density is specified by two parameters. The first specifies the mean of the distribution (and is therefore called the *mean* or *location* paramater). We often use $\mu$ to denote the mean of a normal distribution, or $\mu_X$ if we want to really stress that we are talking about the mean of the random variable $X$^[very useful when we are working with multiple random variables, as we will see in a second]. The second parameter specifies the variance of the distribution. We often use $\sigma^2$ to denote this, or $\sigma_X^2$. This is rather convenient, as when we then talk about the standard deviation, it is simply $\sigma$. The mean parameter can really be any real number, while the variance has to be positive. If $X$ follows a normal distribution with mean $\mu$ and variance $\sigma^2$, we write $X \sim N(\mu, \sigma^2)$. 
+
+So what does this curve actually look like? It's a bell curve that is centered at the mean $\mu$ and the shape/width is controlled by the variance $\sigma^2$. Below are a few examples. The first figure shows varying means, the second varying variances.
+
+```{r}
+normals_base <- ggplot(data = data.frame(x = seq(-5, 5, by = 0.1)),
+       aes(x = x)) +
+  labs(x = '', y = '', color = '') + 
+  scale_x_continuous(breaks = -5:5)
+
+normals_base + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = 'N(0,1)'), group = 'mean') + 
+  stat_function(fun = dnorm, args = list(mean = -2, sd = 1), 
+                aes(color = 'N(-2,1)'), group = 'mean') + 
+  stat_function(fun = dnorm, args = list(mean = 1, sd = 1), 
+                aes(color = 'N(1,1)'), group = 'mean') 
+```
+
+```{r}
+normals_base +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = 'N(0,1)'), group = 'var') + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 2), 
+                aes(color = 'N(0,4)'), group = 'var') + 
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 3), 
+                aes(color = 'N(0,9)'), group = 'var')
+```
+
+
+As the names of the parameters suggest, the actual expected value and variance of a random variable that is normally distributed, $X \sim N(\mu, \sigma^2)$, is simply $\mu$ and $\sigma^2$, respectively. 
+
+#### Linear Combination of Normal with Constant
+
+One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(prop-of-RVs), we get that 
+
+\begin{align*}
+  E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\
+  E(Y_2) &= E(a\cdot X) = a E(X) = a\cdot \mu,
+\end{align*}
+
+and 
+
+
+\begin{align*}
+  \Var(Y_1) &= \Var(X+a) = \Var(X) = \sigma^2, \\
+  \Var(Y_2) &= \Var(a\cdot X) = a^2 \Var(X) = a^2 \sigma^2.
+\end{align*}
+
+
+So $X + a \sim N(\mu + a, \sigma^2)$, and $a\cdot X \sim N(a\cdot \mu, a^2 \sigma^2)$. 
+
+
+One particular case of the normal distribution plays an important role in much of statistics, and is therefore been named the Standard Normal Distribution. For historic reasons, we often use $Z$ to denote the standard normal distribution, which is simply a normal distribution with mean $0$ and variance $1$. I.e. $Z \sim N(0,1)$. One reason why this is important is that it provides sort of a baseline that we can always revert to. Whenever you are working with a normal distribution, you can use the rules above to get the standard normal. If $X \sim N(\mu, \sigma^2)$, then $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. Why? As we just discussed, adding a constant to a normal random variable results in something normal. $X-\mu$ is simply adding $-\mu$ to $X$, so this is still normal. We also saw that multiplying by a constant is still normal, so since $\frac{X-\mu}{\sigma}$ is simply multiplying $X-\mu$ by $\frac{1}{\sigma}$, we have that $\frac{X-\mu}{\sigma}$ is a normal random variable. We can find it's mean and variance using the rules we've learned, and get that $E\left(\frac{X - \mu}{\sigma}\right) = \frac{E(X) - \mu}{\sigma} = 0$, and $\Var\left(\frac{X - \mu}{\sigma}\right) = \frac{\Var(X)}{\sigma^2} = 1$, so $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. 
+
+#### Sum of (Independent) Normals
+
+Another really important and useful property of the normal distribution is that if you have two normally distributed variables, $X \sim N(\mu_X, \sigma_X^2)$ and $Y \sim N(\mu_Y, \sigma_Y^2)$, then the sum of the two, $X + Y$, is also a normally distributed random variable. 
+
+The mean parameter of this newly created random variable is always easy to find: $E(X + Y) = E(X) + E(Y) = \mu_X + \mu_Y$. The variance is, in general a bit harder, except if the two are independent of each other. In this case $\Var(X + Y) = \Var(X) + \Var(Y) = \sigma_X^2 + \sigma_Y^2$. So, if $X$ and $Y$ are independent, then $X + Y \sim N(\mu_X + \mu_Y, \sigma_X^2 + \sigma_Y^2)$. 
+
+Combining this with the rules stated above, we get that $X - Y$ is normally distributed as well, since $X - Y = X + (-Y)$, and both $X$ and $-Y$ are normally distributed. More applications of the rules give us $X - Y \sim N(\mu_X - \mu_Y, \sigma_X^2 + \sigma_Y^2)$. (**NOTE**: we DO NOT subtract the variances.)
+
+
+#### Some Exploration through Simulations
+
+```{r}
+set.seed(1010101)
+
+mean_x <- -0.5
+mean_y <- 1
+var_x <- 1
+var_y <- 1.5
+
+
+X <- Normal(mean_x, sqrt(var_x))
+Y <- Normal(mean_y, sqrt(var_y))
+
+normal_sim_n <- 10000
+
+normal_sim_res <- tibble(Xs = random(X, n = normal_sim_n),
+                         Ys = random(Y, n = normal_sim_n),
+                         Ws = Xs - Ys)
+```
+
+To illustrate the properties presented in the two previous sections, let us take a look at some simulated data. Let $X \sim N(`r mean_x`, `r var_x`)$ and $Y \sim N(`r mean_y`, `r var_y`)$. I.e. $X$ and $Y$ follow these two distributions:
+
+```{r}
+normals_base + 
+  geom_line(aes(y = pdf(X, x), color = "X")) + 
+  geom_line(aes(y = pdf(Y, x), color = "Y"))
+```
+
+Now, let's say we're actually interested in $W = X - Y$. That is, we perform an experiment, observe a realization of $X$ and $Y$, and then create a realization of $W$ as $w = x - y$. The first experiment results in $x = `r round(normal_sim_res[["Xs"]][1], digits = 4)`, y = `r round(normal_sim_res[["Ys"]][1], digits = 4)`$, and so $w = x - y = `r round(normal_sim_res[["Ws"]][1], digits = 4)`$. We repeat this experiment many, many ($`r normal_sim_n`$) times. This enables us to take a look at histograms of the outcomes of $X$, $Y$, and $W$, and we calculate the observed averages and variances so that we can compare with our theoretical expectations. 
+
+So, first of all: do $X$ and $Y$ actually match the distributions we wanted them to come from? Below are histograms of the outcomes with the distributions overlayed. Notice how closely the histograms follow the curves. It definitely seems that the outcomes of $X$ and $Y$ indeed come from the respective normal distributions. 
+
+```{r}
+for_normal_sim_plots <- normal_sim_res %>% 
+  gather(key = "var") %>% 
+  mutate(PDF = case_when(var == "Xs" ~ pdf(X, value),
+                         var == "Ys" ~ pdf(Y, value),
+                         var == "Ws" ~ pdf(Normal(mean_x - mean_y, sqrt(var_x + var_y)), value)),
+         var = str_sub(var, end = 1)) 
+
+
+for_normal_sim_plots %>% 
+  filter(var != "W") %>% 
+  ggplot(aes(x = value, fill = var)) + 
+    geom_histogram(bins = normal_sim_n/100, alpha = 0.5, position = 'identity',
+                   aes(y = ..density..)) +
+    geom_line(aes(y = PDF)) + 
+    labs(x = '', y = '', fill = '') + 
+    scale_x_continuous(breaks = -5:5)
+```
+
+
+Now, let us take a look at the difference between the two, i.e. $W$. 
+
+```{r}
+for_normal_sim_plots %>% 
+  filter(var != "W") %>% 
+  ggplot(aes(x = value, fill = var)) + 
+    geom_histogram(bins = normal_sim_n/100, alpha = 0.5, position = 'identity',
+                   aes(y = ..density..)) +
+    geom_line(aes(y = PDF)) +
+    geom_histogram(data = filter(for_normal_sim_plots,
+                                 var == "W"),
+                   alpha = 1,
+                   bins = normal_sim_n/100, position = 'identity',
+                   aes(y = ..density..)) +
+    labs(x = '', y = '', fill = '', alpha = '') + 
+    scale_x_continuous(breaks = -7:5)
+```
+
+A few things to notice: 
+
+1. it most definitely looks like a new normal distribution
+2. it seems to be centered not far from $`r mean_x - mean_y`$
+3. it seems to be wider than both of the other curves
+
+So, do these observations match what we would expect? 
+
+1. We know that the difference of two normally distributed variables should again be normally distributed
+2. Our rules tell us that $E(W) = E(X - Y) = E(X) - E(Y) = `r mean_x` - `r mean_y` = `r mean_x - mean_y`$, so that also checks out
+3. The rules stated above also tell us that $\Var(W) = \Var(X - Y) = \Var(X) + \Var(Y) = `r var_x` + `r var_y` = `r var_x + var_y`$, so we do expect the new curve to be wider than both of the old ones. 
+
+Finally, we can check that the averages and variances we observe are close to what the theory tells us:
+
+```{r}
+normal_sim_res %>% 
+  rename(X = Xs, Y = Ys, W = Ws) %>% 
+  gather(key = "Variable") %>% 
+  group_by(Variable) %>% 
+  summarise(Average = mean(value), `Observed Variance` = var(value)) %>% 
+  ungroup() %>% 
+  mutate(Mean = case_when(Variable == 'X' ~ mean_x,
+                             Variable == 'Y' ~ mean_y,
+                             Variable == 'W' ~ mean_x - mean_y),
+         Variance = case_when(Variable == 'X' ~ var_x,
+                             Variable == 'Y' ~ var_y,
+                             Variable == 'W' ~ var_x + var_y),
+         Variable = factor(Variable, levels = c("X", "Y", "W"))) %>% 
+  arrange(Variable) %>% 
+  knitr::kable()
+```
+
+
+Again, only small differences between the observed and the expected.
+
+
+### t-distribution 
+
+The t-distribution is very similar to the normal distribution in that the curve also resembles a bell. Unlike the normal distribution, it only depends on one parameter, which is called the degrees of freedom, or $df$. We use the notation $t_{df}$ for a t-distribution with $df$ degrees of freedom. 
+
+The t-distribution is always centered around $0$, which is also its mean, but the variance depends on the degrees of freedom: if $X \sim t_{df}$, then $\Var{X} = \frac{df}{df-2}$ if $df > 2$, $\Var{X} = \infty$ if $1 < df < 2$, and the variance of $X$ is actually undefined if $df < 1$. 
+
+Below are a few examples of the t-distribution with different degrees of freedom. For comparison, the standard normal is also included. Notice how similar the t-distributions with more than 9 degrees of freedom look, and how they keep getting closer and closer to the standard normal distribution. It can actually be shown that if we had an infinite number of degrees of freedom, then the t-distribution is identical to the standard normal distribution. 
+
+```{r}
+ggplot(data = data.frame(x = seq(-3, 3, by = 0.1)),
+       aes(x = x)) + 
+  stat_function(fun = dt, args = list(df = 1), 
+                aes(color = "df1")) +
+  stat_function(fun = dt, args = list(df = 3), 
+                aes(color = "df3")) +
+  stat_function(fun = dt, args = list(df = 9), 
+                aes(color = "df9")) +
+  stat_function(fun = dt, args = list(df = 15), 
+                aes(color = "df15")) + 
+  stat_function(fun = dt, args = list(df = 20), 
+                aes(color = "df20")) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), 
+                aes(color = "N(0,1)")) + 
+  scale_color_discrete("Degrees of Freedom",
+                       labels = c("df1" = expression(df[1]),
+                                  "df3" = expression(df[3]),
+                                  "df9" = expression(df[9]),
+                                  "df15" = expression(df[15]),
+                                  "df20" = expression(df[20])),
+                       breaks = factor(c("df1", "df3", "df9", "df15", "df20", "N(0,1)")))
+```
+
+
+### Other Distribution
+
+The four distributions above are the ones we'll consider, but there are many, many more out there. Here are a few examples.
+
+#### Poisson Distribution 
+
+The Poisson distribution is often used for counting things, such as the number of patients showing up in a clinic during a specified time period. It is a discrete distribution that only returns integer values. It depends on only one parameter which is often referred to as the rate parameter. It is displayed below with a few different values of the rate.
+
+```{r}
+tibble(lambda = c(1, 5, 10),
+       n = list(c(0:20)),
+       p = map2(n, lambda, function(x,y) dpois(x, y))) %>% 
+  unnest() %>% 
+  ggplot(aes(x = n, y = p, fill = as.character(lambda))) + 
+    geom_histogram(stat = 'identity', position = "identity",
+                   alpha = 0.5, width = 1, col = 'grey50') + 
+    labs(y = 'Probabilities', fill = "Rate parameter") +
+    theme_bw()
+```
+
+For a Poisson distributed random variable with rate parameter $\lambda$, $X \sim \text{Poisson}(\lambda)$, it holds that $E(X) = \Var(X) = \lambda$. 
+
+#### Exponential Distribution 
+
+The exponential distribution is often used for wait times. This can be useful if you want to model the wait times in an emergency room, for example. It is a continuous distribution that depends on a single parameter, which is also called the rate parameter. 
+
+```{r}
+tibble(x = list(seq(0, 2, by = 0.05)),
+       Rate = c(1,5,10),
+       p = map2(x, Rate, function(x,y) dexp(x, y))) %>% 
+  unnest() %>% 
+  mutate(Rate = factor(Rate, levels = c(1, 5, 10))) %>% 
+  ggplot(aes(x = x, y = p, fill = Rate)) + 
+    geom_area(col = 'grey50', alpha = 0.5, position = 'identity') + 
+    scale_y_continuous('', expand = expand_scale(mult = c(0,0), add = c(0, 2))) 
+```
+
+
+For a random variable that is exponentially distributed with rate parameter $\lambda$, $X \sim \text{Exp}(\lambda)$, it holds that $E(X) = \frac{1}{\lambda}$, and $\Var(X) = \frac{1}{\lambda^2}$.

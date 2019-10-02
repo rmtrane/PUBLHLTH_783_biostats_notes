@@ -1,0 +1,181 @@
+# (PART) Introduction to Probability & Random Variables {-}
+
+Loosely based on @ls chapter 5.
+
+# What is "probability"? 
+
+A *probability* is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 **always** occurs, while an event with probability of 0 **never** occurs. Every number in between are a bit harder to interpret. 
+
+For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there's a 0.5 (i.e. 50\%) chance of rain tomorrow? We can only observe if it rains tomorrow once, so the probability surely must be 0 (it doesn't rain) or 1 (it rains), right?
+
+## Definitions
+
+As hinted at above, the concept of "probability" can be a bit challenging to wrap your head around. There are generally two ways that the term is introduced. Though they are very similar once you understand the concepts, they can seem radically different at first. 
+
+```{definition, prob-def-1, echo = TRUE}
+The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, **IF** all outcomes are equally likely:
+
+$$
+  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}.
+$$
+```
+
+We often refer to the numerator in this fraction as the number of favorable outcomes. 
+
+I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: "IF all outcomes are equally likely". We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption. 
+
+The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and (by far!!) most boring examples in the history of statistics. However, they are super useful for two reasons: 
+
+1. They are so simple that it is possible to better grasp what's going on
+2. A lot of more complicated examples can be simplified by comparing them to these two
+
+### Examples 
+
+#### Coin Flip 
+
+We want to find the probability $P(\text{coin comes up heads})$. A natural assumption is that when flipping a coin, heads and tails are the only outcomes^[i.e. it is NOT possible for the coin to land on the side], and they are equally likely. Therefore, 
+
+\begin{align*}
+  P(\text{coin comes up heads}) &= \frac{\text{number of possible outcomes that come up heads}}{\text{number of possible outcomes}} \\
+  &= \frac{1}{2} \\
+  &= 0.5.
+\end{align*}
+
+Similarly, one can find the probability that the coin comes up tails:
+
+\begin{align}
+  P(\text{coin comes up tails}) &= \frac{\text{number of possible outcomes that come up tails}}{\text{number of possible outcomes}} \\
+  &= \frac{1}{2} \\
+  &= 0.5.
+\end{align}
+
+#### Roll of a Die 
+
+Another classic example: calculate different probabilities when rolling a die. (Done in class -- see lecture notes.)
+
+---
+
+The two examples above show situations where all possible outcomes are equally likely. What if that is not the case? 
+
+### Example: disease status 
+
+Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might conclude that the probability of a subject being obese if $\frac{1}{2}$, i.e. $0.5$. 
+
+This is obviously not the case. The problem with this approach is that the two outcomes -- those being "the subject is obese", and "the subject is NOT obese" -- are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good. 
+
+--- 
+
+To find a more satisfying answer to the question asked in the last example, we need to consider a different approach to probabilities.
+
+```{definition, echo = TRUE, label = prob-def-2}
+The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an *infinite number of times*.
+```
+
+Repeating an experiment an infinite number of times is obviously not possible, so in practice "an infinite number of times" becomes "a very large number of times". 
+
+When introducing this different approach to probabilities, first we need to make sure it doesn't contradict our previous approach. 
+
+### Example: coin flip (revisited) 
+
+We previously established that when flipping a coin, the probability of heads is $0.5$. Hopefully this new definition will yield a similar answer. 
+
+To find out if that is actually the case, we would have to flip a coin "an infinite number of times". Obviously, this is not possible, so we will have to settle for "a very large number of times". So, imagine we flip a coin `r n_flips <- 100000; format(n_flips, scientific = FALSE)` times. Every time it is flipped, we write down the result, and count how many times we've seen heads, and how many times we've seen tails so far. If the probability of seeing heads is $0.5$, we should eventually see about as many heads as tails. 
+
+Below is an animation that shows the results of such an experiment. The bars show you the proportion of heads and tails, which in the end (by the definition above) will converge to the probability. The first 100 flips are all shown, then only the results after every 100 flips, and finally results after every 1000 flips are shown. Note how at the very end the two bars are both very close to $0.5$.
+
+```{r}
+set.seed(1010101)
+coin_flip <- tibble(outcome = rbinom(n = n_flips, size = 1, prob = 0.5)) %>% 
+  mutate(n = row_number(),
+         HT = if_else(outcome == 1, 'heads', 'tails'),
+         heads = cumsum(outcome),
+         tails = n - heads) %>%
+  gather(key = 'outcome', value = 'count', heads, tails) %>%
+  mutate(props = count/n) %>% 
+  filter(n < 101 | (n %% 100 == 0 & n < 10000) | n %% 1000 == 0)
+```
+
+```{r eval = FALSE, include = FALSE}
+library(gganimate)
+
+coin_flip_anim <- coin_flip %>% 
+  ggplot(aes(x = outcome, y = props, 
+             label = paste0("Number of ", outcome, ":\n", count))) + 
+    geom_bar(stat = 'identity') + 
+    scale_y_continuous(expand = expand_scale(0,0)) + 
+    geom_text(size = 6, aes(y = 0.1), fontface = "bold", color = 'black') +
+    geom_hline(yintercept = 1/2, linetype = 'dashed', color = 'red') + 
+    labs(title = "Number of total coin flips: {unique(coin_flip$n)[frame]}") + 
+    theme_bw() + 
+    theme(title = element_text(size = 20)) +
+    transition_manual(frames = n)
+
+anim_save(filename = "coin_flip.mp4", 
+          animation = coin_flip_anim, 
+          nframes = nrow(coin_flip_anim$data)/2,
+          renderer = ffmpeg_renderer(format = ".mp4"))
+```
+
+<video controls>
+  <source src="coin_flip.mp4" type="video/mp4">
+</video>
+
+### Example: roll of a die (revisited)
+
+Similarly to what we did above for the coin flip, we will do here for the roll of a die.
+
+```{r}
+n_rolls <- 100000
+die <- tibble(roll = sample(1:6, size = n_rolls, replace = TRUE)) %>% 
+  transmute(n = row_number(),
+            `1` = cumsum(roll == 1),
+            `2` = cumsum(roll == 2),
+            `3` = cumsum(roll == 3),
+            `4` = cumsum(roll == 4),
+            `5` = cumsum(roll == 5),
+            `6` = cumsum(roll == 6)) %>% 
+  gather(key = 'n eyes', value = 'count', -n) %>% 
+  mutate(props = count/n) %>% 
+  filter(n < 101 | (n %% 100 == 0 & n < 10000) | n %% 1000 == 0)
+```
+
+```{r include = FALSE, eval = FALSE}
+die_roll_anim <- die %>% 
+  ggplot(aes(x = `n eyes`, y = props, label = paste0("# of ", `n eyes`, "'s:\n", count))) + 
+    geom_bar(stat = 'identity') + 
+    scale_y_continuous(limits = c(0,1), expand = expand_scale(0,0))  +
+    geom_text(size = 4, aes(y = 0.1), fontface = "bold", color = 'black') +
+    geom_hline(yintercept = 1/6, linetype = 'dashed', color = 'red') + 
+    labs(title = "Number of total rolls: {unique(die$n)[frame]}") + 
+    theme_bw() + 
+    theme(title = element_text(size = 20)) +
+    transition_manual(frames = n)
+
+anim_save(filename = "die_roll.mp4", 
+          animation = die_roll_anim, 
+          nframes = nrow(die_roll_anim$data)/6,
+          renderer = ffmpeg_renderer(format = ".mp4"))
+```
+
+<video controls>
+  <source src="die_roll.mp4" type="video/mp4">
+</video>
+
+### Example: disease status
+
+Okay, so both when flipping a coin and rolling a die, the second definition agrees with the first one. But how can we use this way of thinking in the disease status example? What does it even mean to "repeat the experiment", let alone "repeat an infinite number of times"?!
+
+In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are "similar enough" that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease. 
+
+Let's consider the probability that a person from the SHOW population is mildly depressed. To estimate this, we simply divide the number of individuals in the population who are mildly depressed with the total number of people in the population. 
+
+Below are estimated probabilities for all depression severity levels. Note: $P(\text{mildly depressed}) = \frac{454}{3381} \approx 0.134$. 
+
+```{r}
+pander::panderOptions("digits", 3)
+full_show %>% 
+  janitor::tabyl(depression_severity) %>%
+  janitor::adorn_totals("row") %>% 
+  select(-valid_percent, `Depression Severity` = depression_severity, Count = n, `Estimated Probability` = percent) %>% 
+  pander::pander()
+```
