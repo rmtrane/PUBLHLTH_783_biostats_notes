@@ -59,7 +59,7 @@ Since an estimator is a random variable, we can talk about the distribution of a
 
 The first strategy, as stated here, is not super useful -- we can't possibly afford to repeat a single experiment enough times to get enough observed values of the estimator to actually draw a histogram that provides any insight. However, we can do this for made up data, or using a big data set as a population. As a bonus, this strategy can actually be tweaked a tiny bit to make it not only useful in practice, but super powerful.
 
-The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(properties-of-random-variables) and THE coolest theorem we will see in this class, namely the Central Limit Theorem. 
+The second strategy, although it sounds scary and really hard, turns out to be very useful in a large handful of settings using nothing more complicated than the rules we derived in section \@ref(prop-of-RVs) and THE coolest theorem we will see in this class, namely the Central Limit Theorem. 
 
 The rest of this section will proceed as follows: first, we'll see a few examples of common estimators. Then, we will explore the distributions of those estimators through simulations where we'll use the SHOW data set as our population. Then we will take a look at the Central Limit Theorem, and how we can apply that to back up the distributions we found for different estimators through simulations.
 
@@ -208,7 +208,7 @@ samples_dep_scores %>%
   DT::datatable()
 ```
 
-The average depression score in this sample is `r dep_score_averages %>% filter(i == 1) %>% pull(average)`. Rinse and repeat `r N` times. 
+The average depression score in this sample is `r dep_score_averages %>% filter(i == 1) %>% pull(average)`. Rinse and repeat `r format(N, scientific = FALSE)` times. 
 
 Before we take a look at the distribution of all the averages, let's consider the distribution of the depression scores in the entire population.
 
@@ -276,7 +276,7 @@ We see that the true proportion of the population that are men is `r round(mean(
 Next, let's take a look at the distribution of sample proportions. 
 
 ```{r}
-gender_props_histogram <- gender_props %>% 
+gender_props %>% 
   ggplot(aes(x = props)) + 
     geom_histogram(binwidth = 1/sample_size,
                    aes(y = ..density..)) + 
@@ -290,6 +290,7 @@ my_ggplotly(gender_props_histogram)
 Again, it looks pretty normal! How can that be?!
 
 The truth is, as we will see later on, a proportion is really not that different from an average. Since the gender variable is $1$ for all men, and $0$ for all women, then the proportion of men is really calculated as $\frac{1}{n}\sum_{i=1}^n g_i$, where $g_i$ is $1$ if the $i$'th subject is male, and $0$ otherwise. So, the proportion is really an average, and therefore it might not be that big of a surprise that the distribution of the sample proportions is approximately normal. 
+
 #### Estimating Relative Risk {-}
 
 So far, we've seen three examples, but they've really all dealt with one estimator: namely the average. (As mentioned, even the proportion can be considered an average.) Let's turn to something that does NOT turn out to be normally distributed. 
@@ -299,8 +300,8 @@ Say we are interested in the relative risk of being severely depressed between m
 ```{r cache = TRUE}
 show_depr_by_gender <- full_show %>% 
   select(id, depression_severity_binary, gender) %>% 
-  mutate(gender = as.numeric(str_detect(gender, 'Male'))) %>% 
-  filter(complete.cases(.))
+  filter(complete.cases(.)) %>% 
+  mutate(gender = if_else(str_detect(gender, "Female"), 0, 1))
 
 # dat <- show_depr_by_gender
 # trt <- quo(gender)
@@ -341,17 +342,19 @@ if(file.exists('data/R_output/samples_RR.Rds')){
   })
   write_rds(x = samples_RR, path = 'data/R_output/samples_RR.Rds')
 }
-  
-if(file.exists('data/R_output/RRs.Rds')){
-  RRs <- readr::read_rds('data/R_output/RRs.Rds')
-} else {
+
+if(!file.exists('data/R_output/RRs.Rds')){
   RRs <- samples_RR %>% 
     group_by(i) %>% 
     nest() %>%
     ungroup() %>% 
     mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
-  write_rds(x = RRs, path = 'data/R_output/RRs.Rds')
+
+  readr::write_rds(RRs, path = 'data/R_output/RRs.Rds')
+} else {
+  RRs <- readr::read_rds(path = 'data/R_output/RRs.Rds')
 }
+
 ```
 
 We create simple random samples of size `r sample_size_RR`. The first sample consists of the following individuals: 
@@ -359,8 +362,8 @@ We create simple random samples of size `r sample_size_RR`. The first sample con
 ```{r}
 samples_RR %>% 
   filter(i == 1) %>% 
-  left_join(full_show %>% 
-              mutate(gender = str_detect(gender, 'Male') %>% as.numeric())) %>% 
+  mutate(gender = if_else(gender == 1, "[1] Male", "[2] Female")) %>% 
+  left_join(full_show) %>% 
   select(-i) %>% 
   DT::datatable()
 ```
@@ -405,7 +408,7 @@ RRs %>%
   ggplot(aes(x = log(RR))) + 
     geom_histogram(aes(y = ..density..),
                    bins = floor(N/300)) + 
-    # stat_function(fun = dnorm, args = list(mean = log(true_RR), sd = sqrt(logRR_var))) + 
+    stat_function(fun = dnorm, args = list(mean = log(true_RR), sd = sqrt(logRR_var))) + 
     geom_vline(aes(xintercept = log(true_RR), color = 'True RR'), linetype = 'dashed') + 
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
     scale_color_discrete("", direction = -1)
@@ -435,23 +438,23 @@ OR <- function(dat, trt, out){
 
 true_OR <- OR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
 
-if(file.exists('data/R_output/ORs.Rds')){
-  ORs <- read_rds('data/R_output/ORs.Rds')
-} else {
+if(!file.exists('data/R_output/ORs.Rds')){
   ORs <- samples_RR %>% 
     group_by(i) %>% 
     nest() %>% 
     mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
     ungroup()
   
-  write_rds(x = ORs, 'data/R_output/ORs.Rds')
+  readr::write_rds(ORs, path = 'data/R_output/ORs.Rds')
+} else {
+  ORs <- readr::read_rds(path = 'data/R_output/ORs.Rds')
 }
 
 ORs %>% 
   ggplot(aes(x = OR)) + 
     geom_histogram(aes(y = ..density..),
                    bins = floor(N/300)) + 
-    geom_vline(aes(xintercept = true_OR, color = 'True RR'), linetype = 'dashed') + 
+    geom_vline(aes(xintercept = true_OR, color = 'True OR'), linetype = 'dashed') + 
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
     labs(color = '')
 ```
@@ -467,6 +470,12 @@ logOR_var <- show_depr_by_gender %>%
          var_contribution = 1/expected_xi) %>% 
   pull(var_contribution) %>% 
   sum
+
+p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
+p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)
+
+logOR_var <- sum(1/(c(p_male*sample_size_RR, (1-p_male)*sample_size_RR,
+                     p_female*sample_size_RR, (1-p_female)*sample_size_RR)))
 
 
 ORs %>% 

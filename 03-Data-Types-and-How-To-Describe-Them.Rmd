@@ -335,9 +335,6 @@ boxplot_explanation <- ggplot(data = data.frame(y = c(1,2,5,10,10,10,11,13,13,13
         axis.text = element_blank())
 
 ggsave(boxplot_explanation, filename = "figures/boxplot_explanation.png")
-```
-
-```{r}
 knitr::include_graphics("figures/boxplot_explanation.png")
 ```
 

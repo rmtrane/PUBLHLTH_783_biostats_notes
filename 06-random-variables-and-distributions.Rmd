@@ -68,7 +68,6 @@ Using the latter distribution, we can calculate all sorts of probabilities:
 
 <!-- Another example: let $X$ be the marital status of a randomly chosen participant from the SHOW data.  -->
 
-<!-- --- -->
 
 <!-- The examples above all consider discrete random variables. As already mentioned, the approach for continuous random variables is a bit different. For the distribution of a continuous random variable, we need to specify a curve for which the area under the curve is $1$. When we talk about probabilities of events that relate to the correpsonding random variable, we talk about areas under the curve. -->
 
@@ -125,7 +124,7 @@ Remember how we interpret probabilities per definition \@ref(def:prob-def-2) ("t
 
 The animation below illustrates this. Here we pretend that we observe the outcome of a random variable $X$ many, many times. We continuously draw a histogram of the values we've seen so far. 
 
-<video controls>
+<video controls width="500px">
   <source src="exponential_distr_animation.mp4" type="video/mp4">
 </video>
 
@@ -243,8 +242,7 @@ ggplot(data = tibble(x = seq(-10, 10, by = 0.01)) %>%
 
 How about the area between $1$ and $2$? This is `r round(cdf_Z(2) - cdf_Z(1), digits = 3)`. Between $1.5$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.5), digits = 3)`. Between $1.9$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.9), digits = 3)`. Between $1.995$ and $2$: `r round(cdf_Z(2) - cdf_Z(1.995), digits = 3)`. As you can see, the closer we get to the "interval" $2$ to $2$, the smaller the area. In fact, if you take the limit, the area is $0$. 
 
->>>>>>> random-vars
-## Properties of Random Variables
+## Properties of Random Variables {#prop-of-RVs}
 
 When we talk about random variables, there is a great deal of uncertainty involved, since (by design) we do not know exactly what values the random variables will take after a conducted experiment. Similarly, we cannot be sure that repeating an experiment results in the same outcomes of the random variables simply since they are, as the name strongly implies, random. However, if we have some information about the random variable we're interested in, we can talk about some very important features of the random variable. The two we will talk about here are the *expected value* and *variance/standard deviation* of random variables. 
 
@@ -341,7 +339,9 @@ So far we've talked about the variance, a bit about how to interpret it, and how
 
 The standard deviation of a random variable is simply the square root of the variance: $\SD(X) = \sqrt{\Var(X)}$. As we saw above, the variance has some nice mathematical properties, such as the fact that it is basically an expected value, and that (when $X$ and $Y$ are independent) $\Var(X + Y) = \Var(X) + \Var(Y)$. Neither hold for the standard deviation. We lose both because of the square root. However, it is also because of the square root that we like using the standard deviation in certain situation.
 
-As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r mean(full_show$height*0.39)` inches, and the variance is `r var(full_show$height*0.39)`... $\text{inches}^2$? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 inches^2^ a lot? We can't even really compare it to the mean because of the different units! The standard deviation fixes just that. It is still a measure of the "expected" variation, but it is measure on the original scale by taking the square root. So when we report a mean height of `r mean(full_show$height*0.39)` inches with a standard deviation of `r sd(full_show$height*0.39)` inches, this all of a sudden makes much more sense intuitively. 
+
+As mentioned, the variance is nice mathematically, but as soon as we make our way back from the beautiful haven that is the Land of Mathematics, and want to communicate our findings to collaborators or the rest of the world, the variance isn't great. Since we square all the differences, the unit of the variance is whatever unit your original measure was squared. Example: we might wish to estimate the height of adults in the SHOW data, and report it with some measure of uncertainty. We find that the average height is `r round(mean(full_show$height*0.39, na.rm = T), digits = 2)` inches, and the variance is `r round(var(full_show$height*0.39, na.rm = T), digits = 2)`... ^inches^? This is hard to really grasp, and the number itself doesn't mean much to us. Is 22 inches^2^ a lot? We can't even really compare it to the mean because of the different units! The standard deviation fixes just that. It is still a measure of the "expected" variation, but it is measure on the original scale by taking the square root. So when we report a mean height of `r round(mean(full_show$height*0.39, na.rm = T), digits = 2)` inches with a standard deviation of `r round(sd(full_show$height*0.39, na.rm = T), digits = 2)` inches, this all of a sudden makes much more sense intuitively. 
+
 
 The moral of the story: both the variance and the standard deviation have a role in the world of statistics, but at different stages. The variance is very useful in the more mathematical parts of the field, while the standard deviation is easier to interpret. Luckily, going from one to the other is simple: $\Var(X) = \SD(X)^2$ and $\SD(X) = \sqrt{\Var(X)}$. Therefore, if you ever have one, you practically have both. Don't forget this, as it is a common mistake to plug in the variance to equations where it should have been the standard deviation, and vice versa. 
 
@@ -368,14 +368,13 @@ Things people often forget:
 
 ### The Bernoulli Distribution 
 
-
 In example \@ref(examples-random-variables) above, we consider flipping a coin. Such an experiment, i.e. one with only two possible outcomes, is often referred to as a *Bernoulli experiment*, and the random variable $X$ is referred to as a *Bernoulli random variable*. The "probability of success" (you get to pick your favorite outcome as a success) is often denoted $p$. As a shorthand for such a random variable, we write $X \sim \text{Bernoulli}(p)$, which is read as "$X$ follows a Bernoulli distribution with probability parameter $p$" or "$X$ is Bernoulli distributed with parameter $p$". Phrases like these can sometimes sound scary and complex, but all it means is that the random variable $X$ can only take on two different outcomes, and the probability of $X$ being one of the two outcomes is $p$, the probability of it being the other is $1-p$. (Important note: remember that the sum of all probabilities has to be $1$, so if the probability of one outcome is $p$, and there are only two possible outcomes, then the probability of the other outcome must be $1-p$. This way of thinking is something we will use over and over again.)
 
-Using the properties discussed in section \@ref(properties-of-random-variables), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
+Using the properties discussed in section \@ref(prop-of-RVs), we can calculate the expected value and variance of a Bernoulli random variable. Simply using the definitions, we see that 
 
-$$
+\[
   E(X) = \sum_{i=1}^2 x_i \cdot P(X = x_i) = 0 \cdot P(X = 0) + 1 \cdot P(X = 1) = p,
-$$
+\]
 
 and 
 
@@ -401,7 +400,7 @@ Let's think for a second about what possible values $Y$ can take. If all $n$ Ber
 
 Since $Y$ is simply a sum of very simple random variables, namely Bernoulli random variables, we can with very simple tools dive deeper, and try to explore what the distribution of a Binomial random variable looks like. We can find the expected value and variance, and the probability of all possible outcomes. There are two ways of doing this: (1) do the math, or (2) flip $n$ coins an infinite number of times and see how often the number of heads is each of the possible outcomes. Let's start with the latter. 
 
-```{r binomial_example, include = FALSE}
+```{r binomial_example}
 binom_n <- 50000
 binom_n_print <- format(binom_n, scientific = F)
 
@@ -426,7 +425,7 @@ Since it's impossible to flip $n$ coins (for what is $n$?), we have to pick a re
 DT::datatable(binom_outcomes %>% select(-i))
 ```
 
-Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{# experiments with } Y = 2}{\text{# experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
+Now we can get a pretty good estimate of the distribution of $Y$. Recall, the distribution of a random variable is simply the probabilities of each possible outcome. The probability of a particular outcome, say $Y = 2$, is the long run proportion of experiments that result in that outcome. So, $P(Y = 2) = \frac{\text{number of experiments with } Y = 2}{\text{number of experiments}} = \frac{`r sum(binom_outcomes[["Y"]] == 2)`}{`r binom_n`} = `r round(sum(binom_outcomes[["Y"]] == 2)/binom_n, digits = 5)`$. If we do this for every possible value of $Y$, we get something that looks like the following:
 
 ```{r}
 binom_outcomes %>% 
@@ -537,8 +536,7 @@ As the names of the parameters suggest, the actual expected value and variance o
 
 #### Linear Combination of Normal with Constant
 
-One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(properties-of-random-variables), we get that 
-
+One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(prop-of-RVs), we get that 
 
 \begin{align*}
   E(Y_1) &= E(X+a) = E(X) + a = \mu + a, \\

@@ -179,4 +179,3 @@ full_show %>%
   select(-valid_percent, `Depression Severity` = depression_severity, Count = n, `Estimated Probability` = percent) %>% 
   pander::pander()
 ```
-
