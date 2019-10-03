@@ -1,5 +1,5 @@
 ---
-title: "Biostats Lecture 1: Descriptive Statistics"
+title: "Biostats Lecture 2: Descriptive Statistics"
 subtitle: "Public Health 783"
 author: "Ralph Trane"
 institute: "University of Wisconsin--Madison<br><br>"

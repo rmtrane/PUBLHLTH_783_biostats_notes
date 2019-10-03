@@ -322,6 +322,7 @@ Say we wanted to answer this question. Only one way to obtain the "Truth&trade;"
 
 1. Ask the people in your population of interest if they have ever smoked, and if they have developed lung cancer. 
 
+
 2. Calculate incidence rates
 
 3. See which is larger
@@ -346,14 +347,16 @@ What do we do instead? Statistics!
   - preferably sample by random from the two populations
 
 3. From the sample, calculate quantities that help you say things about the "truth"
-
-  - when interested in the incidence rate, simply calculate the incidence rate in the samples
+  - when interested in the incidence rate, simply calculate the incidence rates in the samples
 
 --
 
-The thing is, the samples won't mirror the populations *exactly* -- take a new sample, get new estimates of incidence rate.
+The thing is, the samples won't mirror the populations *exactly* -- take a new sample, get new estimates of incidence rates.
 
-The question then is: is the difference due to "differences in the truths", or is it simply "differences due to random samples"?
+--
+
+The question is then: is the difference due to "differences in the truths", or is it simply "differences due to random samples"?
+
 
 ???
 
@@ -532,7 +535,7 @@ SUPER HARD!
 To make it easier, we make assumptions. 
 
 This also means that if our assumptions are off, everything is off. Therefore, important to state **AND** check your assumptions!
- 
+
 ???
 
 This is where decisions come into play. Subjective what assumptions you're willing to accept, and checking assumptions is often very hard and very subjective 
@@ -554,6 +557,7 @@ This is where decisions come into play. Subjective what assumptions you're willi
     - If likely, evidence **for** the hypothesis
 
 * Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory?
+
 --
 
 How do we get an idea of how much this quantity would vary with repetition? 
@@ -564,6 +568,7 @@ How do we get an idea of how much this quantity would vary with repetition?
 This also means that if our assumptions are off, everything is off. 
 --
  Therefore, important to state **AND** check your assumptions!
+
 
  
 ???

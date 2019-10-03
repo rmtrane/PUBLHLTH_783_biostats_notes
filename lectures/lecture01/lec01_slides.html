@@ -4811,8 +4811,8 @@ layout: true
 
 Office hours: Wednesdays 11am till noon in PHS 666 (WARF 6th floor)
 
-<div id="htmlwidget-37ad606caf137ef3c044" style="width:800px;height:350px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-37ad606caf137ef3c044">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"minZoom":2,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":true,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false}]},{"method":"addPopups","args":[[43.077731,43.076249,43.074241,55.257877],[-89.430528,-89.426106,-89.40726,11.324524],["We're here.","WARF","MSC","Denmark!"],null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":false,"closeOnClick":false,"className":""}]}],"limits":{"lat":[43.074241,55.257877],"lng":[-89.430528,11.324524]},"setView":[[43.076249,-89.426106],15,[]]},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-35fbfc3f7a7d606c5928" style="width:800px;height:350px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-35fbfc3f7a7d606c5928">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"minZoom":2,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":true,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false}]},{"method":"addPopups","args":[[43.077731,43.076249,43.074241,55.257877],[-89.430528,-89.426106,-89.40726,11.324524],["We're here.","WARF","MSC","Denmark!"],null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":false,"closeOnClick":false,"className":""}]}],"limits":{"lat":[43.074241,55.257877],"lng":[-89.430528,11.324524]},"setView":[[43.076249,-89.426106],15,[]]},"evals":[],"jsHooks":[]}</script>
 
 ---
 
@@ -5093,6 +5093,7 @@ Say we wanted to answer this question. Only one way to obtain the &quot;Truth&am
 
 1. Ask the people in your population of interest if they have ever smoked, and if they have developed lung cancer. 
 
+
 2. Calculate incidence rates
 
 3. See which is larger
@@ -5117,14 +5118,16 @@ What do we do instead? Statistics!
   - preferably sample by random from the two populations
 
 3. From the sample, calculate quantities that help you say things about the &quot;truth&quot;
-
-  - when interested in the incidence rate, simply calculate the incidence rate in the samples
+  - when interested in the incidence rate, simply calculate the incidence rates in the samples
 
 --
 
-The thing is, the samples won&#39;t mirror the populations *exactly* -- take a new sample, get new estimates of incidence rate.
+The thing is, the samples won&#39;t mirror the populations *exactly* -- take a new sample, get new estimates of incidence rates.
 
-The question then is: is the difference due to &quot;differences in the truths&quot;, or is it simply &quot;differences due to random samples&quot;?
+--
+
+The question is then: is the difference due to &quot;differences in the truths&quot;, or is it simply &quot;differences due to random samples&quot;?
+
 
 ???
 
@@ -5306,7 +5309,7 @@ SUPER HARD!
 To make it easier, we make assumptions. 
 
 This also means that if our assumptions are off, everything is off. Therefore, important to state **AND** check your assumptions!
- 
+
 ???
 
 This is where decisions come into play. Subjective what assumptions you&#39;re willing to accept, and checking assumptions is often very hard and very subjective 
@@ -5328,6 +5331,7 @@ This is where decisions come into play. Subjective what assumptions you&#39;re w
     - If likely, evidence **for** the hypothesis
 
 * Answer: get an idea of how much the observed quantity is expected to vary, then use probability theory?
+
 --
 
 How do we get an idea of how much this quantity would vary with repetition? 
@@ -5338,6 +5342,7 @@ How do we get an idea of how much this quantity would vary with repetition?
 This also means that if our assumptions are off, everything is off. 
 --
  Therefore, important to state **AND** check your assumptions!
+
 
  
 ???
