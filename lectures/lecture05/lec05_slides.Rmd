@@ -1,0 +1,37 @@
+---
+title: "Biostats Lecture 5: Statistical Hypothesis Testing"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ration: '16:9'
+      navigation:
+        scroll: false
+---
+
+# Recap
+
+Random variables
+
+Distributions
+
+Estimators
+
+Estimators are random variables! (for example, the average is a random variable)
+
+# Statistical Hypothesis Testing
+
+Is the true mean = 5?
+
+[Show plot with mean of sample, and vline = 5]
+
