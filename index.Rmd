@@ -28,6 +28,9 @@ library(distributions3)
 if(!exists("figures"))
   dir.create("figures")
 
+if(!exists("data/R_output"))
+  dir.create("data/R_output")
+
 project_folder <- str_split(getwd(), pattern = '783_biostat_notes', simplify = TRUE)[,1] %>% 
   paste0("/783_biostat_notes")
 
