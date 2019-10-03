@@ -1,7 +1,6 @@
 # Estimators and their distributions
 
 ```{r}
-knitr::opts_chunk$set(cache = TRUE)
 options(DT.options = list(scrollX = TRUE))
 ```
 
@@ -140,9 +139,9 @@ samples %>%
   DT::datatable()
 ```
 
-As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
+As you can see, in this sample we have different subjects (i.e. different id's), as we would expect when sampling only `r sample_size` subjects out of a total of `r sum(!is.na(full_show$height))`. From this new sample, we get a sample average of `r height_averages %>% filter(i == 2) %>% pull(average) %>% round(digits=2)`. As you can see, this is indeed different than the average height of the first sample. Now, we do this over and over and over again, a total of `r N` times. So, in the end, we have `r N` samples, and for each sample, we calculate an average. All of these averages can be used to create a histogram, which gives us a great approximation of the distribution of the sample average (with n = `r sample_size`):
 
-```{r height-averages-histogram, fig.cap = "Distribution of average heights.", cache = TRUE}
+```{r height-averages-histogram, fig.cap = "Distribution of average heights."}
 height_averages_histogram <- height_averages %>% 
   ggplot(aes(x = average)) + 
     geom_histogram(bins = floor(N/200),
@@ -248,25 +247,25 @@ Next, let's consider what to do if we were instead interested in the proportion 
 
 First, the true distribution of the gender variable in the data. Here, $0$ is stand-in for women, $1$ stand-in for men.
 
-```{r cache = TRUE}
+```{r}
 show_gender <- full_show %>% 
   select(id, gender) %>% 
   filter(!is.na(gender)) %>% 
   mutate(gender = if_else(str_detect(gender, "Female"), 0, 1))
 
-true_prop <- mean(show_gender$gender)
+true_prop <- mean(str_detect(show_gender$gender, 'Male'))
 
 samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
 
 gender_props <- samples_gender %>% 
   group_by(i) %>% 
-  summarise(props = mean(gender))
+  summarise(props = mean(str_detect(gender, 'Male')))
 
 show_gender %>% 
   ggplot(aes(x = gender)) + 
-    geom_histogram(aes(y = ..count../nrow(show_gender)), binwidth = 0.5) + 
-    scale_x_continuous(breaks = c(0,1),
-                       minor_breaks = NULL) + 
+    geom_bar(aes(y = ..count../nrow(show_gender))) + 
+    # scale_x_continuous(breaks = c(0,1),
+    #                    minor_breaks = NULL) + 
     scale_y_continuous('Proportion',
                        expand = expand_scale(mult = c(0, 0.025)))
 ```
@@ -276,13 +275,15 @@ We see that the true proportion of the population that are men is `r round(mean(
 Next, let's take a look at the distribution of sample proportions. 
 
 ```{r}
-gender_props %>% 
+gender_props_histogram <- gender_props %>% 
   ggplot(aes(x = props)) + 
     geom_histogram(binwidth = 1/sample_size,
                    aes(y = ..density..)) + 
     geom_vline(aes(color = 'True prop', xintercept = true_prop), linetype = 'dashed') + 
     scale_color_discrete("", direction = -1) +
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025)))
+
+my_ggplotly(gender_props_histogram)
 ```
 
 Again, it looks pretty normal! How can that be?!
@@ -295,7 +296,7 @@ So far, we've seen three examples, but they've really all dealt with one estimat
 
 Say we are interested in the relative risk of being severely depressed between men and women. It seems reasonable that a good estimate of the relative risk in the population is simply the relative risk in the sample we get. Let's take a look. 
 
-```{r cache = TRUE}
+```{r}
 show_depr_by_gender <- full_show %>% 
   select(id, depression_severity_binary, gender) %>% 
   filter(complete.cases(.)) %>% 
@@ -311,7 +312,9 @@ RR <- function(dat, trt, out){
   out <- enquo(out)
   
   tmp <- dat %>% 
-    count(!!trt, !!out) %>% 
+    group_by(!!trt, !!out, .drop = FALSE) %>%
+    summarize(n = n()) %>%
+    #count(!!trt, !!out) %>% 
     group_by(!!trt) %>% 
     mutate(totals = sum(n)) %>% 
     filter(!!out == 1) %>% 
@@ -320,27 +323,31 @@ RR <- function(dat, trt, out){
   return(filter(tmp, !!trt == 1)$R/filter(tmp, !!trt == 0)$R)
 }
 
-sample_size_RR <- 50
+sample_size_RR <- 75
 
 true_RR <- RR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+
 logRR_var <- show_depr_by_gender %>% 
   count(gender, depression_severity_binary) %>% 
+  group_by(gender) %>% 
+  mutate(p_gender = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(p_gender = p_gender/sum(n)) %>% 
   spread(depression_severity_binary, n) %>% 
-  mutate(var_contribution = (`0`/`1`)/sample_size_RR) %>% 
+  mutate(var_contribution = (`0`/`1`)/(sample_size_RR*p_gender)) %>% 
   pull(var_contribution) %>% sum
-  
-  
-if(!file.exists('data/R_output/samples_RR.Rds')){
+
+
+if(file.exists('data/R_output/samples_RR.Rds')){
+  samples_RR <- read_rds('data/R_output/samples_RR.Rds')
+} else {
   samples_RR <- map_dfr(1:N, function(x){ 
     show_depr_by_gender %>% 
       #group_by(gender) %>% 
       sample_n(size = sample_size_RR) %>% 
       mutate(i = x)
   })
-  
-  readr::write_rds(samples_RR, path = 'data/R_output/samples_RR.Rds')
-} else {
-  samples_RR <- readr::read_rds(path = 'data/R_output/samples_RR.Rds')
+  write_rds(x = samples_RR, path = 'data/R_output/samples_RR.Rds')
 }
 
 if(!file.exists('data/R_output/RRs.Rds')){
@@ -348,8 +355,10 @@ if(!file.exists('data/R_output/RRs.Rds')){
     group_by(i) %>% 
     nest() %>%
     ungroup() %>% 
-    mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
-  
+    mutate(RR = map_dbl(data, ~RR(.x %>% mutate(gender = factor(gender), 
+                                                depression_severity_binary = factor(depression_severity_binary)), 
+                                  gender, depression_severity_binary)))
+
   readr::write_rds(RRs, path = 'data/R_output/RRs.Rds')
 } else {
   RRs <- readr::read_rds(path = 'data/R_output/RRs.Rds')
@@ -420,13 +429,15 @@ Looks pretty normal, huh? We will (ab)use this fact later on.
 
 Here we repeat the previous section, but estimating the odds ratio instead of the relative risk. Same comments apply.
 
-```{r cache = TRUE}
+```{r}
 OR <- function(dat, trt, out){
   trt <- enquo(trt)
   out <- enquo(out)
   
   tmp <- dat %>% 
-    count(!!trt, !!out) %>%
+    group_by(!!trt, !!out) %>% 
+    summarize(n = n()) %>% 
+    #count(!!trt, !!out) %>%
     group_by(!!trt) %>% 
     mutate(p = n/sum(n)) %>% 
     select(-n) %>% 
@@ -461,15 +472,25 @@ ORs %>%
 
 Definitely not normal. But if we log transform...
 
-```{r cache = TRUE}
+```{r}
+# logOR_var <- show_depr_by_gender %>% 
+#   count(gender, depression_severity_binary) %>% 
+#   group_by(gender) %>% 
+#   mutate(group_total = sum(n),
+#          expected_xi = n/group_total * sample_size_RR,
+#          var_contribution = 1/expected_xi) %>% 
+#   pull(var_contribution) %>% 
+#   sum
+
 logOR_var <- show_depr_by_gender %>% 
   count(gender, depression_severity_binary) %>% 
   group_by(gender) %>% 
-  mutate(group_total = sum(n),
-         expected_xi = n/group_total * sample_size_RR,
-         var_contribution = 1/expected_xi) %>% 
-  pull(var_contribution) %>% 
-  sum
+  mutate(group_total = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(p_gender = group_total/sum(n)) %>%       ## group proportions
+  #spread(depression_severity_binary, n) %>% 
+  mutate(var_contribution = 1/(p_gender*sample_size_RR*n/group_total)) %>% ## 1 over expected n in group times expected number 
+  pull(var_contribution) %>% sum
 
 p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
 p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)
@@ -548,9 +569,5 @@ gender_props_histogram +
 
 #### Even more examples for the curious {-}
 
-To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/).
-
-### Distributions of Common Estimators
-
-
+To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/). Data can be simulated from a number of different distribution, or you can upload a data set (such as the FHS data set).
 
