@@ -253,13 +253,13 @@ show_gender <- full_show %>%
   filter(!is.na(gender)) %>% 
   mutate(gender = if_else(str_detect(gender, "Female"), 0, 1))
 
-true_prop <- mean(str_detect(show_gender$gender, 'Male'))
+true_prop <- mean(show_gender$gender)
 
 samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
 
 gender_props <- samples_gender %>% 
   group_by(i) %>% 
-  summarise(props = mean(str_detect(gender, 'Male')))
+  summarise(props = mean(gender))
 
 show_gender %>% 
   ggplot(aes(x = gender)) + 
@@ -488,15 +488,14 @@ logOR_var <- show_depr_by_gender %>%
   mutate(group_total = sum(n)) %>% 
   ungroup() %>% 
   mutate(p_gender = group_total/sum(n)) %>%       ## group proportions
-  #spread(depression_severity_binary, n) %>% 
   mutate(var_contribution = 1/(p_gender*sample_size_RR*n/group_total)) %>% ## 1 over expected n in group times expected number 
   pull(var_contribution) %>% sum
-
-p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
-p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)
-
-logOR_var <- sum(1/(c(p_male*sample_size_RR, (1-p_male)*sample_size_RR,
-                     p_female*sample_size_RR, (1-p_female)*sample_size_RR)))
+# 
+# p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
+# p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)
+# 
+# logOR_var <- sum(1/(c(p_male*sample_size_RR, (1-p_male)*sample_size_RR,
+#                      p_female*sample_size_RR, (1-p_female)*sample_size_RR)))
 
 
 ORs %>% 
@@ -530,11 +529,11 @@ Let's revisit the examples from above.
 
 #### Estimating Mean Height {-}
 
-We saw previously that if we create `r N` samples from the SHOW population, calculate the average height of each sample, and then create a histogram of all these averages, it would result in something like figure \@ref(fig:height-averages-histogram). Just by looking at this, we observed it looked a lot like a normal distribution. Now, with the CLT at hand, we can actually find the exact normal distribution that it follows. 
+We saw previously that if we create `r format(N, scientific = FALSE)` samples from the SHOW population, calculate the average height of each sample, and then create a histogram of all these averages, it would result in something like figure \@ref(fig:height-averages-histogram). Just by looking at this, we observed it looked a lot like a normal distribution. Now, with the CLT at hand, we can actually find the exact normal distribution that it follows. 
 
 Since we know the true mean and variance (the mean and variance of the entire population), we can find the specific normal distribution that the CLT tells us this distribution should be much like. 
 
-From the SHOW population, we find that the mean height is $\mu = `r mean(show_heights[["height"]])`$, and the variance is $\sigma^2 = `r var(show_heights[["height"]])`$. So, since the sample size here was $n = `r sample_size`$, the CLT tells us that $\bar{X} \sim N(`r true_mean`, `r true_var`/`r sample_size`)$. How does this fit the histogram? The black line below is that exact normal distribution. Fits pretty well, if you ask me.
+From the SHOW population, we find that the mean height is $\mu = `r round(mean(show_heights[["height"]]), digits = 2)`$, and the variance is $\sigma^2 = `r round(var(show_heights[["height"]]), digits = 2)`$. So, since the sample size here was $n = `r sample_size`$, the CLT tells us that $\bar{X} \sim N(`r round(true_mean, digits = 2)`, `r round(true_var, digits = 2)`/`r sample_size`)$. How does this fit the histogram? The black line below is that exact normal distribution. Fits pretty well, if you ask me.
 
 ```{r}
 height_averages_histogram +
