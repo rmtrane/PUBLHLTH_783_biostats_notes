@@ -179,6 +179,7 @@ samples %>%
 
 ---
 
+## Example: Estimating Relative Risk
 
 ```{r}
 full_show <- read_csv('../../data/SHOW_subset_of_vars.csv')
@@ -234,7 +235,7 @@ samples_RR %>%
   #mutate(gender = if_else(gender == 1, "[1] Male", "[2] Female")) %>% 
   select(id) %>% 
   left_join(full_show, by = 'id') %>% 
-  DT::datatable(options(pageLength = 5))
+  DT::datatable(options(pageLength = 3))
 ```
 
 
@@ -410,8 +411,8 @@ $P(Y < 10) = \sum_{i=0}^9 P(Y = i) = \sum_{i=0}^9 {50 \choose i}0.106^i (1-0.106
 
 Or, using a normal approximation, we can find the area under the normal curve:
 
-.center[
-```{r fig.width = 3, fig.height = 3, out.width = 400, out.height = 400}
+.pull-left[
+```{r fig.width = 3, fig.height = 3, out.width = 300, out.height = 300}
 ggplot(data = tibble(x = seq(0, 50, 0.1), y = dnorm(x = x, mean = 50*0.106, sd = sqrt(50*0.106*(1-0.106)))), 
        aes(x = x, y = y)) +
   geom_line() +
@@ -419,4 +420,6 @@ ggplot(data = tibble(x = seq(0, 50, 0.1), y = dnorm(x = x, mean = 50*0.106, sd =
 ```
 ]
 
+.pull-right[
 This area is `r round(pnorm(9, mean = 50*0.106, sd = sqrt(50*0.106*(1-0.106))), digits = 5)`.
+]

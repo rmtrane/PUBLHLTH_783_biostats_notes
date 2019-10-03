@@ -569,7 +569,5 @@ gender_props_histogram +
 
 #### Even more examples for the curious {-}
 
-To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/).
-
-### Distributions of Common Estimators
+To explore more, you can spend a few minutes [here](https://rtrane.shinyapps.io/CLT_2/). Data can be simulated from a number of different distribution, or you can upload a data set (such as the FHS data set).
 
