@@ -253,13 +253,13 @@ show_gender <- full_show %>%
   filter(!is.na(gender)) %>% 
   mutate(gender = if_else(str_detect(gender, "Female"), 0, 1))
 
-true_prop <- mean(str_detect(show_gender$gender, 'Male'))
+true_prop <- mean(show_gender$gender)
 
 samples_gender <- map_dfr(1:N, function(x) sample_n(show_gender, size = sample_size) %>% mutate(i = x))
 
 gender_props <- samples_gender %>% 
   group_by(i) %>% 
-  summarise(props = mean(str_detect(gender, 'Male')))
+  summarise(props = mean(gender))
 
 show_gender %>% 
   ggplot(aes(x = gender)) + 
