@@ -20,6 +20,7 @@ output:
 ---
 
 ```{r include = FALSE}
+
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, dpi=300)
 
 options(DT.options = list(scrollX = TRUE))
@@ -46,7 +47,6 @@ show <- read_csv("~/Documents/UW-Madison/PUBLHLTH783/labs/show_for_lab.csv")
 
 samples <- tibble(Student = list.files("~/Documents/UW-Madison/PUBLHLTH783/labs/lab4/data/")) %>% 
   mutate(data = map(Student, ~readr::read_csv(paste("~/Documents/UW-Madison/PUBLHLTH783/labs/lab4/data", .x, sep = '/'))))
-
 ```
 
 layout: true
@@ -123,7 +123,7 @@ dumbbell_mean
 
 
 .center[
-```{r out.width = 600, out.height=600}
+```{r out.width = 600, out.height = 450, fig.width = 6, fig.height = 4.5}
 depression_bmi <- show %>%
   ggplot(aes(x = bmi, fill = depression)) +
     geom_histogram(aes(y = ..density..)) + 
@@ -132,12 +132,15 @@ depression_bmi <- show %>%
                  summarise(mean_bmi = mean(bmi)),
                aes(xintercept = mean_bmi),
                color = 'red', linetype = 'dashed') + 
-    facet_grid(depression~.)
+    facet_grid(depression~.) + 
+    ggtitle("BMI distribution in full SHOW data")
 depression_bmi
 ```
 ]
 
-```{r}
+---
+
+```{r out.width = 600, out.height = 450, fig.width = 6, fig.height = 4.5}
 samples %>% 
   mutate(means = map(data, 
                      ~.x %>% group_by(depression) %>% summarize(bmi = mean(bmi)))) %>% 
@@ -168,13 +171,14 @@ samples %>%
 
 | Parameter of Interest (most commonly used symbol)         | Estimator Name                    | Notation and Formula                                      |
 |:---------------------------------------------------------:|:---------------------------------:|:---------------------------------------------------------:|
-| Mean of a feature ($\mu$)                                 | Sample average                    | $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$                  |
-| Variance of a feature ($\sigma^2$)                        | Sample variance                   | $S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$      |
-| Standard deviation ($\sigma$)                             | Sample standard deviation         | $S = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2}$ |
-| Probability of random individual having a disease ($\pi$) | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
-| Proportion of individuals with disease ($\pi$)            | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+| Mean of a feature $\mu$                                   | Sample average                    | $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$                  |
+| Variance of a feature $\sigma^2$                          | Sample variance                   | $S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$      |
+| Standard deviation $\sigma$                               | Sample standard deviation         | $S = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2}$ |
+| Probability of random individual having a disease $\pi$   | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+| Proportion of individuals with disease $\pi$              | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
 
 ---
+
 
 ```{r}
 full_show <- read_csv('../../data/SHOW_subset_of_vars.csv')
@@ -230,7 +234,7 @@ samples_RR %>%
   #mutate(gender = if_else(gender == 1, "[1] Male", "[2] Female")) %>% 
   select(id) %>% 
   left_join(full_show, by = 'id') %>% 
-  DT::datatable()
+  DT::datatable(options(pageLength = 5))
 ```
 
 
@@ -244,19 +248,20 @@ samples_RR %>%
   mutate(gender = if_else(gender == 0, 'Female', 'Male')) %>% 
   janitor::tabyl(depression_severity_binary, gender) %>% 
   janitor::adorn_totals(where = c('row', 'col')) %>% 
-  pander::pander()
+  DT::datatable()
 ```
 
 The relative risk is then calculated as 
 
 \begin{align*}
-  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx `r round(RRs[["RR"]][1], digits = 2)`.
+  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{6/34}{13/41} \\
+  &\approx `r round(RRs[["RR"]][1], digits = 2)`.
 \end{align*}
 
 ---
 
-
-```{r}
+.center[
+```{r out.height = 400, out.width = 500}
 RRs %>% 
   ungroup() %>% 
   ggplot(aes(x = RR)) + 
@@ -267,11 +272,12 @@ RRs %>%
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
     scale_color_discrete("", direction = -1)
 ```
-
+]
 
 ---
 
-```{r}
+.center[
+```{r out.width = 500, out.height = 400}
 RRs %>% 
   ungroup() %>% 
   ggplot(aes(x = log(RR))) + 
@@ -283,5 +289,134 @@ RRs %>%
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
     scale_color_discrete("", direction = -1)
 ```
+]
+
+---
+layout: true
+
+# Central Limit Theorem
+
+---
 
 
+Let $X_1, X_2, ..., X_n$ be a simple random sample from a population with mean $\mu$ and variance $\sigma^2$ (i.e. $E(X_i) = \mu$ and $\text{Var}(X_i) = \sigma^2$ for all $i$). Then, as long as $n$ is large enough, the *average* $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$ is approximately $N(\mu, \sigma^2 / n)$.
+
+In words
+
+* it almost doesn't matter where you start, if you take a sample, and form an average, then the outcome will be Normal!
+
+* plus, you'll be centered around the true value!!
+
+* PLUS, the more samples you use for your average, the smaller variance you'll have!!!
+
+---
+
+## Example 1: mean BMI
+
+.center[
+```{r fig.height = 4, fig.width = 6}
+full_show %>% 
+  filter(bmi < 159) %>% 
+  ggplot(aes(x = bmi)) + 
+    geom_histogram(aes(y = ..density..),
+                   binwidth = 5) +
+    stat_function(fun = dnorm, args = list(mean = mean(full_show$bmi, na.rm = T),
+                                          sd = sd(full_show$bmi, na.rm = T)/sqrt(10)),
+                  aes(color = 'n = 10')) +
+    stat_function(fun = dnorm, args = list(mean = mean(full_show$bmi, na.rm = T),
+                                          sd = sd(full_show$bmi, na.rm = T)/sqrt(50)),
+                  aes(color = 'n = 50')) + 
+    geom_vline(xintercept = mean(full_show$bmi, na.rm = T),
+               color = 'red', linetype = 'dashed') +
+    scale_color_discrete()
+```
+]
+
+---
+
+.center[
+```{r fig.height = 4, fig.width = 6}
+samples %>%
+  mutate(mean = map(.x = data,
+                    ~.x %>% group_by(depression) %>% summarize(m = mean(bmi, na.rm = TRUE)))) %>%
+  unnest(col = 'mean') %>% 
+  group_by(depression) %>% 
+  left_join(show %>% 
+              group_by(depression) %>% 
+              summarize(overall_m = mean(bmi, na.rm = T),
+                        sd = sd(bmi, na.rm = T))) %>% 
+  mutate(y = dnorm(x = m, mean = overall_m, sd = sd/sqrt(50))) %>% 
+  ggplot(aes(x = m)) + 
+    geom_histogram(aes(y = ..density..),
+                   binwidth = 1, boundary = 0) +
+    geom_line(aes(y = y)) +
+    facet_grid(depression~.) +
+    geom_vline(aes(xintercept = overall_m),
+               color = 'red', linetype = 'dashed') +
+    scale_color_discrete()
+```
+]
+
+---
+
+## Example 2: estimating proportion
+
+How do we estimate the proportion of people with a disease in a population? 
+
+$$
+  p =\frac{\text{number of people with disease}}{\text{total number of people}} =\frac{1}{n}\sum_{i=1}^n x_i,
+$$
+
+where $x_i=1$ if individual $i$ has the disease, and $x_i = 0$ otherwise. 
+
+$p$ is just an average! So as long as $n$ is "large enough", we can utilize the CLT when calculating probabilities:
+
+The prevalence of diabetes in the adult population of Wisconsin is approximately $10.6\%$. That is, if we randomly select an adult in Wisconsin, the probability of that adult having diabetes is approximately $10.6\%$. What is the probability that less than $10$ individuals in a sample of $50$ have diabetes? I.e. the proportion of individuals with diabetes is less than $0.2$. 
+
+---
+
+## Example: estimating proportion
+
+Binomial problem. $X_1,...,X_{50}$ independent random variables indicating whether each of the $50$ adults have diabetes (1) or not (0). Each random variable is a $\text{Bernoulli}(0.106)$ random variable. Let $Y = X_1 + ... + X_{50}$. We are interested in $P(Y < 10)$.
+
+---
+
+## Example: estimating proportion
+
+To calculate probabilities, we need to find the distribution of the random variable. $Y$ is binomially distributed with $n=50$ and $p = 0.106$. This distribution looks like this. We are interested in the area shaded red. 
+
+.center[
+```{r fig.width = 3, fig.height = 3, out.width = 400, out.height = 400}
+ggplot(data = tibble(x = 10:50, y = dbinom(x = 10:50, size = 50, prob = 0.106)),
+       aes(x = x, y = y)) +
+  geom_bar(stat='identity', width = 1) +
+  geom_bar(data = tibble(x = 0:9, y = dbinom(x = 0:9, size = 50, prob = 0.106)),
+           fill = 'red', stat = 'identity', alpha = 0.5, color = NA)
+```
+
+]
+
+---
+
+## Example: estimating proportion
+
+Can calculate directly: 
+
+$P(Y < 10) = \sum_{i=0}^9 P(Y = i) = \sum_{i=0}^9 {50 \choose i}0.106^i (1-0.106)^{50-i} = `r round(pbinom(q = 9, size = 50, prob = 0.106), 5)`$
+
+---
+
+## Example: estimating proportion
+
+Or, using a normal approximation, we can find the area under the normal curve:
+
+.center[
+```{r fig.width = 3, fig.height = 3, out.width = 400, out.height = 400}
+ggplot(data = tibble(x = seq(0, 50, 0.1), y = dnorm(x = x, mean = 50*0.106, sd = sqrt(50*0.106*(1-0.106)))), 
+       aes(x = x, y = y)) +
+  geom_line() +
+  geom_area(data = tibble(x = seq(0, 9, 0.1), y = dnorm(x = x, mean = 50*0.106, sd = sqrt(50*0.106*(1-0.106)))))
+```
+]
+
+This area is `r round(pnorm(9, mean = 50*0.106, sd = sqrt(50*0.106*(1-0.106))), digits = 5)`.
