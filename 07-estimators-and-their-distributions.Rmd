@@ -1,7 +1,6 @@
 # Estimators and their distributions
 
 ```{r}
-knitr::opts_chunk$set(cache = TRUE)
 options(DT.options = list(scrollX = TRUE))
 ```
 
@@ -248,7 +247,7 @@ Next, let's consider what to do if we were instead interested in the proportion 
 
 First, the true distribution of the gender variable in the data. Here, $0$ is stand-in for women, $1$ stand-in for men.
 
-```{r cache = TRUE}
+```{r}
 show_gender <- full_show %>% 
   select(id, gender) %>% 
   filter(!is.na(gender)) %>% 
@@ -276,7 +275,7 @@ We see that the true proportion of the population that are men is `r round(mean(
 Next, let's take a look at the distribution of sample proportions. 
 
 ```{r}
-gender_props %>% 
+gender_props_histogram <- gender_props %>% 
   ggplot(aes(x = props)) + 
     geom_histogram(binwidth = 1/sample_size,
                    aes(y = ..density..)) + 
@@ -297,7 +296,7 @@ So far, we've seen three examples, but they've really all dealt with one estimat
 
 Say we are interested in the relative risk of being severely depressed between men and women. It seems reasonable that a good estimate of the relative risk in the population is simply the relative risk in the sample we get. Let's take a look. 
 
-```{r cache = TRUE}
+```{r}
 show_depr_by_gender <- full_show %>% 
   select(id, depression_severity_binary, gender) %>% 
   filter(complete.cases(.)) %>% 
@@ -313,7 +312,9 @@ RR <- function(dat, trt, out){
   out <- enquo(out)
   
   tmp <- dat %>% 
-    count(!!trt, !!out) %>% 
+    group_by(!!trt, !!out, .drop = FALSE) %>%
+    summarize(n = n()) %>%
+    #count(!!trt, !!out) %>% 
     group_by(!!trt) %>% 
     mutate(totals = sum(n)) %>% 
     filter(!!out == 1) %>% 
@@ -322,15 +323,21 @@ RR <- function(dat, trt, out){
   return(filter(tmp, !!trt == 1)$R/filter(tmp, !!trt == 0)$R)
 }
 
-sample_size_RR <- 50
+sample_size_RR <- 75
 
 true_RR <- RR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+
 logRR_var <- show_depr_by_gender %>% 
   count(gender, depression_severity_binary) %>% 
+  group_by(gender) %>% 
+  mutate(p_gender = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(p_gender = p_gender/sum(n)) %>% 
   spread(depression_severity_binary, n) %>% 
-  mutate(var_contribution = (`0`/`1`)/sample_size_RR) %>% 
+  mutate(var_contribution = (`0`/`1`)/(sample_size_RR*p_gender)) %>% 
   pull(var_contribution) %>% sum
-  
+
+
 if(file.exists('data/R_output/samples_RR.Rds')){
   samples_RR <- read_rds('data/R_output/samples_RR.Rds')
 } else {
@@ -348,7 +355,9 @@ if(!file.exists('data/R_output/RRs.Rds')){
     group_by(i) %>% 
     nest() %>%
     ungroup() %>% 
-    mutate(RR = map_dbl(data, ~RR(.x, gender, depression_severity_binary)))
+    mutate(RR = map_dbl(data, ~RR(.x %>% mutate(gender = factor(gender), 
+                                                depression_severity_binary = factor(depression_severity_binary)), 
+                                  gender, depression_severity_binary)))
 
   readr::write_rds(RRs, path = 'data/R_output/RRs.Rds')
 } else {
@@ -420,13 +429,15 @@ Looks pretty normal, huh? We will (ab)use this fact later on.
 
 Here we repeat the previous section, but estimating the odds ratio instead of the relative risk. Same comments apply.
 
-```{r cache = TRUE}
+```{r}
 OR <- function(dat, trt, out){
   trt <- enquo(trt)
   out <- enquo(out)
   
   tmp <- dat %>% 
-    count(!!trt, !!out) %>%
+    group_by(!!trt, !!out) %>% 
+    summarize(n = n()) %>% 
+    #count(!!trt, !!out) %>%
     group_by(!!trt) %>% 
     mutate(p = n/sum(n)) %>% 
     select(-n) %>% 
@@ -461,15 +472,25 @@ ORs %>%
 
 Definitely not normal. But if we log transform...
 
-```{r cache = TRUE}
+```{r}
+# logOR_var <- show_depr_by_gender %>% 
+#   count(gender, depression_severity_binary) %>% 
+#   group_by(gender) %>% 
+#   mutate(group_total = sum(n),
+#          expected_xi = n/group_total * sample_size_RR,
+#          var_contribution = 1/expected_xi) %>% 
+#   pull(var_contribution) %>% 
+#   sum
+
 logOR_var <- show_depr_by_gender %>% 
   count(gender, depression_severity_binary) %>% 
   group_by(gender) %>% 
-  mutate(group_total = sum(n),
-         expected_xi = n/group_total * sample_size_RR,
-         var_contribution = 1/expected_xi) %>% 
-  pull(var_contribution) %>% 
-  sum
+  mutate(group_total = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(p_gender = group_total/sum(n)) %>%       ## group proportions
+  #spread(depression_severity_binary, n) %>% 
+  mutate(var_contribution = 1/(p_gender*sample_size_RR*n/group_total)) %>% ## 1 over expected n in group times expected number 
+  pull(var_contribution) %>% sum
 
 p_male <- mean(filter(show_depr_by_gender, gender == 1)$depression_severity_binary)
 p_female <- mean(filter(show_depr_by_gender, gender == 0)$depression_severity_binary)

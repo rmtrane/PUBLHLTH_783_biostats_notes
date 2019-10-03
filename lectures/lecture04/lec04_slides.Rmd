@@ -1,0 +1,287 @@
+---
+title: "Biostats Lecture 4: Estimators & Their Distributions"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ration: '16:9'
+      navigation:
+        scroll: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, dpi=300)
+
+options(DT.options = list(scrollX = TRUE))
+
+library(tidyverse)
+library(viridis)
+
+library(ggalt)
+
+## Set theme for plots (only works when you load ggplot2, which can be done using library(ggplot2) OR with library(tidyverse))
+theme_set(theme_bw())
+
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+
+show <- read_csv("~/Documents/UW-Madison/PUBLHLTH783/labs/show_for_lab.csv")
+
+samples <- tibble(Student = list.files("~/Documents/UW-Madison/PUBLHLTH783/labs/lab4/data/")) %>% 
+  mutate(data = map(Student, ~readr::read_csv(paste("~/Documents/UW-Madison/PUBLHLTH783/labs/lab4/data", .x, sep = '/'))))
+
+```
+
+layout: true
+
+# Estimators & Their Distributions
+
+---
+
+## Follow-up on todays lab
+
+Let's just consider the relationship between BMI and depression.
+
+You all had a sample of $50$ subjects. I performed all `r nrow(samples)` surveys on your behalves.
+--
+
+(In reality, I gave you random samples from the SHOW population, sampled completely at random among subjects with complete data.)
+
+You all calculated a bunch of things, including the mean BMI in each of the two groups (depressed vs. not depressed)
+
+As the almighty lecturer, I have access to all the samples...
+
+---
+
+.center[
+```{r out.width = 500, out.height = 500}
+## create boxplot with means from student samples
+student_boxplot <- samples %>%
+  mutate(mean = map(.x = data,
+                    ~.x %>% group_by(depression) %>% summarize(m = mean(bmi, na.rm = TRUE)))) %>%
+  unnest(col = 'mean') %>%
+  ggplot(aes(x = depression, y = m)) +
+    geom_boxplot() +
+    geom_jitter(width = 0.2, height = 0, aes(label = Student)) +
+    labs(y = 'Mean BMI')
+
+plotly::ggplotly(student_boxplot)
+```
+]
+
+---
+
+.center[
+```{r out.width = 600, out.height=550}
+for_dumbbell <- samples %>%
+  mutate(bmi_locations = map(data, ~.x %>%
+                               group_by(depression) %>%
+                               summarise(med = median(bmi, na.rm = T),
+                                         mean = mean(bmi, na.rm = T)) %>%
+                               gather(key = 'stat', value = 'value', med, mean)),
+         Student = str_remove(Student, ".csv") %>% 
+           str_replace("_", " ")) %>%
+  unnest(bmi_locations) %>%
+  spread(depression, value)
+
+for_dumbbell_mean <- for_dumbbell %>%
+  filter(stat == 'mean') %>%
+  mutate(Student = factor(Student, levels = Student[order(Depressed, decreasing = T)]))
+
+
+dumbbell_mean <- ggplot(data = for_dumbbell_mean,
+       aes(x = Depressed, xend = `Not Depressed`, y = Student, group = Student)) +
+  geom_point(data = for_dumbbell_mean %>% gather(key = 'key', value = 'value', `Not Depressed`, Depressed),
+             inherit.aes = F,
+             aes(x = value, y = Student, color = key)) +
+  geom_dumbbell(colour_x = 'blue', colour_xend = 'red') +
+  scale_color_manual(values = c('blue', 'red')) +
+  labs(title = 'Mean', color = '', x = 'BMI')
+
+dumbbell_mean
+```
+]
+
+---
+
+
+.center[
+```{r out.width = 600, out.height=600}
+depression_bmi <- show %>%
+  ggplot(aes(x = bmi, fill = depression)) +
+    geom_histogram(aes(y = ..density..)) + 
+    geom_vline(data = show %>% 
+                 group_by(depression) %>% 
+                 summarise(mean_bmi = mean(bmi)),
+               aes(xintercept = mean_bmi),
+               color = 'red', linetype = 'dashed') + 
+    facet_grid(depression~.)
+depression_bmi
+```
+]
+
+```{r}
+samples %>% 
+  mutate(means = map(data, 
+                     ~.x %>% group_by(depression) %>% summarize(bmi = mean(bmi)))) %>% 
+  unnest(means) %>% 
+  ggplot(aes(x = bmi, fill = depression)) +
+    geom_histogram(aes(y = ..density..),
+                   bins = 22) + 
+    geom_vline(data = show %>% 
+                 group_by(depression) %>% 
+                 summarise(mean_bmi = mean(bmi)),
+               aes(xintercept = mean_bmi),
+               color = 'red', linetype = 'dashed') + 
+    facet_grid(depression~.) + 
+    theme(legend.position = 'none')
+```
+
+---
+
+.center[
+.middle[
+## Motivational Spiel
+]
+]
+
+---
+
+## Examples of Estimators
+
+| Parameter of Interest (most commonly used symbol)         | Estimator Name                    | Notation and Formula                                      |
+|:---------------------------------------------------------:|:---------------------------------:|:---------------------------------------------------------:|
+| Mean of a feature ($\mu$)                                 | Sample average                    | $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$                  |
+| Variance of a feature ($\sigma^2$)                        | Sample variance                   | $S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$      |
+| Standard deviation ($\sigma$)                             | Sample standard deviation         | $S = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2}$ |
+| Probability of random individual having a disease ($\pi$) | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+| Proportion of individuals with disease ($\pi$)            | Proportion in sample with disease | $P = \frac{1}{n}\sum_{i=1}^n X_i$                         |
+
+---
+
+```{r}
+full_show <- read_csv('../../data/SHOW_subset_of_vars.csv')
+
+samples_RR <- read_rds('../../data/R_output/samples_RR.Rds')
+RRs <- read_rds('../../data/R_output/RRs.Rds')
+
+N <- max(samples_RR$i)
+
+sample_size_RR <- sum(samples_RR$i == 1)
+show_depr_by_gender <- full_show %>% 
+  select(id, depression_severity_binary, gender) %>% 
+  filter(complete.cases(.)) %>% 
+  mutate(gender = if_else(str_detect(gender, "Female"), 0, 1))
+
+# dat <- show_depr_by_gender
+# trt <- quo(gender)
+# out <- quo(depression_severity_binary)
+
+
+RR <- function(dat, trt, out){
+  
+  trt <- enquo(trt)
+  out <- enquo(out)
+  
+  tmp <- dat %>% 
+    group_by(!!trt, !!out, .drop = FALSE) %>%
+    summarize(n = n()) %>%
+    #count(!!trt, !!out) %>% 
+    group_by(!!trt) %>% 
+    mutate(totals = sum(n)) %>% 
+    filter(!!out == 1) %>% 
+    summarise(R = n/totals)
+
+  return(filter(tmp, !!trt == 1)$R/filter(tmp, !!trt == 0)$R)
+}
+
+
+true_RR <- RR(show_depr_by_gender, trt = gender, out = depression_severity_binary)
+
+logRR_var <- show_depr_by_gender %>% 
+  count(gender, depression_severity_binary) %>% 
+  group_by(gender) %>% 
+  mutate(p_gender = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(p_gender = p_gender/sum(n)) %>% 
+  spread(depression_severity_binary, n) %>% 
+  mutate(var_contribution = (`0`/`1`)/(sample_size_RR*p_gender)) %>% 
+  pull(var_contribution) %>% sum
+
+samples_RR %>% 
+  filter(i == 1) %>% 
+  #mutate(gender = if_else(gender == 1, "[1] Male", "[2] Female")) %>% 
+  select(id) %>% 
+  left_join(full_show, by = 'id') %>% 
+  DT::datatable()
+```
+
+
+---
+
+To find the relative risk, create 2 by 2 contingency table:
+
+```{r}
+samples_RR %>% 
+  filter(i == 1) %>% 
+  mutate(gender = if_else(gender == 0, 'Female', 'Male')) %>% 
+  janitor::tabyl(depression_severity_binary, gender) %>% 
+  janitor::adorn_totals(where = c('row', 'col')) %>% 
+  pander::pander()
+```
+
+The relative risk is then calculated as 
+
+\begin{align*}
+  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx `r round(RRs[["RR"]][1], digits = 2)`.
+\end{align*}
+
+---
+
+
+```{r}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = RR)) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/200)) + 
+    geom_vline(aes(xintercept = true_RR, color = 'True RR'), linetype = 'dashed') + 
+    scale_x_continuous(breaks = 0:6) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+
+---
+
+```{r}
+RRs %>% 
+  ungroup() %>% 
+  ggplot(aes(x = log(RR))) + 
+    geom_histogram(aes(y = ..density..),
+                   bins = floor(N/300)) + 
+    stat_function(fun = dnorm, args = list(mean = log(true_RR), sd = sqrt(logRR_var))) + 
+    geom_vline(aes(xintercept = log(true_RR), color = 'True RR'), linetype = 'dashed') + 
+    scale_x_continuous(breaks = 0:6) +
+    scale_y_continuous(expand = expand_scale(mult = c(0, 0.025))) + 
+    scale_color_discrete("", direction = -1)
+```
+
+
