@@ -29,9 +29,130 @@ Estimators
 
 Estimators are random variables! (for example, the average is a random variable)
 
+---
+layout: true
+
 # Statistical Hypothesis Testing
 
-Is the true mean = 5?
+---
 
-[Show plot with mean of sample, and vline = 5]
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
+library(tidyverse)
+library(SASmarkdown)
+
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+XX <- 10
+```
+
+
+**Scenario**:
+
+We've been playing a simple game. Everytime you roll a six, I pay you a dollar. Everytime I roll a six, you pay me a dollar. 
+
+I've had crazy good luck, and by the end of the day won a lot of money from you.
+
+--
+
+You accuse me of cheating, and demand to test the dice I've been using!
+
+I agree to let you test them, but ONLY if you do it in a sound, statistical manner. How to go about that?
+
+--
+
+You decide to roll the dice $12$ times each, for a total of $36$ rolls. You assume they'll all behave the same, so the probability of rolling a six is the same for all three dice. 
+
+---
+
+**Setup**:
+
+Let $X_1, X_2, ..., X_{36}$ be the outcomes of the thirty "trials". Each trial consists of rolling a die, and check if it's a six or not. If it's a six, we'll call it a success, if not we'll call it a failure. I.e. $X_i \sim$
+--
+ $\text{Bernoulli}(p)$. 
+
+*IF* the dice are fair, $P(X_i = 1) = 1/6$ for all $i = 1,2,...,36$. 
+
+*IF* the dice are fair, we would expect to roll a $6$ close to $\frac{1}{6}\cdot 36 = 6$ times, i.e. about $5$ of the $X$'s should be $1$'s. 
+
+What would cause you to reject the idea that the dice are fair? 
+
+--
+
+If we see way more than $6$ sixes. What would be "way more"? $7$? $8$? $17$?
+
+---
+
+In terms of probabilities: what is the *probability* of observing at least $`r XX`$ sixes *IF* the $P(X_i = 1) = \frac{1}{6}$? 
+
+* if the probability is small, $`r XX`$ is a lot of sixes
+* if the probability is large, $`r XX`$ is a reasonable number of sixes
+
+First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_{36}$. The probability of observing more than $`r XX`$ sixes is $P(Y \ge `r XX`)$. To find this, we need the distribution of $Y$, which is 
+--
+ $\text{Binomial}(36, p)$, where $p$ is the probability of rolling a six. 
+
+---
+
+*IF* the dice are fair, $p = \frac{1}{6}$. So *IF* the dice are fair, the distribution of $Y$ looks like this:
+
+
+<center>
+```{r out.width = 600, out.height = 450}
+binom_dist <- ggplot(data = tibble(x = 0:36) %>% 
+                       mutate(y = dbinom(x, size = 36, prob = 1/6),
+                              Probability = round(y, digits = 5)),
+       aes(x = x, y = y, label = Probability)) + 
+  geom_bar(stat = 'identity', 
+           width = 1) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
+  labs(title = 'Binomial(n = 36, p = 1/6)',
+       x = 'Value of Y', y = 'Probability')
+
+plotly::ggplotly(binom_dist, tooltip = c("label", "x"))
+```
+</center>
+
+---
+
+The probability we want to find is the red area below. We will do this in SAS in just a second. The result is `r (p_val <- round(1-pbinom(XX, size = 36, prob = 1/6), digits = 5))`.
+
+<center>
+```{r out.width = 600, out.height = 450}
+binom_dist_2 <- binom_dist + 
+  geom_vline(xintercept = XX-0.5, linetype = 'dashed') +
+  aes(fill = if_else(x < XX, paste("Y <", XX), paste("Y \u2265", XX))) +
+  scale_fill_manual('', values = c("grey35", "red")) +
+  theme(legend.position = 'none')
+
+plotly::ggplotly(binom_dist_2, tooltip = c("label", "x"))
+```
+</center>
+
+---
+
+This means that *IF* the true probability of rolling a six with these dice is indeed $\frac{1}{6}$, the probability of rolling $`r XX`$ or more sixes is $`r p_val`$. 
+
+Is this enough to convince you that the true probability is *NOT* $\frac{1}{6}$?
+
+---
+
+</br>
+</br>
+</br>
+</br>
+
+.center[
+  **In SAS.**
+]
+
+
+---
