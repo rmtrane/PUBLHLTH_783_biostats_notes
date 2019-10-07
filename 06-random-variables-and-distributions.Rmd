@@ -534,7 +534,7 @@ normals_base +
 
 As the names of the parameters suggest, the actual expected value and variance of a random variable that is normally distributed, $X \sim N(\mu, \sigma^2)$, is simply $\mu$ and $\sigma^2$, respectively. 
 
-#### Linear Combination of Normal with Constant
+#### Linear Combination of Normal with Constants {#lin-comb-normals}
 
 One really neat property of the normal distribution is that if you add a constant number, $a$, to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If $X \sim N(\mu, \sigma^2)$, then $Y_1 = X+a$ and $Y_2 = a\cdot X$ are also normally distributed. Using the properties of expected value and variance from section \@ref(prop-of-RVs), we get that 
 
@@ -554,6 +554,8 @@ So $X + a \sim N(\mu + a, \sigma^2)$, and $a\cdot X \sim N(a\cdot \mu, a^2 \sigm
 
 
 One particular case of the normal distribution plays an important role in much of statistics, and is therefore been named the Standard Normal Distribution. For historic reasons, we often use $Z$ to denote the standard normal distribution, which is simply a normal distribution with mean $0$ and variance $1$. I.e. $Z \sim N(0,1)$. One reason why this is important is that it provides sort of a baseline that we can always revert to. Whenever you are working with a normal distribution, you can use the rules above to get the standard normal. If $X \sim N(\mu, \sigma^2)$, then $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. Why? As we just discussed, adding a constant to a normal random variable results in something normal. $X-\mu$ is simply adding $-\mu$ to $X$, so this is still normal. We also saw that multiplying by a constant is still normal, so since $\frac{X-\mu}{\sigma}$ is simply multiplying $X-\mu$ by $\frac{1}{\sigma}$, we have that $\frac{X-\mu}{\sigma}$ is a normal random variable. We can find it's mean and variance using the rules we've learned, and get that $E\left(\frac{X - \mu}{\sigma}\right) = \frac{E(X) - \mu}{\sigma} = 0$, and $\Var\left(\frac{X - \mu}{\sigma}\right) = \frac{\Var(X)}{\sigma^2} = 1$, so $\frac{X-\mu}{\sigma} = Z \sim N(0,1)$. 
+
+I want to reiterate the procedure of standardizing. Take a Normally distributed random variable, subtract its mean, and divide by the standard deviation will result in a new random variable that follows the standard normal distribution: $\frac{X - E(X)}{\SD(X)} \sim N(0,1)$. 
 
 #### Sum of (Independent) Normals
 

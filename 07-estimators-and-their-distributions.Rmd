@@ -509,7 +509,7 @@ ORs %>%
 In the previous section, we considered quite a few examples of estimators, and saw how we can get a very good idea of exactly what the distribution of an estimator is *when we have the entire population at our disposal*. This is basically never the case. Even if we had a way of getting in touch with the entire popoulation, and create thousands and thousands of simple random samples, it is very unlikely we would have the time and funds to do so. So, in practice, we have to do something else to find the distribution of the estimator we're interested in. Here, we will discuss how to do so using what I think is *the* coolest result we will encounter in this class, namely the *Central Limit Theorem*.
 
 
-### The Central Limit Theorem
+### The Central Limit Theorem {#CLT}
 
 Let's jump right to it, and state the Central Limit Theorem:
 

@@ -234,7 +234,7 @@ Once we have an idea of the location of a continuous variable, the next natural 
 
 We will here briefly introduce four (but kind of only three...) metrics for the spread of the data: variance, standard devaition, range, and interquartile range. 
 
-#### Variance/Standard Deviation
+#### Variance/Standard Deviation {#var-std-dev}
 
 The *variance* of a continuous variable is in many ways "the average (squared) deviation from the mean". It is calculated as $\Var(x) = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2$. So larger variance means larger spread, and vice versa.
 
