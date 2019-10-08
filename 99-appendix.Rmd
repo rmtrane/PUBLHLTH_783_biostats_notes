@@ -6,4 +6,11 @@
 
 **Lecture 2 (9/26)** [slides](./lectures/lecture02/lec02_slides.html)
 
+**Lecture 3 (10/1)** [slides](./lectures/lecture03/lec03_slides.html)
+
+**Lecture 4 (10/3)** [slides](./lectures/lecture04/lec04_slides.html)
+
+**Lecture 5 (10/8)** [slides](./lectures/lecture05/lec05_slides.html)
+
+
 # References {-}
