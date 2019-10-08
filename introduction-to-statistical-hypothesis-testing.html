@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health</title>
+  <meta name="description" content="12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health" />
+  
+  
+  
+
+<meta name="author" content="Ralph Trane" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="estimators-and-their-distributions.html"/>
+<link rel="next" href="examples-6.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+
+
+
+<link rel="stylesheet" href="css/extra.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./" style="font-size: 19px;"><i>Biostatistics in PUBLHLTH 783</i></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bounty-program"><i class="fa fa-check"></i>Bounty Program</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-biostatistics"><i class="fa fa-check"></i><b>2.1</b> What is Biostatistics?</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#biostatistics-in-publhlth-783"><i class="fa fa-check"></i><b>2.2</b> Biostatistics in PUBLHLTH 783</a></li>
+</ul></li>
+<li class="part"><span><b>I Data Types and Descriptive Statistics</b></span></li>
+<li class="chapter" data-level="3" data-path="before-we-get-started.html"><a href="before-we-get-started.html"><i class="fa fa-check"></i><b>3</b> Before we get started…</a></li>
+<li class="chapter" data-level="4" data-path="why-descriptive-statistics.html"><a href="why-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Why Descriptive Statistics?</a></li>
+<li class="chapter" data-level="5" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>5</b> Discrete Data</a><ul>
+<li class="chapter" data-level="5.1" data-path="discrete.html"><a href="discrete.html#categorical"><i class="fa fa-check"></i><b>5.1</b> Categorical data</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>5.1.1</b> Examples – categorical data</a></li>
+<li class="chapter" data-level="5.1.2" data-path="discrete.html"><a href="discrete.html#binarydichotomous-data"><i class="fa fa-check"></i><b>5.1.2</b> Binary/Dichotomous Data</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>5.2</b> How to describe categorical data</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>5.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>5.3</b> Ordinal Data</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>5.3.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>5.4</b> How to visualize discrete data</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>5.4.1</b> Bar Charts</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>6</b> Continuous Data</a><ul>
+<li class="chapter" data-level="6.1" data-path="continuous.html"><a href="continuous.html#examples-2"><i class="fa fa-check"></i><b>6.1</b> Examples</a></li>
+<li class="chapter" data-level="6.2" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>6.2</b> How to describe continuous data</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="continuous.html"><a href="continuous.html#location"><i class="fa fa-check"></i><b>6.2.1</b> Location</a></li>
+<li class="chapter" data-level="6.2.2" data-path="continuous.html"><a href="continuous.html#spread"><i class="fa fa-check"></i><b>6.2.2</b> Spread</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>6.3</b> How to visualize continuous data</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="continuous.html"><a href="continuous.html#scatter-plots"><i class="fa fa-check"></i><b>6.3.1</b> Scatter Plots</a></li>
+<li class="chapter" data-level="6.3.2" data-path="continuous.html"><a href="continuous.html#boxplots"><i class="fa fa-check"></i><b>6.3.2</b> Boxplots</a></li>
+<li class="chapter" data-level="6.3.3" data-path="continuous.html"><a href="continuous.html#histogram"><i class="fa fa-check"></i><b>6.3.3</b> Histogram</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>7</b> Grey areas</a></li>
+<li class="part"><span><b>II Introduction to Probability &amp; Random Variables</b></span></li>
+<li class="chapter" data-level="8" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>8</b> What is “probability”?</a><ul>
+<li class="chapter" data-level="8.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>8.1</b> Definitions</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#examples-3"><i class="fa fa-check"></i><b>8.1.1</b> Examples</a></li>
+<li class="chapter" data-level="8.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i><b>8.1.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="8.1.3" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i><b>8.1.3</b> Example: coin flip (revisited)</a></li>
+<li class="chapter" data-level="8.1.4" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die-revisited"><i class="fa fa-check"></i><b>8.1.4</b> Example: roll of a die (revisited)</a></li>
+<li class="chapter" data-level="8.1.5" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>8.1.5</b> Example: disease status</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>9</b> Conditional Probability</a><ul>
+<li class="chapter" data-level="9.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i><b>9.1</b> Example: roll a die</a></li>
+<li class="chapter" data-level="9.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i><b>9.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="9.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i><b>9.3</b> Example: Sensitivity/specificity</a></li>
+<li class="chapter" data-level="9.4" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i><b>9.4</b> Example: positive/negative predictive value</a></li>
+<li class="chapter" data-level="9.5" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>9.5</b> Bayes’ Theorem</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-5.8-in-ls-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i><b>9.5.1</b> Example (5.8 in <span class="citation">Sullivan (<span>2017</span>)</span>): positive predictive value from sensitivity</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>9.6</b> Independence</a><ul>
+<li class="chapter" data-level="9.6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i><b>9.6.1</b> Example: independent events</a></li>
+<li class="chapter" data-level="9.6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i><b>9.6.2</b> Example: dependent events</a></li>
+<li class="chapter" data-level="9.6.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-are-depression-severity-mild-depression-and-marital-status-divorced-independent"><i class="fa fa-check"></i><b>9.6.3</b> Example: are “depression severity = mild depression” and “marital status = divorced” independent?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>10</b> Random Variables and Distributions</a><ul>
+<li class="chapter" data-level="10.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>10.1</b> Random Variables</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-random-variables"><i class="fa fa-check"></i><b>10.1.1</b> Examples: random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#distributions"><i class="fa fa-check"></i><b>10.2</b> Distributions</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#discrete-distributions"><i class="fa fa-check"></i><b>10.2.1</b> Discrete Distributions</a></li>
+<li class="chapter" data-level="10.2.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#continuous-distributions"><i class="fa fa-check"></i><b>10.2.2</b> Continuous distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#prop-of-RVs"><i class="fa fa-check"></i><b>10.3</b> Properties of Random Variables</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#expected-values-of-random-variables"><i class="fa fa-check"></i><b>10.3.1</b> Expected Values of Random Variables</a></li>
+<li class="chapter" data-level="10.3.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#variancestandard-deviation-of-random-variables"><i class="fa fa-check"></i><b>10.3.2</b> Variance/Standard Deviation of Random Variables</a></li>
+<li class="chapter" data-level="10.3.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#things-to-remember-when-working-with-random-variables"><i class="fa fa-check"></i><b>10.3.3</b> Things to remember when working with random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>10.4</b> A Few Important Distributions</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-bernoulli-distribution"><i class="fa fa-check"></i><b>10.4.1</b> The Bernoulli Distribution</a></li>
+<li class="chapter" data-level="10.4.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-binomial-distribution"><i class="fa fa-check"></i><b>10.4.2</b> The Binomial Distribution</a></li>
+<li class="chapter" data-level="10.4.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#normal-distribution"><i class="fa fa-check"></i><b>10.4.3</b> Normal Distribution</a></li>
+<li class="chapter" data-level="10.4.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#t-distribution"><i class="fa fa-check"></i><b>10.4.4</b> t-distribution</a></li>
+<li class="chapter" data-level="10.4.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>10.4.5</b> Other Distribution</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>11</b> Estimators and their distributions</a><ul>
+<li class="chapter" data-level="11.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>11.1</b> What is an Estimator?</a></li>
+<li class="chapter" data-level="11.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>11.2</b> Common Estimators</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#examples-5"><i class="fa fa-check"></i><b>11.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>11.3</b> Deriving Distributions in Practice</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#CLT"><i class="fa fa-check"></i><b>11.3.1</b> The Central Limit Theorem</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Statistical Hypothesis Testing</b></span></li>
+<li class="chapter" data-level="12" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html"><i class="fa fa-check"></i><b>12</b> Introduction to Statistical Hypothesis Testing</a><ul>
+<li class="chapter" data-level="12.1" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#strategy-overview-the-lingo"><i class="fa fa-check"></i><b>12.1</b> Strategy Overview &amp; The Lingo</a></li>
+<li class="chapter" data-level="12.2" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#when-we-dont-know-sigma2"><i class="fa fa-check"></i><b>12.2</b> When we don’t know <span class="math inline">\(\sigma^2\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="examples-6.html"><a href="examples-6.html"><i class="fa fa-check"></i><b>13</b> Examples</a><ul>
+<li class="chapter" data-level="13.1" data-path="examples-6.html"><a href="examples-6.html#one-sample-t-test"><i class="fa fa-check"></i><b>13.1</b> One Sample t-test</a></li>
+<li class="chapter" data-level="13.2" data-path="examples-6.html"><a href="examples-6.html#two-sample-t-test"><i class="fa fa-check"></i><b>13.2</b> Two Sample t-test</a></li>
+<li class="chapter" data-level="13.3" data-path="examples-6.html"><a href="examples-6.html#one-sample-test-for-proportion"><i class="fa fa-check"></i><b>13.3</b> One Sample Test for Proportion</a></li>
+<li class="chapter" data-level="13.4" data-path="examples-6.html"><a href="examples-6.html#two-sample-test-for-proportions"><i class="fa fa-check"></i><b>13.4</b> Two Sample Test for Proportions</a></li>
+<li class="chapter" data-level="13.5" data-path="examples-6.html"><a href="examples-6.html#wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>13.5</b> Wilcoxon Rank Sum Test</a></li>
+<li class="chapter" data-level="13.6" data-path="examples-6.html"><a href="examples-6.html#test-for-odds-ratio"><i class="fa fa-check"></i><b>13.6</b> Test for Odds Ratio</a></li>
+<li class="chapter" data-level="13.7" data-path="examples-6.html"><a href="examples-6.html#test-for-relative-risk"><i class="fa fa-check"></i><b>13.7</b> Test for Relative Risk</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="lecture-slides.html"><a href="lecture-slides.html"><i class="fa fa-check"></i><b>A</b> Lecture Slides</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biostatistics in Public Health</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="introduction-to-statistical-hypothesis-testing" class="section level1">
+<h1><span class="header-section-number">12</span> Introduction to Statistical Hypothesis Testing</h1>
+<p>Quick recap: some population is identified in which we’re interested in a particular feature (mean BMI, prevalence of disease, etc.). The only way to find the Truth<sup>TM</sup> is to examine every single individual in the population, and calculate the value of interest. Unfortunately, this is not possible, so instead we get a representative sample from the general population. In this sample, we can calculate anything we’d like. The question is then, how can we use this sample to say something about the Truth<sup>TM</sup>?</p>
+<p>As an illustrative example, say we are interested in testing a hypothesis that the true mean value in a population is 6 against an alternative hypothesis that the true mean value in the population is not 6. In statistical jargon, we say we’re testing the null hypothesis <span class="math inline">\(H_0: \mu = 6\)</span> against the alternative <span class="math inline">\(H_A: \mu \neq 6\)</span>. To do so, we look at our sample, and estimate the population mean with the sample average. In the previous section, we saw that the Central Limit Theorem guarantees that the sample average will be “pretty close” to the true population mean (as long as <span class="math inline">\(n\)</span> is “large enough”), and so using the sample average to try to say something about the true population mean seems like a good ide.</p>
+<p>The question we seek to answer is IF the true population mean is indeed 6, would it be reasonable to see the sample average we see? It seems fair to say that if the sample average we see is very close to 6, then it’s reasonable for us to believe that the true population mean is in fact 6, while if our sample average is far from 6, it would be reasonable to dispute the idea that 6 is the true population mean. So, the question then becomes, when is our average far from 6, and in particular, how far from 6 does it have to be before we don’t believe that 6 is indeed the true population mean?</p>
+<p>Obviously, the real answer is “it depends, and is very subjective”. We will try to remove the first part, and bring the subjective part of the answer to a scale that everyone can relate to.</p>
+<p>Consider the two visualization of our hypothesized population mean and sample average depicted in figure <a href="introduction-to-statistical-hypothesis-testing.html#fig:comp1">12.1</a>. Would you say the sample average is far from the hypothesized value on the figure to the left? What about the one on the right?</p>
+<div class="figure"><span id="fig:comp1"></span>
+<img src="783_biostats_files/figure-html/comp1-1.png" alt="Are the two lines far about?" width="672" />
+<p class="caption">
+Figure 12.1: Are the two lines far about?
+</p>
+</div>
+<p>We can’t really tell. We need some more context. So what if we knew the difference between the two? Are they far apart?</p>
+<div class="figure"><span id="fig:comp2"></span>
+<img src="783_biostats_files/figure-html/comp2-1.png" alt="Adding the actual difference doesn't help much." width="672" />
+<p class="caption">
+Figure 12.2: Adding the actual difference doesn’t help much.
+</p>
+</div>
+<p>Still impossible to say, but what if we add a scale to it all? The difference between <span class="math inline">\(1000000\)</span> and <span class="math inline">\(1000001\)</span> is basically negligible, while the difference between <span class="math inline">\(0.0001\)</span> and <span class="math inline">\(1.0001\)</span> seems huge, even though both differences are <span class="math inline">\(1\)</span>. So we add the scale.</p>
+<div class="figure"><span id="fig:comp3"></span>
+<img src="783_biostats_files/figure-html/comp3-1.png" alt="With a scale, it is a bit better." width="672" />
+<p class="caption">
+Figure 12.3: With a scale, it is a bit better.
+</p>
+</div>
+<p>This solved one problem. You can’t mislead me anymore (at least not as much) simply by changing the scale (i.e. zooming in/out), since I can now compare the difference to the absolute values of the two to get some sort of idea of the size of the difference. However, it is still kind of hard to say if the sample average is far from the hypothesized mean or not.</p>
+<p>Now, consider the two figures below. Same dotted lines, but the sample average is computed from two different samples (both samples consist of 10 observations, and they both have the same average).</p>
+<div class="figure"><span id="fig:comp4"></span>
+<img src="783_biostats_files/figure-html/comp4-1.png" alt="Actually seeing the data makes everything clear." width="672" />
+<p class="caption">
+Figure 12.4: Actually seeing the data makes everything clear.
+</p>
+</div>
+<p>Now I all of a sudden feel much more informed. In the case of the sample in subfigure A, I would definitely argue that the sample average is far from the hypothesized population mean – the average is found in a sample where only one observation is larger than the hypothesized mean. On the other hand, the sample in subfigure B indicates to me that the two lines aren’t that different at all.</p>
+<p>When looking at the two figures, I subconsciously compare the difference between the sample average and the hypothesized population mean to the variation of the data. If the difference is big compared to the variation of the data, I think the difference between the sample average and the hypothesized population mean is large, and therefore the hypothesized population mean doesn’t seem to plausibly be the correct population mean. If the difference is small compared to the variation of the data, I would probably think this is simply due to randomness from the sampling rather than due to the true population mean being different from the hypothesized population mean. So, in subfigure A above I would probably conclude that the hypothesis is incorrect, and therfore reject it, while in subfigure B I would probably NOT come to the same conclusion.</p>
+<p>The next question is then when the difference is “large enough”<a href="references.html#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> relative to the variation that we no longer believe the hypothesized population mean to be the Truth<sup>TM</sup>. As an example, consider the figures below. Here the variation is the same, but the actual sample averages are different. When is the separation between the data and the hypothesized mean so large that we no longer think it can be attributed to randomness from sampling, and more likely is due to a wrong hypothesis?</p>
+<div class="figure"><span id="fig:comp5"></span>
+<img src="783_biostats_files/figure-html/comp5-1.png" alt="When is the data far enough from the hypothesized mean?" width="672" />
+<p class="caption">
+Figure 12.5: When is the data far enough from the hypothesized mean?
+</p>
+</div>
+<p>To answer this question, first we need to characterize the difference we can expect from random sampling. Remember, random sampling is governed by probabilities, which in turn are characterized by distributions. If we can find the distribution the quantity we’re interested in would have <em>IF</em> the hypothesized mean is the true population mean, then we can say something about what kind of difference we would expect from random sampling <em>IF</em> the hypothesized mean is in fact the true population mean.</p>
+<p>Recall that the <a href="estimators-and-their-distributions.html#CLT">Central Limit Theorem</a> tells us exactly what the distribution of an average is: it states that (when <span class="math inline">\(n\)</span> is “large enough”), the average follows a normal distribution centered around the true population mean with variance <span class="math inline">\(\sigma^2\)</span> over <span class="math inline">\(n\)</span>. I.e. <span class="math inline">\(\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)\)</span>. So if we pretend <span class="math inline">\(\mu_0\)</span> is the true population mean, and that we actually know <span class="math inline">\(\sigma^2\)</span> (which we never do, but let’s pretend…), then we know the distribution of <span class="math inline">\(\bar{X}\)</span>! We can use this to quantify how far from <span class="math inline">\(\mu_0\)</span> the observed value of <span class="math inline">\(\bar{X}\)</span> actually is. This is done in terms of the probability of observing something that’s even further away. If there’s little chance of observing something further away from <span class="math inline">\(\mu_0\)</span> than what we observe in our sample, then what we observe must be pretty far away. On the other hand, if the probability of observing something further away from <span class="math inline">\(\mu_0\)</span> than what we observe is rather large, then what we observe must be pretty close to <span class="math inline">\(\mu_0\)</span>.</p>
+<p>Compare the observed values of the sample average to the distribution it would follow <em>IF</em> the true population mean is indeed <span class="math inline">\(\mu_0\)</span> on the figure below.</p>
+<p><img src="783_biostats_files/figure-html/comp-to-dist-1.png" width="672" /></p>
+<p>In each of the four cases, what is the probability of observing something “further away”? First, we need to define what is “further away”. There’s basically three options: further to the left, further to the right, or either. Which realm we’re in depends on our alternative hypothesis. The alternative hypothesis basically decides which direction we care about. If the alternative is <span class="math inline">\(H_A: \mu &lt; \mu_0\)</span> we only care about being “further to the left”. If the alternative is <span class="math inline">\(H_A: \mu &gt; \mu_0\)</span> we only care about being “further to the right”. If the alternative is <span class="math inline">\(H_A: \mu \neq \mu_0\)</span>, we care about both.</p>
+<p>In the second paragraph in this section, we decided on using <span class="math inline">\(H_A: \mu \neq \mu_0\)</span> as the alternative. Recall we find probabilities for continuous random variables as the area under the curve. So the probability of observing something “further away”, if the true population mean is indeed <span class="math inline">\(\mu_0\)</span>, would be the shaded areas below.<a href="references.html#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a></p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-74-1.png" width="672" /></p>
+<p>So now we have a metric for being “far away” that is completely independent of the scale of the data! In all cases, the probability of being “further away” is between 0 and 1. There’s still a subjective question left to answer: when is the probability of being “further away” small enough that we conclude what we observed is indeed far away? The scientific community has to a large extent decided that 0.05 is a good cut-off point. Note that this is completely arbitrary, and any cut-off could be used! It comes down to how harsh you want to be: a smaller cut-off needs “more evidence”.</p>
+<p>In the above discussion, we pivoted from looking at the data (the difference between the average and the hypothesized mean compared to the variation in the data) to look at the probability of observing an average that is farther away from the hypothesized mean than what we have observed in the sample, <em>IF</em> the hypothesized mean is indeed the true population mean. We could only do this because we assumed that we actually know the true standard deviation. In this case, the Central Limit Theorem gives us the distribution of <span class="math inline">\(\bar{X}\)</span>. Specifically, it tells us that <span class="math inline">\(\bar{X} \sim N\left(\mu_0, \frac{\sigma^2}{n}\right)\)</span> (again, assuming <span class="math inline">\(\mu_0\)</span> is the true population mean). In this case, we know from section <a href="random-variables-and-distributions.html#lin-comb-normals">10.4.3.1</a> that <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} \sim N(0,1)\)</span> (take a normally distributed random variable, subtract its mean, and divide by the standard deviation). If we look at this quantity, it is <em>exactly</em> what we started out with: it is the difference between the average and the hypothesized population mean relative to the variation of the data! (Recall, <span class="math inline">\(\sigma\)</span> is the standard deviation of the data.) So not only can we actually find the distribution this quantity follows (<em>IF</em> the hypothesized mean is truly the population mean), it is also a metric for the thing we actually want to measure! In general, such a quantity is called a <em>test statistic</em>. It is the statistic (i.e. function of the data) that we will use to perform our test. This particular quantity is called the <em>z-score</em> or <em>z-statistic</em>, and will be the backbone of many of the hypothesis tests we will see in this section.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-75-1.png" width="672" /></p>
+<div id="strategy-overview-the-lingo" class="section level2">
+<h2><span class="header-section-number">12.1</span> Strategy Overview &amp; The Lingo</h2>
+<p>The general strategy for testing a hypothesis is as follows:</p>
+<ul>
+<li>define your null and alternative hypotheses, <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_A\)</span>
+<ul>
+<li>the null hypothesis is ALWAYS going to be the simple hypothesis. Above, <span class="math inline">\(H_0: \mu = \mu_0\)</span>.</li>
+<li>the alternative can often be one of three: <span class="math inline">\(H_A: \mu &lt; \mu_0\)</span>, <span class="math inline">\(H_A: \mu &gt; \mu_0\)</span>, or <span class="math inline">\(H_A: \mu \neq \mu_0\)</span>. The latter is more common. The two inequalities often used when trying to determine superiority/inferiority of a new drug/treatment</li>
+</ul></li>
+<li>define you <em>significance level</em> <span class="math inline">\(\alpha\)</span>
+<ul>
+<li>this is the cut-off value for the probability of observing something “further away”</li>
+</ul></li>
+<li>find a <em>test statistic</em> that somehow quantifies the “distance” from your data to your hypothesis
+<ul>
+<li>in the example above, we settled on <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span></li>
+</ul></li>
+<li>make sure you can determine the distribution of your test statistic <em>ASSUMING</em> the hypothesis is true
+<ul>
+<li>this is referred to as the <em>null distribution</em>, since it is the distribution <em>IF</em> the null hypothesis is true</li>
+<li>above, we saw that <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\)</span> <em>IF</em> <span class="math inline">\(\mu_0\)</span> is indeed the true population mean</li>
+</ul></li>
+<li>calculate the observed value of your test statistic
+<ul>
+<li>above, you would take the observed data, calculate the average, then find <span class="math inline">\(\frac{\bar{x} - 6}{\sigma/\sqrt{1}}\)</span></li>
+</ul></li>
+<li>compare the observed value of your test statistic to its distribution, and compute the probability of observing something “further away” from the hypothesis
+<ul>
+<li>what consitutes “further away” depends on your alternative hypothesis</li>
+</ul></li>
+</ul>
+</div>
+<div id="when-we-dont-know-sigma2" class="section level2">
+<h2><span class="header-section-number">12.2</span> When we don’t know <span class="math inline">\(\sigma^2\)</span></h2>
+<p>Everything above was assuming that <span class="math inline">\(\sigma^2\)</span> is known, i.e. we know the <em>true population</em> variance of the measurements we’re interested in. In the cases where we do NOT know the true standard deviation (spoiler alert: that’s all of them!), and we have to <em>estimate</em> it from the data, we run into a bit of trouble. The distribution of <span class="math inline">\(\bar{X}\)</span> is no longer known to us, and <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span> isn’t really a relevant quantity anymore – since we do not know <span class="math inline">\(\sigma\)</span>, we cannot calculate the observed value of the test statistic! All is not lost, though. Generally two scenarios when we do not know <span class="math inline">\(\sigma^2\)</span>: we have to estimate it, or it follows from the null hypothesis.</p>
+<p>Cases where it follows from the null hypothesis are the “simplest” cases. We’ll see examples of this in the coming section. When it does not follow from the null hypothesis, we have to estimate it. In the example above, we would “simply” estimate <span class="math inline">\(\sigma^2\)</span> from the data as <span class="math inline">\(s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\)</span>. It turns out, when we simply plug this into the z-statistic, we get a new statistic that is really nice. This is called the <em>t-statistic</em>, and it follows a <a href="random-variables-and-distributions.html#t-distribution">t-distribution</a> with <span class="math inline">\(n-1\)</span> degrees of freedom.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="estimators-and-their-distributions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="examples-6.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

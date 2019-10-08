@@ -85,7 +85,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Fall 2019(last compiled: 2019-10-03)}
+    \date{Fall 2019(last compiled: 2019-10-08)}
 
 
 \usepackage{amsthm}
@@ -1114,8 +1114,8 @@ Once we have an idea of the location of a continuous variable, the next natural 
 
 We will here briefly introduce four (but kind of only three\ldots) metrics for the spread of the data: variance, standard devaition, range, and interquartile range.
 
-\hypertarget{variancestandard-deviation}{%
-\subsubsection{Variance/Standard Deviation}\label{variancestandard-deviation}}
+\hypertarget{var-std-dev}{%
+\subsubsection{Variance/Standard Deviation}\label{var-std-dev}}
 
 The \emph{variance} of a continuous variable is in many ways ``the average (squared) deviation from the mean''. It is calculated as \(\text{Var}(x) = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2\). So larger variance means larger spread, and vice versa.
 
@@ -2679,8 +2679,8 @@ So what does this curve actually look like? It's a bell curve that is centered a
 
 As the names of the parameters suggest, the actual expected value and variance of a random variable that is normally distributed, \(X \sim N(\mu, \sigma^2)\), is simply \(\mu\) and \(\sigma^2\), respectively.
 
-\hypertarget{linear-combination-of-normal-with-constant}{%
-\subsubsection{Linear Combination of Normal with Constant}\label{linear-combination-of-normal-with-constant}}
+\hypertarget{lin-comb-normals}{%
+\subsubsection{Linear Combination of Normal with Constants}\label{lin-comb-normals}}
 
 One really neat property of the normal distribution is that if you add a constant number, \(a\), to a random variable you again get something that is normally distributed. Similarly, if you multiply by a constant you get back something that is still normally distributed. The exact normal distribution can easily be specified (recall: to specify a normal distribution, we need to find the mean and variance). For completeness, let's do this. If \(X \sim N(\mu, \sigma^2)\), then \(Y_1 = X+a\) and \(Y_2 = a\cdot X\) are also normally distributed. Using the properties of expected value and variance from section \ref{prop-of-RVs}, we get that
 
@@ -2699,6 +2699,8 @@ and
 So \(X + a \sim N(\mu + a, \sigma^2)\), and \(a\cdot X \sim N(a\cdot \mu, a^2 \sigma^2)\).
 
 One particular case of the normal distribution plays an important role in much of statistics, and is therefore been named the Standard Normal Distribution. For historic reasons, we often use \(Z\) to denote the standard normal distribution, which is simply a normal distribution with mean \(0\) and variance \(1\). I.e. \(Z \sim N(0,1)\). One reason why this is important is that it provides sort of a baseline that we can always revert to. Whenever you are working with a normal distribution, you can use the rules above to get the standard normal. If \(X \sim N(\mu, \sigma^2)\), then \(\frac{X-\mu}{\sigma} = Z \sim N(0,1)\). Why? As we just discussed, adding a constant to a normal random variable results in something normal. \(X-\mu\) is simply adding \(-\mu\) to \(X\), so this is still normal. We also saw that multiplying by a constant is still normal, so since \(\frac{X-\mu}{\sigma}\) is simply multiplying \(X-\mu\) by \(\frac{1}{\sigma}\), we have that \(\frac{X-\mu}{\sigma}\) is a normal random variable. We can find it's mean and variance using the rules we've learned, and get that \(E\left(\frac{X - \mu}{\sigma}\right) = \frac{E(X) - \mu}{\sigma} = 0\), and \(\text{Var}\left(\frac{X - \mu}{\sigma}\right) = \frac{\text{Var}(X)}{\sigma^2} = 1\), so \(\frac{X-\mu}{\sigma} = Z \sim N(0,1)\).
+
+I want to reiterate the procedure of standardizing. Take a Normally distributed random variable, subtract its mean, and divide by the standard deviation will result in a new random variable that follows the standard normal distribution: \(\frac{X - E(X)}{\text{SD}(X)} \sim N(0,1)\).
 
 \hypertarget{sum-of-independent-normals}{%
 \subsubsection{Sum of (Independent) Normals}\label{sum-of-independent-normals}}
@@ -3096,8 +3098,8 @@ Definitely not normal. But if we log transform\ldots{}
 
 In the previous section, we considered quite a few examples of estimators, and saw how we can get a very good idea of exactly what the distribution of an estimator is \emph{when we have the entire population at our disposal}. This is basically never the case. Even if we had a way of getting in touch with the entire popoulation, and create thousands and thousands of simple random samples, it is very unlikely we would have the time and funds to do so. So, in practice, we have to do something else to find the distribution of the estimator we're interested in. Here, we will discuss how to do so using what I think is \emph{the} coolest result we will encounter in this class, namely the \emph{Central Limit Theorem}.
 
-\hypertarget{the-central-limit-theorem}{%
-\subsection{The Central Limit Theorem}\label{the-central-limit-theorem}}
+\hypertarget{CLT}{%
+\subsection{The Central Limit Theorem}\label{CLT}}
 
 Let's jump right to it, and state the Central Limit Theorem:
 
@@ -3146,6 +3148,178 @@ For completion, we consider the last example from above to which the CLT applies
 \addcontentsline{toc}{subsubsection}{Even more examples for the curious}
 
 To explore more, you can spend a few minutes \href{https://rtrane.shinyapps.io/CLT_2/}{here}. Data can be simulated from a number of different distribution, or you can upload a data set (such as the FHS data set).
+
+\hypertarget{part-statistical-hypothesis-testing}{%
+\part{Statistical Hypothesis Testing}\label{part-statistical-hypothesis-testing}}
+
+\hypertarget{introduction-to-statistical-hypothesis-testing}{%
+\chapter{Introduction to Statistical Hypothesis Testing}\label{introduction-to-statistical-hypothesis-testing}}
+
+Quick recap: some population is identified in which we're interested in a particular feature (mean BMI, prevalence of disease, etc.). The only way to find the Truth\textsuperscript{TM} is to examine every single individual in the population, and calculate the value of interest. Unfortunately, this is not possible, so instead we get a representative sample from the general population. In this sample, we can calculate anything we'd like. The question is then, how can we use this sample to say something about the Truth\textsuperscript{TM}?
+
+As an illustrative example, say we are interested in testing a hypothesis that the true mean value in a population is 6 against an alternative hypothesis that the true mean value in the population is not 6. In statistical jargon, we say we're testing the null hypothesis \(H_0: \mu = 6\) against the alternative \(H_A: \mu \neq 6\). To do so, we look at our sample, and estimate the population mean with the sample average. In the previous section, we saw that the Central Limit Theorem guarantees that the sample average will be ``pretty close'' to the true population mean (as long as \(n\) is ``large enough''), and so using the sample average to try to say something about the true population mean seems like a good ide.
+
+The question we seek to answer is IF the true population mean is indeed 6, would it be reasonable to see the sample average we see? It seems fair to say that if the sample average we see is very close to 6, then it's reasonable for us to believe that the true population mean is in fact 6, while if our sample average is far from 6, it would be reasonable to dispute the idea that 6 is the true population mean. So, the question then becomes, when is our average far from 6, and in particular, how far from 6 does it have to be before we don't believe that 6 is indeed the true population mean?
+
+Obviously, the real answer is ``it depends, and is very subjective''. We will try to remove the first part, and bring the subjective part of the answer to a scale that everyone can relate to.
+
+Consider the two visualization of our hypothesized population mean and sample average depicted in figure \ref{fig:comp1}. Would you say the sample average is far from the hypothesized value on the figure to the left? What about the one on the right?
+
+\begin{figure}
+\centering
+\includegraphics{783_biostats_files/figure-latex/comp1-1.pdf}
+\caption{\label{fig:comp1}Are the two lines far about?}
+\end{figure}
+
+We can't really tell. We need some more context. So what if we knew the difference between the two? Are they far apart?
+
+\begin{figure}
+\centering
+\includegraphics{783_biostats_files/figure-latex/comp2-1.pdf}
+\caption{\label{fig:comp2}Adding the actual difference doesn't help much.}
+\end{figure}
+
+Still impossible to say, but what if we add a scale to it all? The difference between \(1000000\) and \(1000001\) is basically negligible, while the difference between \(0.0001\) and \(1.0001\) seems huge, even though both differences are \(1\). So we add the scale.
+
+\begin{figure}
+\centering
+\includegraphics{783_biostats_files/figure-latex/comp3-1.pdf}
+\caption{\label{fig:comp3}With a scale, it is a bit better.}
+\end{figure}
+
+This solved one problem. You can't mislead me anymore (at least not as much) simply by changing the scale (i.e.~zooming in/out), since I can now compare the difference to the absolute values of the two to get some sort of idea of the size of the difference. However, it is still kind of hard to say if the sample average is far from the hypothesized mean or not.
+
+Now, consider the two figures below. Same dotted lines, but the sample average is computed from two different samples (both samples consist of 10 observations, and they both have the same average).
+
+\begin{figure}
+\centering
+\includegraphics{783_biostats_files/figure-latex/comp4-1.pdf}
+\caption{\label{fig:comp4}Actually seeing the data makes everything clear.}
+\end{figure}
+
+Now I all of a sudden feel much more informed. In the case of the sample in subfigure A, I would definitely argue that the sample average is far from the hypothesized population mean -- the average is found in a sample where only one observation is larger than the hypothesized mean. On the other hand, the sample in subfigure B indicates to me that the two lines aren't that different at all.
+
+When looking at the two figures, I subconsciously compare the difference between the sample average and the hypothesized population mean to the variation of the data. If the difference is big compared to the variation of the data, I think the difference between the sample average and the hypothesized population mean is large, and therefore the hypothesized population mean doesn't seem to plausibly be the correct population mean. If the difference is small compared to the variation of the data, I would probably think this is simply due to randomness from the sampling rather than due to the true population mean being different from the hypothesized population mean. So, in subfigure A above I would probably conclude that the hypothesis is incorrect, and therfore reject it, while in subfigure B I would probably NOT come to the same conclusion.
+
+The next question is then when the difference is ``large enough''\footnote{note: this could be in either the positive or negative direction!} relative to the variation that we no longer believe the hypothesized population mean to be the Truth\textsuperscript{TM}. As an example, consider the figures below. Here the variation is the same, but the actual sample averages are different. When is the separation between the data and the hypothesized mean so large that we no longer think it can be attributed to randomness from sampling, and more likely is due to a wrong hypothesis?
+
+\begin{figure}
+\centering
+\includegraphics{783_biostats_files/figure-latex/comp5-1.pdf}
+\caption{\label{fig:comp5}When is the data far enough from the hypothesized mean?}
+\end{figure}
+
+To answer this question, first we need to characterize the difference we can expect from random sampling. Remember, random sampling is governed by probabilities, which in turn are characterized by distributions. If we can find the distribution the quantity we're interested in would have \emph{IF} the hypothesized mean is the true population mean, then we can say something about what kind of difference we would expect from random sampling \emph{IF} the hypothesized mean is in fact the true population mean.
+
+Recall that the \protect\hyperlink{CLT}{Central Limit Theorem} tells us exactly what the distribution of an average is: it states that (when \(n\) is ``large enough''), the average follows a normal distribution centered around the true population mean with variance \(\sigma^2\) over \(n\). I.e. \(\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)\). So if we pretend \(\mu_0\) is the true population mean, and that we actually know \(\sigma^2\) (which we never do, but let's pretend\ldots), then we know the distribution of \(\bar{X}\)! We can use this to quantify how far from \(\mu_0\) the observed value of \(\bar{X}\) actually is. This is done in terms of the probability of observing something that's even further away. If there's little chance of observing something further away from \(\mu_0\) than what we observe in our sample, then what we observe must be pretty far away. On the other hand, if the probability of observing something further away from \(\mu_0\) than what we observe is rather large, then what we observe must be pretty close to \(\mu_0\).
+
+Compare the observed values of the sample average to the distribution it would follow \emph{IF} the true population mean is indeed \(\mu_0\) on the figure below.
+
+\includegraphics{783_biostats_files/figure-latex/comp-to-dist-1.pdf}
+
+In each of the four cases, what is the probability of observing something ``further away''? First, we need to define what is ``further away''. There's basically three options: further to the left, further to the right, or either. Which realm we're in depends on our alternative hypothesis. The alternative hypothesis basically decides which direction we care about. If the alternative is \(H_A: \mu < \mu_0\) we only care about being ``further to the left''. If the alternative is \(H_A: \mu > \mu_0\) we only care about being ``further to the right''. If the alternative is \(H_A: \mu \neq \mu_0\), we care about both.
+
+In the second paragraph in this section, we decided on using \(H_A: \mu \neq \mu_0\) as the alternative. Recall we find probabilities for continuous random variables as the area under the curve. So the probability of observing something ``further away'', if the true population mean is indeed \(\mu_0\), would be the shaded areas below.\footnote{To see this, ask yourself: ``which is further away from 2: 3 or -1?'' This is why we consider both sides of the hypothesized population mean.}
+
+\includegraphics{783_biostats_files/figure-latex/unnamed-chunk-74-1.pdf}
+
+So now we have a metric for being ``far away'' that is completely independent of the scale of the data! In all cases, the probability of being ``further away'' is between 0 and 1. There's still a subjective question left to answer: when is the probability of being ``further away'' small enough that we conclude what we observed is indeed far away? The scientific community has to a large extent decided that 0.05 is a good cut-off point. Note that this is completely arbitrary, and any cut-off could be used! It comes down to how harsh you want to be: a smaller cut-off needs ``more evidence''.
+
+In the above discussion, we pivoted from looking at the data (the difference between the average and the hypothesized mean compared to the variation in the data) to look at the probability of observing an average that is farther away from the hypothesized mean than what we have observed in the sample, \emph{IF} the hypothesized mean is indeed the true population mean. We could only do this because we assumed that we actually know the true standard deviation. In this case, the Central Limit Theorem gives us the distribution of \(\bar{X}\). Specifically, it tells us that \(\bar{X} \sim N\left(\mu_0, \frac{\sigma^2}{n}\right)\) (again, assuming \(\mu_0\) is the true population mean). In this case, we know from section \ref{lin-comb-normals} that \(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} \sim N(0,1)\) (take a normally distributed random variable, subtract its mean, and divide by the standard deviation). If we look at this quantity, it is \emph{exactly} what we started out with: it is the difference between the average and the hypothesized population mean relative to the variation of the data! (Recall, \(\sigma\) is the standard deviation of the data.) So not only can we actually find the distribution this quantity follows (\emph{IF} the hypothesized mean is truly the population mean), it is also a metric for the thing we actually want to measure! In general, such a quantity is called a \emph{test statistic}. It is the statistic (i.e.~function of the data) that we will use to perform our test. This particular quantity is called the \emph{z-score} or \emph{z-statistic}, and will be the backbone of many of the hypothesis tests we will see in this section.
+
+\includegraphics{783_biostats_files/figure-latex/unnamed-chunk-75-1.pdf}
+
+\hypertarget{strategy-overview-the-lingo}{%
+\section{Strategy Overview \& The Lingo}\label{strategy-overview-the-lingo}}
+
+The general strategy for testing a hypothesis is as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  define your null and alternative hypotheses, \(H_0\) and \(H_A\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    the null hypothesis is ALWAYS going to be the simple hypothesis. Above, \(H_0: \mu = \mu_0\).
+  \item
+    the alternative can often be one of three: \(H_A: \mu < \mu_0\), \(H_A: \mu > \mu_0\), or \(H_A: \mu \neq \mu_0\). The latter is more common. The two inequalities often used when trying to determine superiority/inferiority of a new drug/treatment
+  \end{itemize}
+\item
+  define you \emph{significance level} \(\alpha\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    this is the cut-off value for the probability of observing something ``further away''
+  \end{itemize}
+\item
+  find a \emph{test statistic} that somehow quantifies the ``distance'' from your data to your hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in the example above, we settled on \(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)
+  \end{itemize}
+\item
+  make sure you can determine the distribution of your test statistic \emph{ASSUMING} the hypothesis is true
+
+  \begin{itemize}
+  \tightlist
+  \item
+    this is referred to as the \emph{null distribution}, since it is the distribution \emph{IF} the null hypothesis is true
+  \item
+    above, we saw that \(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\) \emph{IF} \(\mu_0\) is indeed the true population mean
+  \end{itemize}
+\item
+  calculate the observed value of your test statistic
+
+  \begin{itemize}
+  \tightlist
+  \item
+    above, you would take the observed data, calculate the average, then find \(\frac{\bar{x} - 6}{\sigma/\sqrt{1}}\)
+  \end{itemize}
+\item
+  compare the observed value of your test statistic to its distribution, and compute the probability of observing something ``further away'' from the hypothesis
+
+  \begin{itemize}
+  \tightlist
+  \item
+    what consitutes ``further away'' depends on your alternative hypothesis
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{when-we-dont-know-sigma2}{%
+\section{\texorpdfstring{When we don't know \(\sigma^2\)}{When we don't know \textbackslash sigma\^{}2}}\label{when-we-dont-know-sigma2}}
+
+Everything above was assuming that \(\sigma^2\) is known, i.e.~we know the \emph{true population} variance of the measurements we're interested in. In the cases where we do NOT know the true standard deviation (spoiler alert: that's all of them!), and we have to \emph{estimate} it from the data, we run into a bit of trouble. The distribution of \(\bar{X}\) is no longer known to us, and \(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\) isn't really a relevant quantity anymore -- since we do not know \(\sigma\), we cannot calculate the observed value of the test statistic! All is not lost, though. Generally two scenarios when we do not know \(\sigma^2\): we have to estimate it, or it follows from the null hypothesis.
+
+Cases where it follows from the null hypothesis are the ``simplest'' cases. We'll see examples of this in the coming section. When it does not follow from the null hypothesis, we have to estimate it. In the example above, we would ``simply'' estimate \(\sigma^2\) from the data as \(s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\). It turns out, when we simply plug this into the z-statistic, we get a new statistic that is really nice. This is called the \emph{t-statistic}, and it follows a \protect\hyperlink{t-distribution}{t-distribution} with \(n-1\) degrees of freedom.
+
+\hypertarget{examples-6}{%
+\chapter{Examples}\label{examples-6}}
+
+\hypertarget{one-sample-t-test}{%
+\section{One Sample t-test}\label{one-sample-t-test}}
+
+\hypertarget{two-sample-t-test}{%
+\section{Two Sample t-test}\label{two-sample-t-test}}
+
+\hypertarget{one-sample-test-for-proportion}{%
+\section{One Sample Test for Proportion}\label{one-sample-test-for-proportion}}
+
+\hypertarget{two-sample-test-for-proportions}{%
+\section{Two Sample Test for Proportions}\label{two-sample-test-for-proportions}}
+
+\hypertarget{wilcoxon-rank-sum-test}{%
+\section{Wilcoxon Rank Sum Test}\label{wilcoxon-rank-sum-test}}
+
+\hypertarget{test-for-odds-ratio}{%
+\section{Test for Odds Ratio}\label{test-for-odds-ratio}}
+
+\hypertarget{test-for-relative-risk}{%
+\section{Test for Relative Risk}\label{test-for-relative-risk}}
 
 \hypertarget{appendix-appendix}{%
 \appendix}
