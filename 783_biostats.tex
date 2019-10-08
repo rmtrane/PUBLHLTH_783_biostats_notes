@@ -3103,8 +3103,8 @@ In the previous section, we considered quite a few examples of estimators, and s
 
 Let's jump right to it, and state the Central Limit Theorem:
 
-\BeginKnitrBlock{theorem}
-\protect\hypertarget{thm:Theux20Centralux20Limitux20Theorem}{}{(\#thm:The Central Limit Theorem) }Let \(X_1, X_2, ..., X_n\) be a simple random sample from a population with mean \(\mu\) and variance \(\sigma^2\) (i.e.~\(E(X_i) = \mu\) and \(\text{Var}(X_i) = \sigma^2\) for all \(i\)). Then, as long as \(n\) is large enough, the \emph{average} \(\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i\) is approximately \(N(\mu, \sigma^2 / n)\).
+\BeginKnitrBlock{theorem}[The Central Limit Theorem]
+\protect\hypertarget{thm:theCLT}{}{\label{thm:theCLT} \iffalse (The Central Limit Theorem) \fi{} }Let \(X_1, X_2, ..., X_n\) be a simple random sample from a population with mean \(\mu\) and variance \(\sigma^2\) (i.e.~\(E(X_i) = \mu\) and \(\text{Var}(X_i) = \sigma^2\) for all \(i\)). Then, as long as \(n\) is large enough, the \emph{average} \(\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i\) is approximately \(N(\mu, \sigma^2 / n)\).
 \EndKnitrBlock{theorem}
 
 So what's so special about this? It's a rather simple setup: if you have a simple random sample of size ``big enough'', then the average is going to be normally distributed with mean \(\mu\) and variance \(\sigma^2/n\). But think about this for a second: there are no assumptions on where you start, and yet we get that we end up with something that is normally distributed!
@@ -3296,30 +3296,6 @@ The general strategy for testing a hypothesis is as follows:
 Everything above was assuming that \(\sigma^2\) is known, i.e.~we know the \emph{true population} variance of the measurements we're interested in. In the cases where we do NOT know the true standard deviation (spoiler alert: that's all of them!), and we have to \emph{estimate} it from the data, we run into a bit of trouble. The distribution of \(\bar{X}\) is no longer known to us, and \(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\) isn't really a relevant quantity anymore -- since we do not know \(\sigma\), we cannot calculate the observed value of the test statistic! All is not lost, though. Generally two scenarios when we do not know \(\sigma^2\): we have to estimate it, or it follows from the null hypothesis.
 
 Cases where it follows from the null hypothesis are the ``simplest'' cases. We'll see examples of this in the coming section. When it does not follow from the null hypothesis, we have to estimate it. In the example above, we would ``simply'' estimate \(\sigma^2\) from the data as \(s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\). It turns out, when we simply plug this into the z-statistic, we get a new statistic that is really nice. This is called the \emph{t-statistic}, and it follows a \protect\hyperlink{t-distribution}{t-distribution} with \(n-1\) degrees of freedom.
-
-\hypertarget{examples-6}{%
-\chapter{Examples}\label{examples-6}}
-
-\hypertarget{one-sample-t-test}{%
-\section{One Sample t-test}\label{one-sample-t-test}}
-
-\hypertarget{two-sample-t-test}{%
-\section{Two Sample t-test}\label{two-sample-t-test}}
-
-\hypertarget{one-sample-test-for-proportion}{%
-\section{One Sample Test for Proportion}\label{one-sample-test-for-proportion}}
-
-\hypertarget{two-sample-test-for-proportions}{%
-\section{Two Sample Test for Proportions}\label{two-sample-test-for-proportions}}
-
-\hypertarget{wilcoxon-rank-sum-test}{%
-\section{Wilcoxon Rank Sum Test}\label{wilcoxon-rank-sum-test}}
-
-\hypertarget{test-for-odds-ratio}{%
-\section{Test for Odds Ratio}\label{test-for-odds-ratio}}
-
-\hypertarget{test-for-relative-risk}{%
-\section{Test for Relative Risk}\label{test-for-relative-risk}}
 
 \hypertarget{appendix-appendix}{%
 \appendix}

@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="estimators-and-their-distributions.html"/>
-<link rel="next" href="examples-6.html"/>
+<link rel="next" href="lecture-slides.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -177,15 +177,6 @@
 <li class="chapter" data-level="12.1" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#strategy-overview-the-lingo"><i class="fa fa-check"></i><b>12.1</b> Strategy Overview &amp; The Lingo</a></li>
 <li class="chapter" data-level="12.2" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#when-we-dont-know-sigma2"><i class="fa fa-check"></i><b>12.2</b> When we don’t know <span class="math inline">\(\sigma^2\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="examples-6.html"><a href="examples-6.html"><i class="fa fa-check"></i><b>13</b> Examples</a><ul>
-<li class="chapter" data-level="13.1" data-path="examples-6.html"><a href="examples-6.html#one-sample-t-test"><i class="fa fa-check"></i><b>13.1</b> One Sample t-test</a></li>
-<li class="chapter" data-level="13.2" data-path="examples-6.html"><a href="examples-6.html#two-sample-t-test"><i class="fa fa-check"></i><b>13.2</b> Two Sample t-test</a></li>
-<li class="chapter" data-level="13.3" data-path="examples-6.html"><a href="examples-6.html#one-sample-test-for-proportion"><i class="fa fa-check"></i><b>13.3</b> One Sample Test for Proportion</a></li>
-<li class="chapter" data-level="13.4" data-path="examples-6.html"><a href="examples-6.html#two-sample-test-for-proportions"><i class="fa fa-check"></i><b>13.4</b> Two Sample Test for Proportions</a></li>
-<li class="chapter" data-level="13.5" data-path="examples-6.html"><a href="examples-6.html#wilcoxon-rank-sum-test"><i class="fa fa-check"></i><b>13.5</b> Wilcoxon Rank Sum Test</a></li>
-<li class="chapter" data-level="13.6" data-path="examples-6.html"><a href="examples-6.html#test-for-odds-ratio"><i class="fa fa-check"></i><b>13.6</b> Test for Odds Ratio</a></li>
-<li class="chapter" data-level="13.7" data-path="examples-6.html"><a href="examples-6.html#test-for-relative-risk"><i class="fa fa-check"></i><b>13.7</b> Test for Relative Risk</a></li>
-</ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="lecture-slides.html"><a href="lecture-slides.html"><i class="fa fa-check"></i><b>A</b> Lecture Slides</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -299,15 +290,27 @@ Figure 12.5: When is the data far enough from the hypothesized mean?
 <h2><span class="header-section-number">12.2</span> When we don’t know <span class="math inline">\(\sigma^2\)</span></h2>
 <p>Everything above was assuming that <span class="math inline">\(\sigma^2\)</span> is known, i.e. we know the <em>true population</em> variance of the measurements we’re interested in. In the cases where we do NOT know the true standard deviation (spoiler alert: that’s all of them!), and we have to <em>estimate</em> it from the data, we run into a bit of trouble. The distribution of <span class="math inline">\(\bar{X}\)</span> is no longer known to us, and <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span> isn’t really a relevant quantity anymore – since we do not know <span class="math inline">\(\sigma\)</span>, we cannot calculate the observed value of the test statistic! All is not lost, though. Generally two scenarios when we do not know <span class="math inline">\(\sigma^2\)</span>: we have to estimate it, or it follows from the null hypothesis.</p>
 <p>Cases where it follows from the null hypothesis are the “simplest” cases. We’ll see examples of this in the coming section. When it does not follow from the null hypothesis, we have to estimate it. In the example above, we would “simply” estimate <span class="math inline">\(\sigma^2\)</span> from the data as <span class="math inline">\(s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\)</span>. It turns out, when we simply plug this into the z-statistic, we get a new statistic that is really nice. This is called the <em>t-statistic</em>, and it follows a <a href="random-variables-and-distributions.html#t-distribution">t-distribution</a> with <span class="math inline">\(n-1\)</span> degrees of freedom.</p>
+<!-- # Examples -->
+<!-- ## One Sample t-test -->
+<!-- ## Two Sample t-test -->
+<!-- ## One Sample Test for Proportion -->
+<!-- ## Two Sample Test for Proportions -->
+<!-- ## Wilcoxon Rank Sum Test -->
+<!-- ## Test for Odds Ratio -->
+<!-- ## Test for Relative Risk -->
+
 </div>
 </div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
 <a href="estimators-and-their-distributions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="examples-6.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="lecture-slides.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
