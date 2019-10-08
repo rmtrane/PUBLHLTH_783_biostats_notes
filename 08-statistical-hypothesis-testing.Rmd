@@ -5,8 +5,8 @@
 Quick recap: some population is identified in which we're interested in a particular feature (mean BMI, prevalence of disease, etc.). The only way to find the Truth^TM^ is to examine every single individual in the population, and calculate the value of interest. Unfortunately, this is not possible, so instead we get a representative sample from the general population. In this sample, we can calculate anything we'd like. The question is then, how can we use this sample to say something about the Truth^TM^? 
 
 ```{r include = FALSE}
-#write_rds(x = .Random.seed, path = 'seed_for_intro_to_hyp.Rds')
-set.seed(read_rds("seed_for_intro_to_hyp.Rds"))
+#readr::write_csv(data.frame(seed = .Random.seed), "seed_for_intro_to_hyp.csv")
+set.seed(readr::read_csv("seed_for_intro_to_hyp.csv")$seed)
 
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
