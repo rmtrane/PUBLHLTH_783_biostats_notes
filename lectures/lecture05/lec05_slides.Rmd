@@ -1,5 +1,5 @@
 ---
-title: "Biostats Lecture 5: Statistical Hypothesis Testing"
+title: "Biostats Lecture 5:<br>Statistical Hypothesis Testing"
 subtitle: "Public Health 783"
 author: "Ralph Trane"
 institute: "University of Wisconsin--Madison<br><br>"
@@ -14,7 +14,7 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-      ration: '16:9'
+      #ratio: '16:9'
       navigation:
         scroll: false
 ---
@@ -69,19 +69,19 @@ I agree to let you test them, but ONLY if you do it in a sound, statistical mann
 
 --
 
-You decide to roll the dice $12$ times each, for a total of $36$ rolls. You assume they'll all behave the same, so the probability of rolling a six is the same for all three dice. 
+You decide to roll the dice $8$ times each, for a total of $42$ rolls. You assume they'll all behave the same, so the probability of rolling a six is the same for all three dice. 
 
 ---
 
 **Setup**:
 
-Let $X_1, X_2, ..., X_{36}$ be the outcomes of the thirty "trials". Each trial consists of rolling a die, and check if it's a six or not. If it's a six, we'll call it a success, if not we'll call it a failure. I.e. $X_i \sim$
+Let $X_1, X_2, ..., X_{42}$ be the outcomes of the thirty "trials". Each trial consists of rolling a die, and check if it's a six or not. If it's a six, we'll call it a success, if not we'll call it a failure. I.e. $X_i \sim$
 --
- $\text{Bernoulli}(p)$. 
+ $\text{Bernoulli}(\pi)$. 
 
-*IF* the dice are fair, $P(X_i = 1) = 1/6$ for all $i = 1,2,...,36$. 
+*IF* the dice are fair, $P(X_i = 1) = 1/6$ for all $i = 1,2,...,42$. 
 
-*IF* the dice are fair, we would expect to roll a $6$ close to $\frac{1}{6}\cdot 36 = 6$ times, i.e. about $5$ of the $X$'s should be $1$'s. 
+*IF* the dice are fair, we would expect to roll a $6$ close to $\frac{1}{6}\cdot 42 = 6$ times, i.e. about $5$ of the $X$'s should be $1$'s. 
 
 What would cause you to reject the idea that the dice are fair? 
 
@@ -96,25 +96,25 @@ In terms of probabilities: what is the *probability* of observing at least $`r X
 * if the probability is small, $`r XX`$ is a lot of sixes
 * if the probability is large, $`r XX`$ is a reasonable number of sixes
 
-First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_{36}$. The probability of observing more than $`r XX`$ sixes is $P(Y \ge `r XX`)$. To find this, we need the distribution of $Y$, which is 
+First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_{42}$. The probability of observing more than $`r XX`$ sixes is $P(Y \ge `r XX`)$. To find this, we need the distribution of $Y$, which is 
 --
- $\text{Binomial}(36, p)$, where $p$ is the probability of rolling a six. 
+ $\text{Binomial}(42, \pi)$, where $\pi$ is the probability of rolling a six. 
 
 ---
 
-*IF* the dice are fair, $p = \frac{1}{6}$. So *IF* the dice are fair, the distribution of $Y$ looks like this:
+*IF* the dice are fair, $\pi = \frac{1}{6}$. So *IF* the dice are fair, the distribution of $Y$ looks like this:
 
 
 <center>
 ```{r out.width = 600, out.height = 450}
-binom_dist <- ggplot(data = tibble(x = 0:36) %>% 
-                       mutate(y = dbinom(x, size = 36, prob = 1/6),
+binom_dist <- ggplot(data = tibble(x = 0:42) %>% 
+                       mutate(y = dbinom(x, size = 42, prob = 1/6),
                               Probability = round(y, digits = 5)),
        aes(x = x, y = y, label = Probability)) + 
   geom_bar(stat = 'identity', 
            width = 1) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
-  labs(title = 'Binomial(n = 36, p = 1/6)',
+  labs(title = 'Binomial(n = 42, \u03C0 = 1/6)',
        x = 'Value of Y', y = 'Probability')
 
 plotly::ggplotly(binom_dist, tooltip = c("label", "x"))
@@ -123,7 +123,7 @@ plotly::ggplotly(binom_dist, tooltip = c("label", "x"))
 
 ---
 
-The probability we want to find is the red area below. We will do this in SAS in just a second. The result is `r (p_val <- round(1-pbinom(XX, size = 36, prob = 1/6), digits = 5))`.
+The probability we want to find is the red area below. We will do this in SAS in just a second. The result is `r (p_val <- round(1-pbinom(XX, size = 42, prob = 1/6), digits = 5))`.
 
 <center>
 ```{r out.width = 600, out.height = 450}
@@ -139,9 +139,9 @@ plotly::ggplotly(binom_dist_2, tooltip = c("label", "x"))
 
 ---
 
-This means that *IF* the true probability of rolling a six with these dice is indeed $\frac{1}{6}$, the probability of rolling $`r XX`$ or more sixes is $`r p_val`$. 
+This means that *IF* the true probability of rolling a six with these dice is indeed $\frac{1}{6}$, the probability of rolling $`r XX`$ or more sixes is $`r p_val`$. This probability is called the *p-value* for the test $H_0: \pi = 1/6$ when testing against $H_A: \pi > 1/6$. 
 
-Is this enough to convince you that the true probability is *NOT* $\frac{1}{6}$?
+Is this small enough to convince you that the true probability is *NOT* $\frac{1}{6}$?
 
 ---
 
@@ -156,3 +156,139 @@ Is this enough to convince you that the true probability is *NOT* $\frac{1}{6}$?
 
 
 ---
+
+## Different (but the same) approach
+
+```{r}
+p_obs <- XX/42
+```
+
+
+Instead of looking at $Y$ (number of sixes), look at the proportion of sixes. I.e. 
+
+$$\hat{p} = \frac{Y}{n} = \frac{1}{n}(X_1 + ... + X_{42}) = \frac{1}{n} \sum_{i=1}^{42} X_i$$
+
+
+This is an average, so CLT tells us it's normally distributed around the true value of $\pi$, and variance $\frac{\text{Var}(X_i)}{n} = \frac{\pi(1-\pi)}{n}$. 
+
+We reject the idea that the true value of $\pi$ is $\frac{1}{6}$ when $\hat{p}$ is "far from" $\frac{1}{6}$. 
+
+I.e. when $\hat{p} - \frac{1}{6}$ is large. When this is large, so is $Z = \frac{\hat{p}-1/6}{\text{SD}(\hat{p})}$. 
+
+If we pretend $\pi = \frac{1}{6}$, then $Z \sim N(0,1)$!
+
+If we pretend $\pi = \frac{1}{6}$, then $\text{SD}(\hat{p}) = \sqrt{\text{Var}(\hat{p})} = \sqrt{\frac{1/6 \cdot (1-1/6)}{42}}$, and so we can actually calculate $z_{obs}$, the observed value of $Z$.
+
+---
+
+## Different (but the same) approach
+
+So, 
+
+\begin{align*}
+\text{p-value} &= P(\hat{p} > p_{obs}) \\
+               &= P\left(\frac{\hat{p} - 1/6}{\text{SD}(\hat{p})} > \frac{p_{obs} - 1/6}{\sqrt{1/6 \cdot (1-1/6)/42}} \right)
+               &= P(Z > `r (z_obs <- round((p_obs - 1/6)/(sqrt(1/6*5/6)/sqrt(42)), digits = 5))`)
+\end{align*}
+
+---
+
+
+So we found our p-value as the area depicted below. Turns out, this is `r round(1-pnorm(z_obs), digits = 5)`. 
+
+```{r fig.width = 4, fig.height = 3, out.width = 450, out.height = 300, fig.align='center', dpi = 300}
+ggplot(data = tibble(x = seq(-4, 4, by = 0.01)),
+       aes(x = x)) + 
+  stat_function(fun = dnorm) + 
+  geom_area(data = tibble(x = seq(z_obs, 4, by = 0.01)),
+            aes(x = x, y = dnorm(x))) +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)))
+```
+
+This strategy can be used every time we the quantity of interest in follows a (at least approximately) normal distribution. Subtract the mean and divide by the standard deviation to get the standard normal. Then find the probability. 
+
+
+---
+
+## Group Comparison
+
+Two groups, 15 observations in each group. Want to test $H_0: \mu_X = \mu_Y$ against $H_A: \mu_X \neq \mu_Y$. 
+
+```{r fig.width = 4, fig.height = 3, out.width = 450, out.height = 300, fig.align='center', dpi = 300}
+X <- rnorm(mean = 2, sd = 5, n = 15)
+Y <- rnorm(mean = 5, sd = 3, n = 15)
+group_comparison <- tibble(group = rep(c("X", "Y"), each = 15),
+                           obs = c(X, Y))
+ggplot(group_comparison,
+       aes(x = group, y = obs)) + 
+  geom_boxplot(coef = 10) + 
+  geom_jitter(width = 0.1, height = 0)
+```
+
+
+---
+
+Natural to look at $\bar{X} - \bar{Y}$.
+
+If $n$ is "large enough", both of these quantities are normally distributed. From last week, normal minus normal is normal. So $\bar{X} - \bar{Y}$ is normal!
+
+Next question: exactly what normal would it be *IF* we pretend the null hypothesis is true? 
+
+Mean: $E(\bar{X} - \bar{Y}) = E(\bar{X}) - E(\bar{Y})=$
+--
+ $\mu_X - \mu_Y =$
+--
+ $0$
+
+Variance (assuming independence): $\text{Var}(\bar{X} - \bar{Y}) =$
+--
+ $\text{Var}(\bar{X}) + \text{Var}(\bar{Y}) = \frac{\sigma_X^2}{n_X} + \frac{\sigma_Y^2}{n_Y}$.
+ 
+So $Z = \frac{\bar{X} - \bar{Y}}{\text{SD}(\bar{X} - \bar{Y})} = \frac{\bar{X} - \bar{Y}}{\sqrt{\text{Var}(\bar{X} - \bar{Y})}} \sim N(0,1)$. 
+
+What's the problem here?
+--
+ We don't know $\sigma_X^2$ or $\sigma_Y^2$!
+
+---
+
+Luckily, we can simply *estimate* both, and plug them in. 
+
+When we do this, the result no longer follows a standard normal distribution...
+--
+ BUT it follows a particular $t$-distribution. How to calculate the exact degrees of freedom is a bit tricky, but it can be done.
+ 
+**For the patient type:**
+
+The degrees of freedom is 
+
+\begin{align*}
+  \text{df} &= n_X + n_Y - 2
+\end{align*}
+
+if we are willing to assume $\sigma_X^2 = \sigma_Y^2$. In this case we would use $s_X^2 = s_Y^2 = \frac{1}{n_X + n_Y - 2}\left(\sum_{i=1}^{n_X} (x_i - \bar{x})^2 + \sum_{i=1}^{n_Y} (y_i - \bar{y})^2\right)$. 
+
+---
+
+If you're not willing to assume $\sigma_X^2 = \sigma_Y^2$, the degrees of freedom is
+
+\begin{align*}
+  \text{df} &= \frac{\left[\frac{s_X^2}{n_X} + \frac{s_Y^2}{n_Y}\right]^2}{\frac{(s_X^2/n_X)^2}{n_X - 1} + \frac{(s_Y^2/n_Y)^2}{n_Y - 1}},
+\end{align*}
+
+and we would then use the regular sample variances as estimates:
+
+\begin{align*}
+  s_X^2 &= \frac{1}{n_X - 1} \sum_{i=1}^{n_X} (x_i - \bar{x})^2 \\
+  &\\
+  s_Y^2 &= \frac{1}{n_Y - 1} \sum_{i=1}^{n_Y} (y_i - \bar{y})^2
+\end{align*}
+
+---
+
+**For the not so patient type:**
+
+Don't worry about it, you'll use software to calculate this. 
+
+HOWEVER, you will need to know WHEN you can assume equal variance.
+
