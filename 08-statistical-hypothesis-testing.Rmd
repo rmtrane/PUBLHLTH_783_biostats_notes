@@ -470,19 +470,3 @@ Everything above was assuming that $\sigma^2$ is known, i.e. we know the *true p
 
 Cases where it follows from the null hypothesis are the "simplest" cases. We'll see examples of this in the coming section. When it does not follow from the null hypothesis, we have to estimate it. In the example above, we would "simply" estimate $\sigma^2$ from the data as $s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2$. It turns out, when we simply plug this into the z-statistic, we get a new statistic that is really nice. This is called the *t-statistic*, and it follows a [t-distribution](#t-distribution) with $n-1$ degrees of freedom. 
 
-
-<!-- # Examples -->
-
-<!-- ## One Sample t-test -->
-
-<!-- ## Two Sample t-test -->
-
-<!-- ## One Sample Test for Proportion -->
-
-<!-- ## Two Sample Test for Proportions -->
-
-<!-- ## Wilcoxon Rank Sum Test -->
-
-<!-- ## Test for Odds Ratio -->
-
-<!-- ## Test for Relative Risk -->
