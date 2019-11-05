@@ -1,4 +1,4 @@
-# Examples
+# Examples of Statistical Tests
 
 ```{r}
 stat_hyp_data <- data.frame(x = seq(-4,4, by = 0.01))

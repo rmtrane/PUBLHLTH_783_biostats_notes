@@ -187,7 +187,7 @@ height_pdf +
 
 This is not easy to do for us mortals (in this particular case, no closed form for the area exists!). Fortunately, some very smart people came up with some very smart ways to do this numerically -- that is, approximate the area with great precision. We'll simply let computers do this for us. In this particular case, the area is `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)`, or just about `r round(pnorm(190, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)) - pnorm(178, mean = mean(full_show$height, na.rm = T), sd = sd(full_show$height, na.rm = T)), digits = 3)*100`\%. 
 
-(**NOTE**: the rest of this subsection (#random-variables) is not crucial for us, but is included for completeness. DO NOT panic if this seems super weird.)
+(**NOTE**: the rest of this subsection is not crucial for us, but is included for completeness. DO NOT panic if this seems super weird.)
 
 There is one more thing we need to wrap our heads around: the probability of a continuous random variable being any single number is $0$, no matter what number you choose. This might seem a weird -- how can the probability of observing a height of 6ft be $0$ when we actually observe people that are 6ft tall?! I'll try to provide to explanations: an "intuitive" explanation, and one based on math. Run with whichever makes more sense to you (or just take my word for it!)
 
