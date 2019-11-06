@@ -1,0 +1,292 @@
+---
+title: "Biostats Lecture 7:<br>Multiple testing; Confidence Intervals"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      #ratio: '16:9'
+      navigation:
+        scroll: false
+---
+layout: true
+# But first, sampling bias
+
+---
+
+Question: what is the mean income in the SHOW population?
+
+To answer, take a simple random sample (i.e. sample individuals at random), calculate the average. What kind of results would we expect?
+
+Here's the distribution of $10000$ samples of size $189$. 
+
+.center[
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+
+show <- read_csv(paste0(here::here(), "/data/SHOW_subset_of_vars.csv"))
+sample_means <- read_rds(paste0(here::here(), "/stratified_vs_SRS.Rds"))
+
+ggplot(data = sample_means %>%
+         filter(key == "SRS_mean") %>%
+         mutate(key = if_else(key == "strat_mean", "Stratified Sampling", "Simple Random Sampling")),
+       aes(x = value, fill = key)) +
+  geom_histogram(position = 'identity',
+                 alpha = 0.5, bins = 35) +
+  # geom_vline(xintercept = mean(show$income_num, na.rm = T),
+  #            color = 'red', linetype = "dashed") +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1), add = 0)) +
+  scale_fill_viridis_d("") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+]
+
+Would this be ideal, or can we do better?
+
+---
+
+Some counties are smaller than others, and would not be selected as often when we randomly select people. Should we do stratified sampling? Maybe... 
+
+To do so, sample $3$ individuals from each of the $63$ counties. What would we expect from this stratified sampling scheme, and how does it compare to SRS?
+
+.center[
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 3}
+ggplot(data = sample_means %>%
+         mutate(key = if_else(key == "strat_mean", "Stratified Sampling", "Simple Random Sampling")),
+       aes(x = value, fill = key)) +
+  geom_histogram(position = 'identity',
+                 alpha = 0.5, bins = 35) +
+  # geom_vline(xintercept = mean(show$income_num, na.rm = T),
+  #            color = 'red', linetype = "dashed") +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1), add = 0)) +
+  scale_fill_viridis_d("") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+]
+
+
+---
+
+Some counties are smaller than others, and would not be selected as often when we randomly select people. Should we do stratified sampling? Maybe... 
+
+To do so, sample $3$ individuals from each of the $63$ counties. What would we expect from this stratified sampling scheme, and how does it compare to SRS?
+
+.center[
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5}
+ggplot(data = sample_means %>%
+         mutate(key = if_else(key == "strat_mean", "Stratified Sampling", "Simple Random Sampling")),
+       aes(x = value, fill = key)) +
+  geom_histogram(position = 'identity',
+                 alpha = 0.5, bins = 35) +
+  geom_vline(xintercept = mean(show$income_num, na.rm = T),
+             color = 'red', linetype = "dashed") +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1), add = 0)) +
+  scale_fill_viridis_d("") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+]
+
+Notice how the SRS means are centered around the truth, while the stratified sample means are shifted to the left. Which would we prefer?
+
+---
+
+Does this mean SRS is always preferable?
+--
+ No. Sometimes stratified is better, ***but you have to account for it in your analysis!!***
+
+--
+ I.e. a simple average won't be a good estimate of the true population mean. We say that the estimator is *biased* since the expected value is NOT the true value. 
+
+--
+
+However, if done right, stratified sampling (or other sampling schemes) can reduce variation, and therefore give you more confidence in your final estimate. 
+
+---
+layout: false
+
+# Recap
+
+Population of interest.
+
+Get a representative sample. 
+
+Make assumptions about the way the sampling works (i.e. the distribution of the data).
+
+Set up hypothesis. 
+
+Ask: "If the hypothesis is true, what is the probability of seeing data that are this far from the hypothesis?"
+
+If probability is small, reject hypothesis. If probability large, do not reject hypothesis. 
+
+(**NOTE**: we NEVER accept the null hypothesis.)
+
+---
+layout: true
+
+# Multiple Testing Problem
+
+---
+
+Probability of Type I error if we test one hypothesis: $0.05$ (or, in general, $\alpha$)
+
+What if we test more hypotheses? 
+
+Assume they're independent, and we test $k$ hypotheses $H_1, H_2, ..., H_k$. Then
+
+\begin{align*}
+  P(\text{no type I error}) &= P(\text{do not reject any hypotheses} | \text{all hypotheses are true}) \\
+    &= P(\text{do not reject } H_1 | H_1 \text{ is true}) \cdots P(\text{do not reject } H_k | H_k \text{ is true}) \\
+    &= 0.95 \cdots 0.95 = 0.95^k.
+\end{align*}
+
+Probability of rejecting at least one hypothesis *IF* they are all true: $1 - P(\text{do not reject any hypotheses} | \text{all hypotheses are true})$.
+
+.center[
+```{r out.width = 325, out.height = 275, fig.width = 3.5, fig.height = 3, dpi = 300}
+ggplot(data = data.frame(k = 1:25) %>% mutate(y = 1-0.95^k),
+       aes(x = k, y = y)) + 
+  geom_line() + 
+  labs(y = 'Probability',
+       title = 'Probability of making\nAT LEAST one false discovery') +
+  ylim(c(0,1)) + 
+  theme_bw()
+```
+]
+
+---
+
+```{r}
+full_show <- read_csv(paste0(here::here(), "/data/SHOW/full_show_with_labels.csv"))
+```
+
+Why should we care? Because if we don't, then [Jelly Beans Cause Acne!](https://xkcd.com/882/)!!
+
+--
+
+SHOW data has about `r ncol(full_show)` measured variables. If you go looking for "significant associations", you are bound to find some, even if none are truly present!
+
+---
+
+## Bonferroni Correction
+
+Instead of rejecting when $p < \alpha$, reject when $p < \alpha/m$, where $m$ is the number of tests. 
+
+Pro: super simple, and somewhat intuitive
+
+Con: known to be overly conservative (i.e. produces false negatives and thereby reducing power).
+
+---
+
+## Benjamini-Hochberg
+
+A bit more convoluted, but goes as follows:
+
+1. Rank your p-values. Let $p_1$ denote the smallest, $p_2$ the second smallest, ..., $p_k$ the k'th smallest, ... $p_m$ the largest,
+2. Find the largest $k$ such that $p_k \le \frac{k}{m}\alpha$,
+3. Reject all null hypotheses corresponding to $p_1, p_2, ..., p_k$. 
+
+Pro: much more accurate
+
+Con: not super easy to wrap your head around.
+
+---
+
+Do we ALWAYS need to correct for multiple testing?
+
+This would be my suggestion to you: 
+
+- If you are seeking to conclude that there is an association between $X$ and $Y$, use your favorite method of correection (mine is the Benjamini-Hochberg)
+- If you are looking for candidates, and plan to follow up, you may consider to not correct
+
+---
+
+# Recap: Statistical Hypothesis Testing
+
+(For simplicity, assume we're testing $H_0: \mu = 17$ vs. $H_A: \mu \neq 17$ at a $\alpha = 0.05$ level of significance.)
+
+Get a sample
+
+Calculate $t_{obs} = \frac{\bar{x} - 17}{\text{SD}(\bar{x})}$ 
+
+Find $P\left(T > |t_{obs}|\ \left |H_0 \text{ is true}\right . \right)$. This is our p-value. Compare to significance level. If smaller, reject. If larger, do not reject. 
+
+--
+
+Can also ask: what value of $T$ will give us p-value smaller than $\alpha$? 
+
+.center[
+```{r echo = FALSE, warning = FALSE, message = FALSE, out.width = 450, out.height = 300, fig.width = 4.5, fig.height = 3, dpi = 300}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = 'center', dpi = 300)
+library(tidyverse)
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+
+theme_set(theme_bw())
+
+ggplot(data = tibble(x = seq(-4, 4, by = 0.01)) %>% 
+         mutate(y = dnorm(x = x)),
+       aes(x = x, y = y)) + 
+  geom_line() + 
+  geom_vline(xintercept = c(-1.96, 1.96),
+             color = 'red', linetype = 'dashed') + 
+  geom_area(data = tibble(x = seq(-4, -1.96, by = 0.01)) %>% 
+              mutate(y = dnorm(x)),
+            aes(x = x, y = y), alpha = 0.6) + 
+  geom_area(data = tibble(x = seq(1.96, 4, by = 0.01)) %>% 
+              mutate(y = dnorm(x)),
+            aes(x = x, y = y), alpha = 0.6) + 
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
+  labs(x = 'Test statistic', y = '',
+       title = 'Rejection Region\nWe reject when in grey')
+```
+]
+
+--- 
+
+# Recap: Statistical Hypothesis Testing
+
+But that also means, we do NOT reject when in between red dotted lines. 
+
+Statistical Hypothesis Testing: is this one value possibly the truth?
+
+Confidence Intervals: what values do we most believe to possibly be the truth?
+
+---
+layout: true
+
+# Confidence Intervals
+
+---
+
+Imagine you test a range of different hypothesis. 
+
+Confidence interval: the values that are NOT rejected. 
+
+So where the hypothesis test is rather pessimistic and inefficient, the confidence interval provides a whole lot more information!
+
+The question then is: why would you ever perform a test, and report a p-value, but not a confidence interval? 
+--
+ I have no idea..............
+
+---
+
