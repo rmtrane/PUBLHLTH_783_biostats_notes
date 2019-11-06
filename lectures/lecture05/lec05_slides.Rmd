@@ -51,6 +51,7 @@ scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_virid
 scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
 scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
 
+n_rolls <- 27
 XX <- 10
 ```
 
@@ -69,19 +70,19 @@ I agree to let you test them, but ONLY if you do it in a sound, statistical mann
 
 --
 
-You decide to roll the dice $8$ times each, for a total of $42$ rolls. You assume they'll all behave the same, so the probability of rolling a six is the same for all three dice. 
+You decide to roll the dice $`r n_rolls/9`$ times each, for a total of $`r n_rolls`$ rolls. You assume they'll all behave the same, so the probability of rolling a six is the same for all three dice. 
 
 ---
 
 **Setup**:
 
-Let $X_1, X_2, ..., X_{42}$ be the outcomes of the thirty "trials". Each trial consists of rolling a die, and check if it's a six or not. If it's a six, we'll call it a success, if not we'll call it a failure. I.e. $X_i \sim$
+Let $X_1, X_2, ..., X_{`r n_rolls`}$ be the outcomes of the thirty "trials". Each trial consists of rolling a die, and check if it's a six or not. If it's a six, we'll call it a success, if not we'll call it a failure. I.e. $X_i \sim$
 --
  $\text{Bernoulli}(\pi)$. 
 
-*IF* the dice are fair, $P(X_i = 1) = 1/6$ for all $i = 1,2,...,42$. 
+*IF* the dice are fair, $P(X_i = 1) = 1/6$ for all $i = 1,2,...,`r n_rolls`$. 
 
-*IF* the dice are fair, we would expect to roll a $6$ close to $\frac{1}{6}\cdot 42 = 6$ times, i.e. about $5$ of the $X$'s should be $1$'s. 
+*IF* the dice are fair, we would expect to roll a $6$ close to $\frac{1}{6}\cdot `r n_rolls` = 6$ times, i.e. about $5$ of the $X$'s should be $1$'s. 
 
 What would cause you to reject the idea that the dice are fair? 
 
@@ -96,9 +97,9 @@ In terms of probabilities: what is the *probability* of observing at least $`r X
 * if the probability is small, $`r XX`$ is a lot of sixes
 * if the probability is large, $`r XX`$ is a reasonable number of sixes
 
-First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_{42}$. The probability of observing more than $`r XX`$ sixes is $P(Y \ge `r XX`)$. To find this, we need the distribution of $Y$, which is 
+First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_{`r n_rolls`}$. The probability of observing more than $`r XX`$ sixes is $P(Y \ge `r XX`)$. To find this, we need the distribution of $Y$, which is 
 --
- $\text{Binomial}(42, \pi)$, where $\pi$ is the probability of rolling a six. 
+ $\text{Binomial}(`r n_rolls`, \pi)$, where $\pi$ is the probability of rolling a six. 
 
 ---
 
@@ -107,14 +108,14 @@ First, introduce the random variable $Y =$ number of sixes $= X_1 + X_2 + ... X_
 
 <center>
 ```{r out.width = 600, out.height = 450}
-binom_dist <- ggplot(data = tibble(x = 0:42) %>% 
-                       mutate(y = dbinom(x, size = 42, prob = 1/6),
+binom_dist <- ggplot(data = tibble(x = 0:n_rolls) %>% 
+                       mutate(y = dbinom(x, size = n_rolls, prob = 1/6),
                               Probability = round(y, digits = 5)),
        aes(x = x, y = y, label = Probability)) + 
   geom_bar(stat = 'identity', 
            width = 1) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
-  labs(title = 'Binomial(n = 42, \u03C0 = 1/6)',
+  labs(title = paste0('Binomial(n = ', n_rolls, ', \u03C0 = 1/6)'),
        x = 'Value of Y', y = 'Probability')
 
 plotly::ggplotly(binom_dist, tooltip = c("label", "x"))
@@ -123,7 +124,7 @@ plotly::ggplotly(binom_dist, tooltip = c("label", "x"))
 
 ---
 
-The probability we want to find is the red area below. We will do this in SAS in just a second. The result is `r (p_val <- round(1-pbinom(XX, size = 42, prob = 1/6), digits = 5))`.
+The probability we want to find is the red area below. We will do this in SAS in just a second. The result is `r (p_val <- round(1-pbinom(XX, size = n_rolls, prob = 1/6), digits = 5))`.
 
 <center>
 ```{r out.width = 600, out.height = 450}
@@ -160,16 +161,16 @@ Is this small enough to convince you that the true probability is *NOT* $\frac{1
 ## Different (but the same) approach
 
 ```{r}
-p_obs <- XX/42
+p_obs <- XX/n_rolls
 ```
 
 
 Instead of looking at $Y$ (number of sixes), look at the proportion of sixes. I.e. 
 
-$$\hat{p} = \frac{Y}{n} = \frac{1}{n}(X_1 + ... + X_{42}) = \frac{1}{n} \sum_{i=1}^{42} X_i$$
+$$\hat{p} = \frac{Y}{n} = \frac{1}{`r n_rolls`}(X_1 + ... + X_{`r n_rolls`}) = \frac{1}{`r n_rolls`} \sum_{i=1}^{`r n_rolls`} X_i$$
 
 
-This is an average, so CLT tells us it's normally distributed around the true value of $\pi$, and variance $\frac{\text{Var}(X_i)}{n} = \frac{\pi(1-\pi)}{n}$. 
+This is an average, so CLT tells us it's normally distributed around the true value of $\pi$, and variance $\frac{\text{Var}(X_i)}{n} = \frac{\pi(1-\pi)}{`r n_rolls`}$. 
 
 We reject the idea that the true value of $\pi$ is $\frac{1}{6}$ when $\hat{p}$ is "far from" $\frac{1}{6}$. 
 
@@ -177,7 +178,7 @@ I.e. when $\hat{p} - \frac{1}{6}$ is large. When this is large, so is $Z = \frac
 
 If we pretend $\pi = \frac{1}{6}$, then $Z \sim N(0,1)$!
 
-If we pretend $\pi = \frac{1}{6}$, then $\text{SD}(\hat{p}) = \sqrt{\text{Var}(\hat{p})} = \sqrt{\frac{1/6 \cdot (1-1/6)}{42}}$, and so we can actually calculate $z_{obs}$, the observed value of $Z$.
+If we pretend $\pi = \frac{1}{6}$, then $\text{SD}(\hat{p}) = \sqrt{\text{Var}(\hat{p})} = \sqrt{\frac{1/6 \cdot (1-1/6)}{`r n_rolls`}}$, and so we can actually calculate $z_{obs}$, the observed value of $Z$.
 
 ---
 
@@ -187,8 +188,8 @@ So,
 
 \begin{align*}
 \text{p-value} &= P(\hat{p} > p_{obs}) \\
-               &= P\left(\frac{\hat{p} - 1/6}{\text{SD}(\hat{p})} > \frac{p_{obs} - 1/6}{\sqrt{1/6 \cdot (1-1/6)/42}} \right)
-               &= P(Z > `r (z_obs <- round((p_obs - 1/6)/(sqrt(1/6*5/6)/sqrt(42)), digits = 5))`)
+               &= P\left(\frac{\hat{p} - 1/6}{\text{SD}(\hat{p})} > \frac{p_{obs} - 1/6}{\sqrt{1/6 \cdot (1-1/6)/`r n_rolls`}} \right)
+               &= P(Z > `r (z_obs <- round((p_obs - 1/6)/(sqrt(1/6*5/6)/sqrt(n_rolls)), digits = 5))`)
 \end{align*}
 
 ---

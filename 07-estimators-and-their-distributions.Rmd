@@ -513,7 +513,7 @@ In the previous section, we considered quite a few examples of estimators, and s
 
 Let's jump right to it, and state the Central Limit Theorem:
 
-```{theorem, "The Central Limit Theorem", echo = TRUE}
+```{theorem, label = "theCLT", name = "The Central Limit Theorem", echo = TRUE}
 Let $X_1, X_2, ..., X_n$ be a simple random sample from a population with mean $\mu$ and variance $\sigma^2$ (i.e. $E(X_i) = \mu$ and $\Var(X_i) = \sigma^2$ for all $i$). Then, as long as $n$ is large enough, the *average* $\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$ is approximately $N(\mu, \sigma^2 / n)$.
 ```
 

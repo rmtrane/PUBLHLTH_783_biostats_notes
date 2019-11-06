@@ -1,0 +1,328 @@
+# Examples of Statistical Tests
+
+```{r}
+stat_hyp_data <- data.frame(x = seq(-4,4, by = 0.01))
+library(tidyverse)
+theme_set(theme_bw())
+
+n_tests <- 0
+```
+
+
+In this section we will take a look at quite a few different statistical hypothesis tests. All but one build on the same general test statistic: if $XX$ somehow captures what we are looking for, then we can generally write the test statistic in the following way: 
+
+$$\frac{XX - E(XX)}{\SD(XX)}$$ 
+
+In every single case, without exception (!!!), we assume that the observations are independent of each other. Usually we will justify this assumption by arguing that the samples are simple random samples, i.e. the individuals in the samples are picked from the general population completely at random. 
+
+## One Sample z-test
+
+```{r}
+n_tests <- n_tests + 1
+
+# Name, Assumption, Standard deviation, How to calculate quantaties needed
+Z_test_entry <- c("One sample Z-test \\newline One sample test of mean with known variance",
+                  "Independent observations \\newline 
+                  known variance \\newline
+                  observations themselves normally distributed or $n > 30$", 
+                  "\\frac{\\sigma}{\\sqrt{n}}",
+                  "N/A") %>% 
+  setNames(c("Name", "Assumption", "Standard Deviation", "Formulas needed"))
+```
+
+This first test is only included as a step between the general concept, and the more realistic scenarios considered below. It is meant to motivate the t-test. 
+
+Say that we are interested in testing if the mean in the population is a specific number. I.e. $H_0: \mu = \mu_0$. As mentioned previously, a good estimator of $\mu$ is $\bar{X}$, i.e. the average value in a sample. In fact, we know that the expected value of $\bar{X}$ is the true population mean. So if $\bar{X}$ is far from $\mu_0$, it seems fair to say that $H_0$ doesn't hold, and we would reject it. To find out if $\bar{X}$ is far from $\mu_0$, we play a few games of pretend:
+
+i. **if** $\bar{X}$ is normally distributed, 
+ii. **if** $H_0$ is true, then $E(\bar{X}) = \mu_0$; and 
+iii. **if** the observations are independent, then $\SD(\bar{X}) = \frac{\sigma}{\sqrt{n}}$.
+
+**If** i,ii, and iii all hold, then $Z = \frac{\bar{X} - E(\bar{X})}{\SD(\bar{X})} = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$. 
+
+```{r fig.cap = "**IF** i,ii, and iii all hold, then $Z \\sim N(0,1)$, i.e. $Z$ follows this curve."}
+z_test_base <- stat_hyp_data %>% 
+  ggplot(aes(x = x, y = dnorm(x))) + 
+    geom_line() +
+    labs(x = 'Z', y = '')
+
+z_test_base
+```
+
+
+**If** i,ii, and iii all hold, then if we observe a value of $z_{obs} = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}$ that is close to $0$ the data seem to align well with the null hypothesis, and therefore we would not reject it. On the other hand, if we observe a value of $z_{obs}$ that is far from $0$, the data does not align well with the null hypothesis, and therefore we would reject it. Note, we can ONLY calculate this if we **know the true standard deviation $\sigma$**. 
+
+```{r fig.cap = 'Different values $z_{obs}$. When are we "far from $H_0$", i.e. "far from $0$"?'}
+z_test_base + 
+  geom_vline(data = data.frame(x = c(1, 1.75, 3.5),
+                               color = c("z[obs] 1", 
+                                         "z[obs] 2",
+                                         "z[obs] 3")),
+             aes(xintercept = x, color = color)) + 
+  scale_color_viridis_d("", labels = c(bquote(z[obs]~1), bquote(z[obs]~2), bquote(z[obs]~3))) +
+  theme(legend.position = "top")
+```
+
+
+To determine if the observed value of $z_{obs}$ is far from zero or not, we adopt the idea of *observing something more extreme*. What constitutes more extreme depends on the alternative hypothesis. We always pick one of the following three alternative hypotheses:
+
+1. $H_A: \mu < \mu_0$,
+2. $H_A: \mu > \mu_0$,
+3. $H_A: \mu \neq \mu_0$. 
+
+The first two are called *one-sided* alternatives, while the third is called a *two-sided* alternative. For the first alternative, "more extreme" means "smaller than" what we observed. For the second, "more extreme" means "greater than", and for the third, "more extreme" goes in both directinos, but "further from $0$" than what was observed. To figure out if what we observe is "far from $0$", we calculate the probability of observing some more extreme. If the probability is small, we conclude that what we observed is very extreme, and therefore the null hypothesis seems rather unlikely to be true. This probability is the exact definition of the p-value.
+
+```{r fig.cap="For each of the three alternatives, the p-value corresponds to the shaded area."}
+for_lines <- tibble(xintercept = rep(1.6, 3),
+                    alternative = c('H[A]: mu < mu[0]', 'H[A]: mu > mu[0]', 'H[A]: mu != mu[0]')) %>% 
+  mutate(xs = list(stat_hyp_data))
+
+for_lines %>% 
+  mutate(xs = map2(xs, alternative, function(X,y){
+                     if(y == 'H[A]: mu < mu[0]')
+                       return(dplyr::filter(X, x < 1.6))
+                     if(y == 'H[A]: mu > mu[0]')
+                       return(dplyr::filter(X, x > 1.6))
+                     if(y == 'H[A]: mu != mu[0]')
+                       return(X)
+  })) %>% 
+  unnest(col = xs) %>% 
+  ggplot(aes(x = x, ymax = if_else(alternative == 'H[A]: mu != mu[0]' & x < 1.6 & x > -1.6, 0, dnorm(x)))) + 
+    geom_line(data = for_lines %>% unnest(col = xs),
+              aes(x = x, y = dnorm(x), color = "N(0,1)")) +
+    geom_ribbon(aes(ymin = 0),
+                alpha = 0.5) + 
+    geom_vline(aes(xintercept = xintercept,
+                   color = 'z')) +
+    facet_wrap(~alternative, ncol = 1, labeller = label_parsed) +
+    scale_color_viridis_d("", labels = c("N(0,1)", bquote(z[obs]))) + 
+    labs(x = 'Z', y = '') + 
+    theme_bw()
+```
+
+To draw a conclusion, we need to decide if the p-value is small. To do so, we use what is called a "level of significance". This is often denote by $\alpha$, and it is a number between $0$ and $1$. This is our cut-off. In general, if the p-value is **less** than $\alpha$, we say that the p-value is small. This implies our observation is very extreme, therefore "the data seem to be far from $H_0$", and we reject the null hypothesis. 
+
+Conversely, if the p-value is greater than $\alpha$, we do not reject $H_0$. 
+
+## One Sample t-test
+
+```{r}
+n_tests <- n_tests + 1
+
+# Name, Assumption, Standard deviation, How to calculate quantaties needed
+one_sample_t_test_entry <- c("One sample t-test \\newline One sample test of mean with unknown variance",
+                             "Independent observations \\newline 
+                              observations themselves normally distributed or $n > 30$", 
+                             "\\frac{\\s}{\\sqrt{n}}",
+                             "s^2 = \frac{1}{n-1} \\sum_{i=1}^n (x_i - \\bar{x})^2") %>% 
+  setNames(c("Name", "Assumption", "Standard Deviation", "Formulas needed"))
+```
+
+In the case of the one sample z-test, we assume we know the true standard deviation. Obviously, this isn't a very realistic scenario since we NEVER know the true standard deviation. What we do instead is *estimate* it from the sample. 
+
+Say that we are still interested in testing if the mean in the population is a specific number. I.e. $H_0: \mu = \mu_0$. As above, if $\bar{X}$ is far from $\mu_0$, it seems fair to say that $H_0$ doesn't hold, and we would reject it. In the case of the one sample z-test we look at $Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}$, and we find that this is normally distributed with mean $0$ and standard deviation $1$ **IF** $H_0$ is true. When we do not know $\sigma$, we simply substitute our best guess $s$. The resulting test statistic is often called the $T$-statistic:
+
+$$
+T = \frac{\bar{X} - \mu_0}{s/\sqrt{n}}
+$$
+
+Since we're not dividing by the true standard deviation fo $\bar{X}$, this quantity doesn't exactly follow the $N(0,1)$ distribution. However, it turns out it follows a ($t$-distribution)[#t-distribution] with $n-1$ degrees of freedom. 
+
+Just as in the case of the one sample z-test, this is only true if $\bar{X}$ is actually normally distributed. I.e. before using this test one has to argue that $\bar{X}$ is in fact normally distributed. 
+
+The rest of the story is the exact same as above: find the observed value of $T$, $t_{obs}$, calculate the correct p-value (depends on the alternative hypothesis), and compare to the level of significance. 
+
+## Two Sample t-test
+
+```{r}
+n_tests <- n_tests + 1
+```
+
+The first two examples of tests looked at how to determine if a population mean is equal to a specific value. More often we're interested in actually comparing the mean of one population to the mean of another population. In this case, a two sample t-test comes in handy. 
+
+Say we want to find out if $\mu_A = \mu_B$, i.e. the mean in population $A$ is the same as the mean in population $B$. We can rewrite this as a null hypothesis $H_0: \mu_A - \mu_B = 0$. Since we know that $\bar{X}_A$ is a good guess as to what $\mu_A$ is, and $\bar{X}_B$ is a good guess for $\mu_B$, it seems reasonable to consider $\bar{X}_A - \bar{X}_B$ for the difference. We know that, when $n_A$ and $n_b$ are large enough, both $\bar{X}_A$ and $\bar{X}_B$ are normally distributed, and so by the (properties of the normal distribution)[#sum-of-independent-normals], $\bar{X}_A - \bar{X}_B$ is also normally distributed! 
+
+Since $\bar{X}_A - \bar{X}_B$ is normally distributed, we'll construct a test statistic in the same way as above. If $H_0$ is true, then $E(\bar{X}_A - \bar{X}_B) = E(\bar{X}_A) - E(\bar{X}_B) = \mu_A - \mu_B = 0$, so
+
+$$
+  T = \frac{\bar{X}_A - \bar{X}_B - E(\bar{X}_A - \bar{X}_B)}{\SD(\bar{X}_A - \bar{X}_B)} = \frac{\bar{X}_A - \bar{X}_B}{\SD(\bar{X}_A - \bar{X}_B)}.
+$$
+
+So we need to find a good estimator of $\SD(\bar{X}_A - \bar{X}_B)$. There are two scenarios, and depending on which one we're in, we (theoretically) do this in slightly different ways. Depending on the way this is estimated, the distribution the test statistic follows also varies slightly, but in both cases the rest of the story is the same: find the observed value of $T$, $t_{obs}$, calculate the correct p-value (depends on the alternative hypothesis), and compare to the level of significance. 
+
+### Equal Variance
+
+If it seems fair to assume that the variance is the same in group $A$ and $B$, then 
+
+\begin{align*}
+  \Var(\bar{X}_A - \bar{X}_B) &= \Var(\bar{X}_A) + \Var(\bar{X}_B) \\
+                              &= \frac{\sigma^2}{n_A} + \frac{\sigma^2}{n_B} \\
+                              &= \sigma^2 \left(\frac{1}{n_A} + \frac{1}{n_B}\right),
+\end{align*}
+
+where $n_A$ is the number of observations we have in our sample from group $A$, and $n_B$ the number of observations in our sample from group $B$. Note: this only works if **all observations are independent of each other**. 
+
+Now, how do best find a good estimate for $\sigma^2$? If we only had one group, we would use $S^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2$. Since we assume that the variance is the same in the two groups, it is sort of like if we only have one group. So maybe using this strategy isn't such a bad idea? 
+
+It turns out that pretending the two samples are just one big sample is a really good idea, but we have to make a minor tweak to the estimator. Instead of dividing by $N-1$ (where $N = n_A + n_B$ is the total sample size), we need to divide by $N-2$. The resulting estimator is called the *pooled* standard deviation, and it can actually be found using just $n_A, n_B, S_A^2$, and $S_B^2$:
+
+\begin{align*}
+  S_{pooled}^2 &= \frac{1}{N - 2}\left(\sum_{i = 1}^{n_A}(X_{A,i} - \bar{X}_A)^2 + \sum_{i=1}^{n_B}(X_{B,i} - \bar{X}_B)^2\right) \\
+               &= \frac{1}{n_A + n_B - 2}\left((n_A - 1) S_A^2 + (n_B - 1) S_B^2 \right).
+\end{align*}
+
+So if we're in a situation where we can assume equal variances, then the test statistic is $T = \frac{\bar{X}_A - \bar{X}_B}{S_{pooled}\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}}$. It turns out this follows a $t$-distribution with $n_A + n_B - 2$ degrees of freedom.
+
+### Unequal Variance
+
+Things are a bit different if we cannot assume equal variances. First of all, pooling the variances makes no sense. If we cannot assume the variances are the same, then why would we treat the two samples as one big one? Instead, we simply estimate the variance as follows: since the observations are assumed to be completely independent of each other,
+
+\begin{align*}
+  \Var(\bar{X}_A - \bar{X}_B) &= \Var(\bar{X}_A) + \Var(\bar{X}_B) \\
+                              &= \frac{\sigma_A^2}{n_A} + \frac{\sigma_B^2}{n_B},
+\end{align*}
+
+and we simply use our usual estimators of $\sigma_A^2$ and $\sigma_B^2$ to plug in above. I.e. our test statistic becomes $T = \frac{\bar{X}_A - \bar{X}_B}{\sqrt{\frac{S_A^2}{n_A} + \frac{S_B^2}{n_B}}}$. 
+
+Now, this is where things get icky. When we cannot assume equal variance, the test statistic $T$ follows a $t$-distribution with 
+
+\begin{equation}
+  \frac{\left(\frac{S_A^2}{n_A} + \frac{s_B^2}{n_B}\right)^2}{\frac{\left(S_A^2/n_A\right)^2}{n_A - 1} + \frac{\left(S_B^2/n_B\right)^2}{n_B - 1}} (\#eq:ugly-df)
+\end{equation}
+
+degrees of freedom. If this is not an integer, round down! 
+
+This isn't exactly a nice expression, but it truly doesn't matter in real life -- this is exactly why we have statistical software! 
+
+## One Sample Test for Proportion
+
+```{r}
+n_tests <- n_tests + 1
+```
+
+Let's consider a slightly different setup. We're no longer interested in testing if the mean of a population is equal to some number, but instead if the proportion of people in the population is. I.e. our null hypothesis is now of the form $H_0: \pi = \pi_0$. 
+
+
+
+The proportion is estimated by the number of people in our sample with the feature of interest (disease, gender, etc.) out of the total number of people in the sample. I.e. $\hat{p} = \frac{\sum_{i = 1}^n X_i}{n}$, where $X_i$ the the random variable that is $1$ if individual $i$ has the feature, and $0$ if individual $i$ does not have the feature. 
+
+On closer inspection, we see that $\hat{p}$ is actually an average! So, according to the central limit theorem, $\hat{p}$ will be normally distributed when $n$ is "large enough". When is $n$ "large enough"? A common rule of thumb is when $n\cdot \pi > 5$ and $n \cdot (1-\pi) > 5$. Since we do not know $\pi$, we use $\hat{p}$ to check this. (Once you plug everything in, you'll find that what you really need is more than five people in each of the two groups.)
+
+Now, if $\hat{p}$ is normally distributed, we can follow the usual setup! I.e. use a test statistic of the form $\frac{\hat{p} - E(\hat{p})}{\SD(\hat{p})}$, where $E(\hat{p})$ and $\SD(\hat{p})$ are calculated **assuming the null hypothesis is true**! If the null hypothesis is true, then $E(\hat{p}) = \pi$. Also, if $H_0$ is true,
+
+\begin{align*}
+  \Var(\hat{p}) &= \Var\left(\frac{\sum_{i=1}^n X_i}{n}\right) \\
+                &= \frac{\Var\left(\sum_{i=1}^n X_i\right)}{n^2} \\
+                &= \frac{\sum_{i=1}^n \Var\left( X_i\right)}{n^2},
+\end{align*}
+
+since we (as always) assume that all the observations are independent of each other. Now, since $X_i$ is a Bernoulli random variable (i.e. a $0/1$ random variable), and the "probability of success" is $\pi$, $\Var(X_i) = \pi(1-\pi)$ for all $i$. But remember, we're assuming the null hypothesis is true. Therefore, $\Var(X_i) = \pi_0(1-\pi_0)$. So,
+
+\begin{align*}
+  \Var(\hat{p}) = \frac{\pi_0(1-\pi_0)}{n}.
+\end{align*}
+
+In other words, when we assume that the null hypothesis is true, **we actually know the true variance**! So, in this case, the test statistic is actually normally distributed with mean $0$ and standard deviation $1$:
+
+$$
+  Z = \frac{\hat{p} - \pi_0}{\sqrt{\pi_0(1-\pi_0)/n}} \sim N(0,1)
+$$
+
+The rest, as they say, is history... (I.e. same procedure as always: find $z_{obs}$, calculate the p-value that fits the alternative hypothesis, and draw a conclusion by comparing to $\alpha$.)
+
+## Two Sample Test for Proportions
+
+```{r}
+n_tests <- n_tests + 1
+```
+
+Now, as with the t-test, we can expand the test for a single proportion to test for a difference between two proportions. So, let's say we're looking at two populations, and want to find out if there's a difference in the proportion in the two with a specific disease. In other words, we want to test if $H_0: \pi_A = \pi_B$. This can be rewritten as $H_0: \pi_A - \pi_B = 0$. 
+
+Similarly to the two sample t-test, we use $\hat{p}_A - \hat{p}_B$. As we saw above, $\hat{p}_A$ and $\hat{p}_B$ are both normally distributed^[... if $n_A\hat{p}_A, n_A(1-\hat{p}_A), n_B\hat{p}_B, n_B(1-\hat{p}_B)$ are all greater than $5$.], and so the difference is also normally distributed. So, again, we construct a test statistic by looking at $\frac{\hat{p}_A - \hat{p}_B - E(\hat{p}_A - \hat{p}_B)}{\SD(\hat{p}_A - \hat{p}_B)}$. 
+
+Assuming the null hypothesis is true, $\pi_A = \pi_B$. So, $E(\hat{p}_A - \hat{p}_B) = E(\hat{p}_A) - E(\hat{p}_B) = \pi_A - \pi_B = 0$. Also, 
+
+\begin{align*}
+  \Var(\hat{p}_A - \hat{p}_B) &= \Var(\hat{p}_A) + \Var(\hat{p}_B) \\
+                              &= \frac{\pi_A(1-\pi_A)}{n_B^2} + \frac{\pi_B(1-\pi_B)}{n_B^2}.
+\end{align*}
+
+We're assuming $\pi_A$ and $\pi_B$ are the same (i.e. $H_0$ is correct). Let's say whatever number they are equal to is $\pi$, so $\pi_A = \pi_B = \pi_0$. Then we can simplify the variance a bit:
+
+\begin{align*}
+  \Var(\hat{p}_A - \hat{p}_B) &= \Var(\hat{p}_A) + \Var(\hat{p}_B) \\
+                              &= \frac{\pi_A(1-\pi_A)}{n_B^2} + \frac{\pi_B(1-\pi_B)}{n_B^2} \\
+                              &= \pi_0(1-\pi_0)\left(\frac{1}{n_B^2} + \frac{1}{n_B^2}\right).
+\end{align*}
+
+What seems to be a good way to estimate $\pi_0$? How about we pretend there's only one big sample, and then calculate the proportion in this sample. This seems pretty reasonable to me, since everything we're doing here is assuming that the two proportions $\pi_A$ and $\pi_B$ are the same, effectively saying the two populations are the same!^[At least statistically speaking, since if the two true proportions $\pi_A$ and $\pi_B$ are the same, there's statistically no difference between the two populations.] So, in the end, our test statistic for testing $H_0: \pi_A = \pi_B$ is 
+
+$$
+  Z = \frac{\hat{p}_A - \hat{p}_B}{\hat{p}\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}} \sim N(0,1)
+$$
+
+The hypothesis is tested in the exact same fashion as always: find the observed value of $Z$, $z_{obs}$, calculate the p-value (which depends on the alternative hypothesis), and reject if the p-value is smaller than the chosen level of significance $\alpha$. 
+
+<!-- ## Wilcoxon Rank Sum Test -->
+
+<!-- ## Test for Odds Ratio -->
+
+<!-- ## Test for Relative Risk -->
+
+## Summary
+
+We've seen `r n_tests` examples of tests, all of the same general form: $\frac{XX - E(XX)}{\SD(XX)}$. Depending on the specific test, there are subtle differences in how we calculate the standard deviation, and what assumptions we need to check before we can go through with it. The assumption to check are basically to make sure that the distribution of our test statistic is the one we say it is. For example, if the observations are not independent, then we cannot calculate the standard deviation in the one sample z-test (or any of the other tests, for that matter...).
+
+Below is a summary that lists all the tests mentioned above with typically used names, what assumptions are made, and how to find the standard deviation in each case. 
+
+* **One sample z-test**
+    - AKA: one sample test of mean with known variance
+    - Assumptions:
+        i. independent observations
+        ii. known variance $\sigma^2$
+        iii. Observations are normally distributed OR $n > 30$
+    - Null hypothesis: $H_0: \mu = \mu_0$
+    - Standard deviation: $\sigma/\sqrt{n}$
+    - Distribution: $N(0,1)$
+* **One sample t-test**
+    - AKA: One sample test of mean with unknown variance
+    - Assumptions: 
+        i. independent observations
+        ii. observations are normally distributed OR $n>30$
+    - Null hypothesis: $H_0: \mu = \mu_0$
+    - Standard deviation: $\frac{s}{\sqrt{n}}$
+    - Distribution: $t_{n-1}$ 
+    - Needed formula: $s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2$
+* **Two sample t-test**
+    - AKA: Two sample test for difference in means
+    - Assumptions: 
+        i. independent observations
+        ii. observations are normally distributed OR $n_A>30, n_B>30$
+    - Standard deviation:
+        i. if assuming equal variance: $S_p\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}$
+        ii. if not assuming equal variance: $\sqrt{\frac{S_A^2}{n_A} + \frac{S_B^2}{n_B}}$
+    - Null hypothesis: $H_0: \mu_A = \mu_B$
+    - Distribution: 
+        i. if assuming equal variance: $t_{n_A + n_B - 2}$
+        ii. if not assuming equal variance: $t_{\text{ugly df}}$
+    - Needed formulae:
+        i. if assuming equal variance: $S_p^2 = \frac{(n_A - 1)S_A^2 + (n_B - 1)S_B^2}{n_A + n_B - 2}$
+        ii. if not assuming equal variance: see equation \@ref(eq:ugly-df) for ugly degrees of freedom
+* **One sample test for proportion**
+    - Assumptions: 
+        i. independent observations
+        ii. $n\cdot \hat{p} > 5,\ n\cdot(1-\hat{p}) > 5$ 
+    - Null hypothesis: $H_0: \pi = \pi_0$
+    - Standard deviation: $\sqrt{\pi_0(1-\pi_0)/n}$
+    - Distribution: $N(0,1)$
+* **Two sample test for proportions**
+    - Assumptions:
+        i. independent observations 
+        ii. $n_A\cdot \hat{p}_A > 5,\ n_A\cdot(1-\hat{p}_A) > 5,\ n_B\cdot \hat{p}_B > 5,\ n_B\cdot(1-\hat{p}_B) > 5$
+    - Null hypothesis: $H_0: \pi_A = \pi_B$
+    - Standard deviation: $\sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_A} + \frac{1}{n_B}\right)}$
+    - Distribution: $N(0,1)$
+    - Needed formula: 
+        i. $\hat{p} = \frac{x_A + x_B}{n_A + n_B}$ where $x_A$ is the number of people with the feature in group $A$, $x_B$ the number of people with the feature in group $B$
+
+
