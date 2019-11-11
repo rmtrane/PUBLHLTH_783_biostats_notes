@@ -12,5 +12,8 @@
 
 **Lecture 5 (10/8)** [slides](./lectures/lecture05/lec05_slides.html)
 
+**Lecture 6 (10/8)** [slides](./lectures/lecture06/lec06_slides.html)
+
+**Lecture 7 (10/8)** [slides](./lectures/lecture07/lec07_slides.html)
 
 # References {-}
