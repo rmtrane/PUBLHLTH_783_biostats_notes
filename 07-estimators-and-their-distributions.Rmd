@@ -78,7 +78,7 @@ Some things we are often interested in and their estimators:
 
 As you can see in the table above, most of the estimators we will consider here are pretty much what you would expect. If you are interested in the mean of the population, you look at the average (or *mean*) of the sample. Interested in the proportion of individuals with a disease in the population? Consider the proportion with that disease in your sample. 
 
-### Examples
+### Examples {#estimators-examples}
 
 In the following examples, we'll play a game of pretend: pretend that the SHOW cohort is the *entire* population, and that we would like to estimate different things in this population.  
 

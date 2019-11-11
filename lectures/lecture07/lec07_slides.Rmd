@@ -19,6 +19,7 @@ output:
         scroll: false
 ---
 layout: true
+
 # But first, sampling bias
 
 ---
@@ -30,9 +31,18 @@ To answer, take a simple random sample (i.e. sample individuals at random), calc
 Here's the distribution of $10000$ samples of size $189$. 
 
 .center[
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 7, fig.height = 3.25, dpi = 300}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = 'center', dpi = 300)
 library(tidyverse)
+theme_set(theme_bw())
+
+library(viridis)
+scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
+scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
+
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
 
 show <- read_csv(paste0(here::here(), "/data/SHOW_subset_of_vars.csv"))
 sample_means <- read_rds(paste0(here::here(), "/stratified_vs_SRS.Rds"))
@@ -61,7 +71,7 @@ Some counties are smaller than others, and would not be selected as often when w
 To do so, sample $3$ individuals from each of the $63$ counties. What would we expect from this stratified sampling scheme, and how does it compare to SRS?
 
 .center[
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 4, fig.height = 3}
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 7, fig.height = 3.25, dpi = 300}
 ggplot(data = sample_means %>%
          mutate(key = if_else(key == "strat_mean", "Stratified Sampling", "Simple Random Sampling")),
        aes(x = value, fill = key)) +
@@ -84,7 +94,7 @@ Some counties are smaller than others, and would not be selected as often when w
 To do so, sample $3$ individuals from each of the $63$ counties. What would we expect from this stratified sampling scheme, and how does it compare to SRS?
 
 .center[
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 5}
+```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 7, fig.height = 3.25, dpi = 300}
 ggplot(data = sample_means %>%
          mutate(key = if_else(key == "strat_mean", "Stratified Sampling", "Simple Random Sampling")),
        aes(x = value, fill = key)) +
@@ -107,10 +117,7 @@ Does this mean SRS is always preferable?
 --
  No. Sometimes stratified is better, ***but you have to account for it in your analysis!!***
 
---
- I.e. a simple average won't be a good estimate of the true population mean. We say that the estimator is *biased* since the expected value is NOT the true value. 
-
---
+I.e. a simple average won't be a good estimate of the true population mean. We say that the estimator is *biased* since the expected value is NOT the true value. 
 
 However, if done right, stratified sampling (or other sampling schemes) can reduce variation, and therefore give you more confidence in your final estimate. 
 
@@ -141,6 +148,8 @@ layout: true
 ---
 
 Probability of Type I error if we test one hypothesis: $0.05$ (or, in general, $\alpha$)
+
+--
 
 What if we test more hypotheses? 
 
@@ -212,8 +221,11 @@ This would be my suggestion to you:
 - If you are looking for candidates, and plan to follow up, you may consider to not correct
 
 ---
+layout: true
 
 # Recap: Statistical Hypothesis Testing
+
+---
 
 (For simplicity, assume we're testing $H_0: \mu = 17$ vs. $H_A: \mu \neq 17$ at a $\alpha = 0.05$ level of significance.)
 
@@ -223,27 +235,13 @@ Calculate $t_{obs} = \frac{\bar{x} - 17}{\text{SD}(\bar{x})}$
 
 Find $P\left(T > |t_{obs}|\ \left |H_0 \text{ is true}\right . \right)$. This is our p-value. Compare to significance level. If smaller, reject. If larger, do not reject. 
 
---
+---
 
 Can also ask: what value of $T$ will give us p-value smaller than $\alpha$? 
 
 .center[
 ```{r echo = FALSE, warning = FALSE, message = FALSE, out.width = 450, out.height = 300, fig.width = 4.5, fig.height = 3, dpi = 300}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = 'center', dpi = 300)
-library(tidyverse)
-theme_set(theme_bw())
-
-library(viridis)
-scale_color_continuous <- scale_colour_continuous <- function(...) scale_color_viridis_c(...)
-scale_color_discrete <- scale_colour_discrete <- function(...) scale_color_viridis_d(...)
-
-scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
-scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
-
-
-theme_set(theme_bw())
-
-ggplot(data = tibble(x = seq(-4, 4, by = 0.01)) %>% 
+rejection_region_plot <- ggplot(data = tibble(x = seq(-4, 4, by = 0.01)) %>% 
          mutate(y = dnorm(x = x)),
        aes(x = x, y = y)) + 
   geom_line() + 
@@ -258,18 +256,19 @@ ggplot(data = tibble(x = seq(-4, 4, by = 0.01)) %>%
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
   labs(x = 'Test statistic', y = '',
        title = 'Rejection Region\nWe reject when in grey')
+
+rejection_region_plot
 ```
 ]
 
---- 
+All values in the grey: if we are outside the red dotted lines, we are "far away" from the null. Hence, we reject. 
 
-# Recap: Statistical Hypothesis Testing
-
+---
 But that also means, we do NOT reject when in between red dotted lines. 
 
-Statistical Hypothesis Testing: is this one value possibly the truth?
-
-Confidence Intervals: what values do we most believe to possibly be the truth?
+```{r out.width = 450, out.height = 300, fig.width = 4.5, fig.height = 3, dpi = 300}
+rejection_region_plot
+```
 
 ---
 layout: true
@@ -277,6 +276,11 @@ layout: true
 # Confidence Intervals
 
 ---
+
+
+Statistical Hypothesis Testing: is this one value possibly the truth?
+
+Confidence Intervals: what values do we most believe to possibly be the truth?
 
 Imagine you test a range of different hypothesis. 
 
@@ -286,7 +290,138 @@ So where the hypothesis test is rather pessimistic and inefficient, the confiden
 
 The question then is: why would you ever perform a test, and report a p-value, but not a confidence interval? 
 --
- I have no idea..............
+
+I have no idea..............
 
 ---
 
+The picture to find the critical values: 
+
+```{r out.height = 400, out.width = 700, fig.height = 4, fig.width = 7, dpi = 300}
+tibble(x = seq(-4, 4, by = 0.01),
+       y = dnorm(x)) %>% 
+  ggplot(aes(x = x, y = y)) + 
+    geom_line() + 
+    scale_y_continuous(expand = expand_scale(mult = c(0,0.1), add = c(0,0))) + 
+    geom_vline(data = data.frame(), aes(xintercept = c(-1.96, 1.96)),
+               linetype = 'dashed', color = 'red') + 
+    scale_x_continuous(breaks = c(seq(-3, 3, by = 2), 0, -1.96, 1.96),
+                       labels = c(seq(-3, 3, by = 2), 0, bquote(z[crit1]), bquote(z[crit2]))) +
+    geom_ribbon(aes(ymin = 0, ymax = if_else(abs(x) > 1.96, y, 0)),
+                alpha = 0.5) +
+    geom_text(data = data.frame(),
+              aes(x = c(-1,1)*3.25, y = 0.05, label = c(bquote("Shaded area is"~alpha/2), bquote("Shaded area is"~alpha/2))), 
+              parse = TRUE) +
+    labs(x = '', y = '',
+         title = bquote("critical values = cut off"~alpha/2~"in the tails."))
+```
+
+Coming up: the math
+
+---
+
+The math: we do not reject when $Z_\text{crit1} < Z_\text{obs} < Z_\text{crit2}$. Looking at the first inequality
+
+\begin{align*}
+  z_\text{crit,1} & < z_\text{obs} &\iff \\
+  z_\text{crit,1} & < \frac{XX - \mu_0}{\text{SD}(XX)} &\iff \\
+  z_\text{crit,1}\text{SD}(XX) & < XX - \mu_0 &\iff \\
+  \mu_0 + z_\text{crit,1}\cdot \text{SD}(XX) & < XX &\iff \\
+  \mu_0 &< XX - z_\text{crit,1}\cdot \text{SD}(XX) & \ 
+\end{align*}
+
+---
+
+Looking at the second inequality:
+
+\begin{align*}
+  z_\text{obs} &< z_\text{crit,2} &\iff \\
+  \frac{XX - \mu_0}{\text{SD}(XX)} &< z_\text{crit,2} &\iff \\
+  XX - \mu_0 &< z_\text{crit,2}\cdot \text{SD}(XX) &\iff \\
+  XX &< \mu_0 + z_\text{crit,2}\cdot \text{SD}(XX) &\iff \\
+  XX - z_\text{crit,2}\cdot \text{SD}(XX) &< \mu_0 & \ 
+\end{align*}
+
+---
+
+So a $(1-\alpha)\cdot 100\%$ Confidence Interval for $\mu$ is given by 
+
+\begin{align*}
+  \left[XX - z_\text{crit,2}\cdot \text{SD}(XX), XX - z_\text{crit,1}\cdot \text{SD}(XX) \right]
+\end{align*}
+
+--
+
+Whenever the distribution we're looking at is symmetrical (for example, the normal distribution or a t-distribution), then $z_\text{crit,1} = -z_\text{crit,2}$. 
+
+So, we can rewrite this as $XX \pm z_\text{crit}\cdot \text{SD}(XX)$. 
+
+What exactly is $z_\text{crit}$? The value that cuts off $\alpha/2$ of the (often normal) distribution. If $\alpha = 0.05$, then $z_\text{crit} = 1.96$. 
+
+Why do we call this $(1-\alpha)\cdot 100\%$ (if $\alpha = 0.05$, this would be $95\%$) Confidence Interval? 
+
+---
+
+\begin{align*}
+  P(XX &- 1.96 \cdot \text{SD}(XX) < \mu < XX + 1.96 \cdot \text{SD}(XX)) \\ 
+       &= P(\mu < XX + 1.96 \cdot \text{SD}(XX)) - P(\mu < XX - 1.96 \cdot \text{SD}(XX)) \\
+       & \\
+       &= P(\mu - 1.96 \cdot \text{SD}(XX) < XX) - P(\mu - 1.96 \cdot \text{SD}(XX) < XX) \\
+       & \\
+       &= P(-1.96 \cdot \text{SD}(XX) < XX - \mu) - P(XX - \mu <  1.96 \cdot \text{SD}(XX)) \\
+       & \\
+       &= P(-1.96 < \frac{XX - \mu}{\text{SD}(XX)}) - P(\frac{XX - \mu}{\text{SD}(XX)} <  1.96) \\
+       & \\
+       &= P(-1.96 < Z) - P(Z < 1.96) \\
+       & \\
+       &= [1 - P(Z < -1.96)] - P(Z < 1.96) \\
+       & \\
+       &= 1 - \alpha/2 - \alpha/2 = 1 - \alpha.
+\end{align*}
+
+---
+
+```{r out.width = 750, out.height = 600, fig.height = 6, fig.width = 7.5, dpi = 300}
+sample_sds <- read_rds(paste0(here::here(), "/income_sds.Rds"))
+
+true_income <- mean(show$income_num, na.rm = T)
+
+CIs_data <- sample_sds %>% 
+  mutate(xmin = SRS_mean - 1.96*SRS_sd/sqrt(189),
+         xmax = SRS_mean + 1.96*SRS_sd/sqrt(189),
+         contains_truth = if_else(true_income < xmax & true_income > xmin, 'Contains', 'Does not contain'),
+         i = row_number())
+
+CIs <- ggplot(data = CIs_data %>% 
+                filter(i <= 100),
+       aes(y = SRS_mean, x = i, 
+           ymin = SRS_mean - 1.96*SRS_sd/sqrt(189),
+           ymax = SRS_mean + 1.96*SRS_sd/sqrt(189),
+           color = contains_truth)) +
+  geom_hline(data = data.frame(), 
+             yintercept = true_income,
+             color = 'red', linetype = "dashed") +
+  geom_point() + 
+  geom_errorbar() + 
+  scale_color_viridis_d("") +
+  labs(x = 'Sample number', y = 'Income',
+       title = paste("Percent containing the truth:", mean(CIs_data$contains_truth == "Contains"))) + 
+  theme(legend.position = "none")
+
+#plotly::ggplotly(CIs) %>% plotly::layout(xaxis = list(range = c(0, 100)))
+CIs
+```
+
+---
+
+So what is this good for? How do we interpret a confidence interval?
+
+--
+
+CANNOT SAY: "The true value is in the confidence interval with probability 95%."
+
+--
+
+DO SAY: "We're 95% confident that the true value is in the confidence interval."
+
+We'll see a bunch of examples on Tuesday.

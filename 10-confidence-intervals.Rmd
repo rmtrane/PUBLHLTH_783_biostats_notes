@@ -107,3 +107,113 @@ Say you performed your experiment and got a confidence interval for $\mu$ of $(2
 
 Although we cannot say anything about one single confidence interval, we still know that *if* we were to repeat the experiment many, many times constructing confidence intervals in this way each time, (and our assumptions are correct) then $95\%$ of the constructed confidence intervals will contain the true value! Yet another reason to repeat experiments rather than draw conclusions based on a single one.
 
+# Examples of Confidence Intervals
+
+To actually calculate confidence intervals, we refer to the overview given in section \@ref(stat-tests-overview). For any of the quantities mentioned, a confidence interval can be found as $XX \pm \text{critical value} \cdot \SD(XX)$, where the standard deviation is as shown in section \@ref(stat-tests-overview), and the critical value is found using the distribution mentioned. The critical value depends on the coverage wanted -- if you want to find a $(1-\alpha)\cdot 100\%$ confidence interval, your critical value it the value that cuts off $\alpha/2$ in the distribution. 
+
+## Difference in Means
+
+Using the SHOW data, we would like to calculate a $95\%$ for the difference in mean BMI between those depressed and those not depressed. To do so, we first need to decide whether we're willing to assume equal variance in the two groups or not. To do so, we calculate the variances in the two groups. 
+
+```{r}
+full_show %>% 
+  filter(!is.na(depression_severity_binary)) %>% 
+  group_by(Depression = depression_severity_binary) %>%
+  summarize(n = n(), 
+            mean = mean(bmi, na.rm = T), 
+            Variance = var(bmi, na.rm = T)) %>% 
+  pander::pander()
+```
+
+The rule of thumb for equal variance is if the variances are within a factor of $4$ of each other. Since $\frac{89.29}{49.92} \approx `r round(89.29/49.92, digits = 2)`$, the variances are within a factor of $4$ of each other, so we can safely assume equal variance. In this case, we need to calculate the pooled variance $s_p^2 = \frac{(n_A - 1)s_A^2 + (n_B - 1)s_B^2}{n_A + n_B - 2}$:
+
+\begin{align*}
+  s_p^2 &= \frac{1628 \cdot 49.92 + 645 \cdot 89.29}{1629 + 646 - 2} \\
+        &= \frac{`r 1628 * 49.92 + 645 * 89.29`}{`r 1629 + 646 - 2`} \\
+        &= `r (s_p <- round((1628 * 49.92 + 645 * 89.29)/(1629 + 646 - 2), digits = 2))`
+\end{align*}
+
+```{r echo = FALSE}
+diff_in_means <- (31.16 - 29.23) + c(-1,1)*round(1.96*s_p*sqrt(1/646 + 1/1629), digits = 2)
+```
+
+
+We can the find the $95\%$ confidence interval as 
+
+\begin{align*}
+  (\bar{X}_1 - \bar{X}_0) \pm 1.96 \cdot s_p \sqrt{1/n_1 + 1/n_0} &= `r (31.16 - 29.23)` \pm 1.96 \cdot `r s_p` \cdot `r sqrt(1/646 + 1/1629)` \\
+  &= `r (31.16 - 29.23)` \pm `r round(1.96*s_p*sqrt(1/646 + 1/1629), digits = 2)` \\
+  &= [`r paste(diff_in_means, collapse = ", ")`]
+\end{align*}
+
+We're $95\%$ confident that the true difference in means lies in the interval [`r paste(diff_in_means, collapse = ", ")`]. This also means that, if we were to test if there is a difference at a $5\%$ significance level, we would not reject the null hypothesis of $H_0: \mu_1 - \mu_0 = 0$, since $0$ is in the interval. Remember, the interval consists of all the values we would NOT reject. 
+
+## Difference in Proportions
+
+Say we want a confidence interval for the difference in the proportion of obese people (BMI $\ge 30$) between those that are married, and those that are unmarried. The table below shows proportions (numbers) of married and unmarried that are obese. 
+
+```{r}
+diff_in_props <- round(0.4084357 - 0.3937381 + c(-1,1)*1.96*0.4031431*sqrt(1/765 + 1/415), digits = 3)
+
+full_show %>% 
+  select(marital, obesity) %>% 
+  filter(complete.cases(.)) %>% 
+  transmute(Married = if_else(marital == "[1] Married", "Married", "Unmarried"),
+            Obesity = as.numeric(obesity)) %>% 
+  janitor::tabyl(Married, Obesity) %>% 
+  janitor::adorn_totals(c("row", "col")) %>% 
+  janitor::adorn_percentages(denominator = "row") %>% 
+  janitor::adorn_ns() %>% 
+  rename(`Married \\\\ Obese` = Married) %>% 
+  pander::pander()
+```
+
+Before we can go ahead and calculate the confidence interval, we need to make sure the assumptions behind the test of a difference in proportions are met. Per section \@ref(stat-tests-overview), those are i) independent observation, and ii) all cell counts have to be greater than $5$. ii) is definitely satisfied, but i) is much harder to verify. Let us assume that the sample we have is a simple random sample. So, i) is also satisfied.
+
+To find the $95\%$ confidence interval for the difference, we need to calculate $(\hat{p}_\text{married} - \hat{p}_\text{unmarried}) \pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)}$. All the quantities needed can be directly read off of the table above. So,
+
+\begin{align*}
+  (\hat{p}_\text{married} - \hat{p}_\text{unmarried}) &\pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)} \\
+  &= (0.408 - 0.394) \pm 1.96 \cdot 0.403\cdot \sqrt{1/765 + 1/415} \\
+  &=  `r 0.408 - 0.394` \pm `r 1.96 * 0.403*sqrt(1/765 + 1/415)`\\
+  &= [`r paste(diff_in_props, collapse = ", ")`]
+\end{align*}
+
+## Relative Risk
+
+To find a confidence interval for the relative risk is a bit more tricky, as we cannot directly work with the relative risk, but instead have to deal with $\log(RR)$ for a second. This is because the distribution of the relative risk is not easy to determine, but [the distribution of $\log(RR)$ is actually normal](#estimators-examples). 
+
+Say we want to find a $95\%$ confidence interval for the relative risk of depression between men and women. The table below shows proportions (numbers) of males and females with and without depression.
+
+```{r}
+log_RR <- round(log(0.222) - log(0.331) + c(-1,1)*1.96*sqrt((761/217)/978 + (429/868)/1297), digits = 3)
+
+full_show %>% 
+  select(Gender = gender, 
+         Depression = depression_severity_binary) %>% 
+  filter(complete.cases(.)) %>% 
+  mutate(Gender = str_remove_all(Gender, "\\[.\\] ")) %>% 
+  janitor::tabyl(Gender, Depression) %>% 
+  janitor::adorn_totals("col") %>% 
+  janitor::adorn_percentages() %>% 
+  janitor::adorn_ns() %>% 
+  rename(`Gender \\\\ Depression` = Gender) %>% 
+  pander::pander()
+```
+
+The confidence interval for $\log(RR)$ is found as $\log(RR) \pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}}$. All the values needed can be directly read off of the table above. So,
+
+\begin{align*}
+  \log(RR) &\pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}} \\
+  &= \log\left(\frac{0.222}{0.331}\right) \pm 1.96 \cdot \sqrt{\frac{(978 - 217)/217}{978} + \frac{(1297 - 868)/868}{1297}} \\
+  &= `r round(log(0.222/0.331), digits = 3)` \pm `r 1.96*sqrt((761/217)/978 + (429/868)/1297)` \\
+  &= [`r paste(log_RR, collapse = ", ")`]
+\end{align*}
+
+So, we are $95\%$ confident that the true log relative risk is in this interval. Unfortunately, that's not super useful. Interpretig this value is next to impossible. What we really want is a $95\%$ confidence interval for the relative risk. Luckily, it is super easy to go from the confidence interval for the log relative risk to a confidence interval for the relative risk. 
+
+Notice that $\exp(\log(RR)) = RR$. So it seems reasonable that to go from the log relative risk CI to the relative risk CI, we simply exponentiate the limits. That is exactly how we do it. So, a $95\%$ confidence interval for the relative risk is given by 
+
+$$
+  [e^{-0.523}, e^{-0.276}] = [`r paste(round(exp(log_RR), digits = 3), collapse = ", ")`].
+$$

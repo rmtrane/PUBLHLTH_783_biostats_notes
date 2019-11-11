@@ -194,6 +194,9 @@ degrees of freedom. If this is not an integer, round down!
 
 This isn't exactly a nice expression, but it truly doesn't matter in real life -- this is exactly why we have statistical software! 
 
+
+A really good question at this point would be: when can we then assume equal variance? A widely used rule of thumb is if the variances are within a factor of $4$, then it is safe to assume equal variance. Otherwise, you should not.
+
 ## One Sample Test for Proportion
 
 ```{r}
@@ -269,11 +272,11 @@ The hypothesis is tested in the exact same fashion as always: find the observed 
 
 <!-- ## Test for Relative Risk -->
 
-## Summary
+## Summary {#stat-tests-overview}
 
 We've seen `r n_tests` examples of tests, all of the same general form: $\frac{XX - E(XX)}{\SD(XX)}$. Depending on the specific test, there are subtle differences in how we calculate the standard deviation, and what assumptions we need to check before we can go through with it. The assumption to check are basically to make sure that the distribution of our test statistic is the one we say it is. For example, if the observations are not independent, then we cannot calculate the standard deviation in the one sample z-test (or any of the other tests, for that matter...).
 
-Below is a summary that lists all the tests mentioned above with typically used names, what assumptions are made, and how to find the standard deviation in each case. 
+Below is a summary that lists all the tests mentioned above (and then some) with typically used names, what assumptions are made, and how to find the standard deviation in each case. 
 
 * **One sample z-test**
     - AKA: one sample test of mean with known variance
@@ -308,6 +311,7 @@ Below is a summary that lists all the tests mentioned above with typically used 
     - Needed formulae:
         i. if assuming equal variance: $S_p^2 = \frac{(n_A - 1)S_A^2 + (n_B - 1)S_B^2}{n_A + n_B - 2}$
         ii. if not assuming equal variance: see equation \@ref(eq:ugly-df) for ugly degrees of freedom
+        iii. assume equal variance if $0.25 < S_A^2/S_B^2 < 4$.
 * **One sample test for proportion**
     - Assumptions: 
         i. independent observations
@@ -324,5 +328,21 @@ Below is a summary that lists all the tests mentioned above with typically used 
     - Distribution: $N(0,1)$
     - Needed formula: 
         i. $\hat{p} = \frac{x_A + x_B}{n_A + n_B}$ where $x_A$ is the number of people with the feature in group $A$, $x_B$ the number of people with the feature in group $B$
-
-
+* **Test for $\log(\text{Relative Risk})$**
+    - Assumptions:
+        i. independent observations
+        ii. $n$ "large enough" (not really a good rule of thumb here)
+    - Null hypothesis: $H_0: \log(RR) = r$
+    - Standard deviation: $\sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}}$, where
+        * $n_1$ is the number of individuals in the exposed group
+        * $n_2$ is the number of individuals in the non-exposed group
+        * $x_1$ is the number of individuals in the exposed group WITH the disease
+        * $x_2$ is the number of individuals in the non-exposed group WITH the disease
+    - Distribution: $N(0,1)$
+* **Test for $\log(\text{Odds Ratio})**
+    - Assumptions:
+        i. independent observations
+        ii. $n$ "large enough" (not really a good rule of thumb here)
+    - Null hypothesis: $H_0: log(OR) = r$
+    - Standard deviation: $\sqrt{1/a + 1/b + 1/c + 1/d}$, where $a,b,c,d$ are the counts in the 2-by-2 contingency table.
+    - Distribution: $N(0,1)$
