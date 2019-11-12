@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>13 Examples of Statistical Tests | Biostatistics in Public Health</title>
+  <meta name="description" content="13 Examples of Statistical Tests | Biostatistics in Public Health" />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="13 Examples of Statistical Tests | Biostatistics in Public Health" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="13 Examples of Statistical Tests | Biostatistics in Public Health" />
+  
+  
+  
+
+<meta name="author" content="Ralph Trane" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction-to-statistical-hypothesis-testing.html"/>
+<link rel="next" href="introduction-to-confidence-intervals.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+
+
+
+<link rel="stylesheet" href="css/extra.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./" style="font-size: 19px;"><i>Biostatistics in PUBLHLTH 783</i></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bounty-program"><i class="fa fa-check"></i>Bounty Program</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a><ul>
+<li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-biostatistics"><i class="fa fa-check"></i><b>2.1</b> What is Biostatistics?</a></li>
+<li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#biostatistics-in-publhlth-783"><i class="fa fa-check"></i><b>2.2</b> Biostatistics in PUBLHLTH 783</a></li>
+</ul></li>
+<li class="part"><span><b>I Data Types and Descriptive Statistics</b></span></li>
+<li class="chapter" data-level="3" data-path="before-we-get-started.html"><a href="before-we-get-started.html"><i class="fa fa-check"></i><b>3</b> Before we get started…</a></li>
+<li class="chapter" data-level="4" data-path="why-descriptive-statistics.html"><a href="why-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Why Descriptive Statistics?</a></li>
+<li class="chapter" data-level="5" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>5</b> Discrete Data</a><ul>
+<li class="chapter" data-level="5.1" data-path="discrete.html"><a href="discrete.html#categorical"><i class="fa fa-check"></i><b>5.1</b> Categorical data</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>5.1.1</b> Examples – categorical data</a></li>
+<li class="chapter" data-level="5.1.2" data-path="discrete.html"><a href="discrete.html#binarydichotomous-data"><i class="fa fa-check"></i><b>5.1.2</b> Binary/Dichotomous Data</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>5.2</b> How to describe categorical data</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>5.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>5.3</b> Ordinal Data</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>5.3.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>5.4</b> How to visualize discrete data</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>5.4.1</b> Bar Charts</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>6</b> Continuous Data</a><ul>
+<li class="chapter" data-level="6.1" data-path="continuous.html"><a href="continuous.html#examples-2"><i class="fa fa-check"></i><b>6.1</b> Examples</a></li>
+<li class="chapter" data-level="6.2" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>6.2</b> How to describe continuous data</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="continuous.html"><a href="continuous.html#location"><i class="fa fa-check"></i><b>6.2.1</b> Location</a></li>
+<li class="chapter" data-level="6.2.2" data-path="continuous.html"><a href="continuous.html#spread"><i class="fa fa-check"></i><b>6.2.2</b> Spread</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>6.3</b> How to visualize continuous data</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="continuous.html"><a href="continuous.html#scatter-plots"><i class="fa fa-check"></i><b>6.3.1</b> Scatter Plots</a></li>
+<li class="chapter" data-level="6.3.2" data-path="continuous.html"><a href="continuous.html#boxplots"><i class="fa fa-check"></i><b>6.3.2</b> Boxplots</a></li>
+<li class="chapter" data-level="6.3.3" data-path="continuous.html"><a href="continuous.html#histogram"><i class="fa fa-check"></i><b>6.3.3</b> Histogram</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>7</b> Grey areas</a></li>
+<li class="part"><span><b>II Introduction to Probability &amp; Random Variables</b></span></li>
+<li class="chapter" data-level="8" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>8</b> What is “probability”?</a><ul>
+<li class="chapter" data-level="8.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>8.1</b> Definitions</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#examples-3"><i class="fa fa-check"></i><b>8.1.1</b> Examples</a></li>
+<li class="chapter" data-level="8.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i><b>8.1.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="8.1.3" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i><b>8.1.3</b> Example: coin flip (revisited)</a></li>
+<li class="chapter" data-level="8.1.4" data-path="what-is-probability.html"><a href="what-is-probability.html#example-roll-of-a-die-revisited"><i class="fa fa-check"></i><b>8.1.4</b> Example: roll of a die (revisited)</a></li>
+<li class="chapter" data-level="8.1.5" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>8.1.5</b> Example: disease status</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>9</b> Conditional Probability</a><ul>
+<li class="chapter" data-level="9.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i><b>9.1</b> Example: roll a die</a></li>
+<li class="chapter" data-level="9.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i><b>9.2</b> Example: disease status</a></li>
+<li class="chapter" data-level="9.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i><b>9.3</b> Example: Sensitivity/specificity</a></li>
+<li class="chapter" data-level="9.4" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i><b>9.4</b> Example: positive/negative predictive value</a></li>
+<li class="chapter" data-level="9.5" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>9.5</b> Bayes’ Theorem</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-5.8-in-ls-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i><b>9.5.1</b> Example (5.8 in <span class="citation">Sullivan (<span>2017</span>)</span>): positive predictive value from sensitivity</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>9.6</b> Independence</a><ul>
+<li class="chapter" data-level="9.6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i><b>9.6.1</b> Example: independent events</a></li>
+<li class="chapter" data-level="9.6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i><b>9.6.2</b> Example: dependent events</a></li>
+<li class="chapter" data-level="9.6.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-are-depression-severity-mild-depression-and-marital-status-divorced-independent"><i class="fa fa-check"></i><b>9.6.3</b> Example: are “depression severity = mild depression” and “marital status = divorced” independent?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>10</b> Random Variables and Distributions</a><ul>
+<li class="chapter" data-level="10.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>10.1</b> Random Variables</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-random-variables"><i class="fa fa-check"></i><b>10.1.1</b> Examples: random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#distributions"><i class="fa fa-check"></i><b>10.2</b> Distributions</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#discrete-distributions"><i class="fa fa-check"></i><b>10.2.1</b> Discrete Distributions</a></li>
+<li class="chapter" data-level="10.2.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#continuous-distributions"><i class="fa fa-check"></i><b>10.2.2</b> Continuous distributions</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#prop-of-RVs"><i class="fa fa-check"></i><b>10.3</b> Properties of Random Variables</a><ul>
+<li class="chapter" data-level="10.3.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#expected-values-of-random-variables"><i class="fa fa-check"></i><b>10.3.1</b> Expected Values of Random Variables</a></li>
+<li class="chapter" data-level="10.3.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#variancestandard-deviation-of-random-variables"><i class="fa fa-check"></i><b>10.3.2</b> Variance/Standard Deviation of Random Variables</a></li>
+<li class="chapter" data-level="10.3.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#things-to-remember-when-working-with-random-variables"><i class="fa fa-check"></i><b>10.3.3</b> Things to remember when working with random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>10.4</b> A Few Important Distributions</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-bernoulli-distribution"><i class="fa fa-check"></i><b>10.4.1</b> The Bernoulli Distribution</a></li>
+<li class="chapter" data-level="10.4.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-binomial-distribution"><i class="fa fa-check"></i><b>10.4.2</b> The Binomial Distribution</a></li>
+<li class="chapter" data-level="10.4.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#normal-distribution"><i class="fa fa-check"></i><b>10.4.3</b> Normal Distribution</a></li>
+<li class="chapter" data-level="10.4.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#t-distribution"><i class="fa fa-check"></i><b>10.4.4</b> t-distribution</a></li>
+<li class="chapter" data-level="10.4.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>10.4.5</b> Other Distribution</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>11</b> Estimators and their distributions</a><ul>
+<li class="chapter" data-level="11.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>11.1</b> What is an Estimator?</a></li>
+<li class="chapter" data-level="11.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>11.2</b> Common Estimators</a><ul>
+<li class="chapter" data-level="11.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#estimators-examples"><i class="fa fa-check"></i><b>11.2.1</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>11.3</b> Deriving Distributions in Practice</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#CLT"><i class="fa fa-check"></i><b>11.3.1</b> The Central Limit Theorem</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Statistical Hypothesis Testing</b></span></li>
+<li class="chapter" data-level="12" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html"><i class="fa fa-check"></i><b>12</b> Introduction to Statistical Hypothesis Testing</a><ul>
+<li class="chapter" data-level="12.1" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#strategy-overview-the-lingo"><i class="fa fa-check"></i><b>12.1</b> Strategy Overview &amp; The Lingo</a></li>
+<li class="chapter" data-level="12.2" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#when-we-dont-know-sigma2"><i class="fa fa-check"></i><b>12.2</b> When we don’t know <span class="math inline">\(\sigma^2\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html"><i class="fa fa-check"></i><b>13</b> Examples of Statistical Tests</a><ul>
+<li class="chapter" data-level="13.1" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#one-sample-z-test"><i class="fa fa-check"></i><b>13.1</b> One Sample z-test</a></li>
+<li class="chapter" data-level="13.2" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#one-sample-t-test"><i class="fa fa-check"></i><b>13.2</b> One Sample t-test</a></li>
+<li class="chapter" data-level="13.3" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#two-sample-t-test"><i class="fa fa-check"></i><b>13.3</b> Two Sample t-test</a><ul>
+<li class="chapter" data-level="13.3.1" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#equal-variance"><i class="fa fa-check"></i><b>13.3.1</b> Equal Variance</a></li>
+<li class="chapter" data-level="13.3.2" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#unequal-variance"><i class="fa fa-check"></i><b>13.3.2</b> Unequal Variance</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#one-sample-test-for-proportion"><i class="fa fa-check"></i><b>13.4</b> One Sample Test for Proportion</a></li>
+<li class="chapter" data-level="13.5" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#two-sample-test-for-proportions"><i class="fa fa-check"></i><b>13.5</b> Two Sample Test for Proportions</a></li>
+<li class="chapter" data-level="13.6" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#stat-tests-overview"><i class="fa fa-check"></i><b>13.6</b> Summary</a></li>
+</ul></li>
+<li class="part"><span><b>IV Confidence Intervals</b></span></li>
+<li class="chapter" data-level="14" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html"><i class="fa fa-check"></i><b>14</b> Introduction to Confidence Intervals</a><ul>
+<li class="chapter" data-level="14.1" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#faq"><i class="fa fa-check"></i><b>14.1</b> FAQ</a><ul>
+<li class="chapter" data-level="14.1.1" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#youre-telling-me-there-are-two-critical-values"><i class="fa fa-check"></i><b>14.1.1</b> You’re telling me there are <strong>TWO</strong> critical values?</a></li>
+<li class="chapter" data-level="14.1.2" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#where-does-the-95-come-from"><i class="fa fa-check"></i><b>14.1.2</b> Where does the “95%” come from?</a></li>
+<li class="chapter" data-level="14.1.3" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#FAQprob"><i class="fa fa-check"></i><b>14.1.3</b> Why can’t we say there’s a 95% chance that the true value is in a 95% Confidence Interval?</a></li>
+<li class="chapter" data-level="14.1.4" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#follow-up-but-why-even-bother-with-a-confidence-interval-then"><i class="fa fa-check"></i><b>14.1.4</b> Follow-up: But why even bother with a confidence interval, then?!?!?!</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html"><i class="fa fa-check"></i><b>15</b> Examples of Confidence Intervals</a><ul>
+<li class="chapter" data-level="15.1" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#difference-in-means"><i class="fa fa-check"></i><b>15.1</b> Difference in Means</a></li>
+<li class="chapter" data-level="15.2" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#difference-in-proportions"><i class="fa fa-check"></i><b>15.2</b> Difference in Proportions</a></li>
+<li class="chapter" data-level="15.3" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#relative-risk"><i class="fa fa-check"></i><b>15.3</b> Relative Risk</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="lecture-slides.html"><a href="lecture-slides.html"><i class="fa fa-check"></i><b>A</b> Lecture Slides</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biostatistics in Public Health</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="examples-of-statistical-tests" class="section level1">
+<h1><span class="header-section-number">13</span> Examples of Statistical Tests</h1>
+<p>In this section we will take a look at quite a few different statistical hypothesis tests. All but one build on the same general test statistic: if <span class="math inline">\(XX\)</span> somehow captures what we are looking for, then we can generally write the test statistic in the following way:</p>
+<p><span class="math display">\[\frac{XX - E(XX)}{\text{SD}(XX)}\]</span></p>
+<p>In every single case, without exception (!!!), we assume that the observations are independent of each other. Usually we will justify this assumption by arguing that the samples are simple random samples, i.e. the individuals in the samples are picked from the general population completely at random.</p>
+<div id="one-sample-z-test" class="section level2">
+<h2><span class="header-section-number">13.1</span> One Sample z-test</h2>
+<p>This first test is only included as a step between the general concept, and the more realistic scenarios considered below. It is meant to motivate the t-test.</p>
+<p>Say that we are interested in testing if the mean in the population is a specific number. I.e. <span class="math inline">\(H_0: \mu = \mu_0\)</span>. As mentioned previously, a good estimator of <span class="math inline">\(\mu\)</span> is <span class="math inline">\(\bar{X}\)</span>, i.e. the average value in a sample. In fact, we know that the expected value of <span class="math inline">\(\bar{X}\)</span> is the true population mean. So if <span class="math inline">\(\bar{X}\)</span> is far from <span class="math inline">\(\mu_0\)</span>, it seems fair to say that <span class="math inline">\(H_0\)</span> doesn’t hold, and we would reject it. To find out if <span class="math inline">\(\bar{X}\)</span> is far from <span class="math inline">\(\mu_0\)</span>, we play a few games of pretend:</p>
+<ol style="list-style-type: lower-roman">
+<li><strong>if</strong> <span class="math inline">\(\bar{X}\)</span> is normally distributed,</li>
+<li><strong>if</strong> <span class="math inline">\(H_0\)</span> is true, then <span class="math inline">\(E(\bar{X}) = \mu_0\)</span>; and</li>
+<li><strong>if</strong> the observations are independent, then <span class="math inline">\(\text{SD}(\bar{X}) = \frac{\sigma}{\sqrt{n}}\)</span>.</li>
+</ol>
+<p><strong>If</strong> i,ii, and iii all hold, then <span class="math inline">\(Z = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\)</span>.</p>
+<div class="figure"><span id="fig:unnamed-chunk-78"></span>
+<img src="783_biostats_files/figure-html/unnamed-chunk-78-1.png" alt="**IF** i,ii, and iii all hold, then $Z \sim N(0,1)$, i.e. $Z$ follows this curve." width="672" />
+<p class="caption">
+Figure 13.1: <strong>IF</strong> i,ii, and iii all hold, then <span class="math inline">\(Z \sim N(0,1)\)</span>, i.e. <span class="math inline">\(Z\)</span> follows this curve.
+</p>
+</div>
+<p><strong>If</strong> i,ii, and iii all hold, then if we observe a value of <span class="math inline">\(z_{obs} = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}\)</span> that is close to <span class="math inline">\(0\)</span> the data seem to align well with the null hypothesis, and therefore we would not reject it. On the other hand, if we observe a value of <span class="math inline">\(z_{obs}\)</span> that is far from <span class="math inline">\(0\)</span>, the data does not align well with the null hypothesis, and therefore we would reject it. Note, we can ONLY calculate this if we <strong>know the true standard deviation <span class="math inline">\(\sigma\)</span></strong>.</p>
+<div class="figure"><span id="fig:unnamed-chunk-79"></span>
+<img src="783_biostats_files/figure-html/unnamed-chunk-79-1.png" alt="Different values $z_{obs}$. When are we &quot;far from $H_0$&quot;, i.e. &quot;far from $0$&quot;?" width="672" />
+<p class="caption">
+Figure 13.2: Different values <span class="math inline">\(z_{obs}\)</span>. When are we “far from <span class="math inline">\(H_0\)</span>”, i.e. “far from <span class="math inline">\(0\)</span>”?
+</p>
+</div>
+<p>To determine if the observed value of <span class="math inline">\(z_{obs}\)</span> is far from zero or not, we adopt the idea of <em>observing something more extreme</em>. What constitutes more extreme depends on the alternative hypothesis. We always pick one of the following three alternative hypotheses:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(H_A: \mu &lt; \mu_0\)</span>,</li>
+<li><span class="math inline">\(H_A: \mu &gt; \mu_0\)</span>,</li>
+<li><span class="math inline">\(H_A: \mu \neq \mu_0\)</span>.</li>
+</ol>
+<p>The first two are called <em>one-sided</em> alternatives, while the third is called a <em>two-sided</em> alternative. For the first alternative, “more extreme” means “smaller than” what we observed. For the second, “more extreme” means “greater than”, and for the third, “more extreme” goes in both directinos, but “further from <span class="math inline">\(0\)</span>” than what was observed. To figure out if what we observe is “far from <span class="math inline">\(0\)</span>”, we calculate the probability of observing some more extreme. If the probability is small, we conclude that what we observed is very extreme, and therefore the null hypothesis seems rather unlikely to be true. This probability is the exact definition of the p-value.</p>
+<div class="figure"><span id="fig:unnamed-chunk-80"></span>
+<img src="783_biostats_files/figure-html/unnamed-chunk-80-1.png" alt="For each of the three alternatives, the p-value corresponds to the shaded area." width="672" />
+<p class="caption">
+Figure 13.3: For each of the three alternatives, the p-value corresponds to the shaded area.
+</p>
+</div>
+<p>To draw a conclusion, we need to decide if the p-value is small. To do so, we use what is called a “level of significance”. This is often denote by <span class="math inline">\(\alpha\)</span>, and it is a number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>. This is our cut-off. In general, if the p-value is <strong>less</strong> than <span class="math inline">\(\alpha\)</span>, we say that the p-value is small. This implies our observation is very extreme, therefore “the data seem to be far from <span class="math inline">\(H_0\)</span>”, and we reject the null hypothesis.</p>
+<p>Conversely, if the p-value is greater than <span class="math inline">\(\alpha\)</span>, we do not reject <span class="math inline">\(H_0\)</span>.</p>
+</div>
+<div id="one-sample-t-test" class="section level2">
+<h2><span class="header-section-number">13.2</span> One Sample t-test</h2>
+<p>In the case of the one sample z-test, we assume we know the true standard deviation. Obviously, this isn’t a very realistic scenario since we NEVER know the true standard deviation. What we do instead is <em>estimate</em> it from the sample.</p>
+<p>Say that we are still interested in testing if the mean in the population is a specific number. I.e. <span class="math inline">\(H_0: \mu = \mu_0\)</span>. As above, if <span class="math inline">\(\bar{X}\)</span> is far from <span class="math inline">\(\mu_0\)</span>, it seems fair to say that <span class="math inline">\(H_0\)</span> doesn’t hold, and we would reject it. In the case of the one sample z-test we look at <span class="math inline">\(Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span>, and we find that this is normally distributed with mean <span class="math inline">\(0\)</span> and standard deviation <span class="math inline">\(1\)</span> <strong>IF</strong> <span class="math inline">\(H_0\)</span> is true. When we do not know <span class="math inline">\(\sigma\)</span>, we simply substitute our best guess <span class="math inline">\(s\)</span>. The resulting test statistic is often called the <span class="math inline">\(T\)</span>-statistic:</p>
+<p><span class="math display">\[
+T = \frac{\bar{X} - \mu_0}{s/\sqrt{n}}
+\]</span></p>
+<p>Since we’re not dividing by the true standard deviation fo <span class="math inline">\(\bar{X}\)</span>, this quantity doesn’t exactly follow the <span class="math inline">\(N(0,1)\)</span> distribution. However, it turns out it follows a (<span class="math inline">\(t\)</span>-distribution)[#t-distribution] with <span class="math inline">\(n-1\)</span> degrees of freedom.</p>
+<p>Just as in the case of the one sample z-test, this is only true if <span class="math inline">\(\bar{X}\)</span> is actually normally distributed. I.e. before using this test one has to argue that <span class="math inline">\(\bar{X}\)</span> is in fact normally distributed.</p>
+<p>The rest of the story is the exact same as above: find the observed value of <span class="math inline">\(T\)</span>, <span class="math inline">\(t_{obs}\)</span>, calculate the correct p-value (depends on the alternative hypothesis), and compare to the level of significance.</p>
+</div>
+<div id="two-sample-t-test" class="section level2">
+<h2><span class="header-section-number">13.3</span> Two Sample t-test</h2>
+<p>The first two examples of tests looked at how to determine if a population mean is equal to a specific value. More often we’re interested in actually comparing the mean of one population to the mean of another population. In this case, a two sample t-test comes in handy.</p>
+<p>Say we want to find out if <span class="math inline">\(\mu_A = \mu_B\)</span>, i.e. the mean in population <span class="math inline">\(A\)</span> is the same as the mean in population <span class="math inline">\(B\)</span>. We can rewrite this as a null hypothesis <span class="math inline">\(H_0: \mu_A - \mu_B = 0\)</span>. Since we know that <span class="math inline">\(\bar{X}_A\)</span> is a good guess as to what <span class="math inline">\(\mu_A\)</span> is, and <span class="math inline">\(\bar{X}_B\)</span> is a good guess for <span class="math inline">\(\mu_B\)</span>, it seems reasonable to consider <span class="math inline">\(\bar{X}_A - \bar{X}_B\)</span> for the difference. We know that, when <span class="math inline">\(n_A\)</span> and <span class="math inline">\(n_b\)</span> are large enough, both <span class="math inline">\(\bar{X}_A\)</span> and <span class="math inline">\(\bar{X}_B\)</span> are normally distributed, and so by the (properties of the normal distribution)[#sum-of-independent-normals], <span class="math inline">\(\bar{X}_A - \bar{X}_B\)</span> is also normally distributed!</p>
+<p>Since <span class="math inline">\(\bar{X}_A - \bar{X}_B\)</span> is normally distributed, we’ll construct a test statistic in the same way as above. If <span class="math inline">\(H_0\)</span> is true, then <span class="math inline">\(E(\bar{X}_A - \bar{X}_B) = E(\bar{X}_A) - E(\bar{X}_B) = \mu_A - \mu_B = 0\)</span>, so</p>
+<p><span class="math display">\[
+  T = \frac{\bar{X}_A - \bar{X}_B - E(\bar{X}_A - \bar{X}_B)}{\text{SD}(\bar{X}_A - \bar{X}_B)} = \frac{\bar{X}_A - \bar{X}_B}{\text{SD}(\bar{X}_A - \bar{X}_B)}.
+\]</span></p>
+<p>So we need to find a good estimator of <span class="math inline">\(\text{SD}(\bar{X}_A - \bar{X}_B)\)</span>. There are two scenarios, and depending on which one we’re in, we (theoretically) do this in slightly different ways. Depending on the way this is estimated, the distribution the test statistic follows also varies slightly, but in both cases the rest of the story is the same: find the observed value of <span class="math inline">\(T\)</span>, <span class="math inline">\(t_{obs}\)</span>, calculate the correct p-value (depends on the alternative hypothesis), and compare to the level of significance.</p>
+<div id="equal-variance" class="section level3">
+<h3><span class="header-section-number">13.3.1</span> Equal Variance</h3>
+<p>If it seems fair to assume that the variance is the same in group <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, then</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\bar{X}_A - \bar{X}_B) &amp;= \text{Var}(\bar{X}_A) + \text{Var}(\bar{X}_B) \\
+                              &amp;= \frac{\sigma^2}{n_A} + \frac{\sigma^2}{n_B} \\
+                              &amp;= \sigma^2 \left(\frac{1}{n_A} + \frac{1}{n_B}\right),
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(n_A\)</span> is the number of observations we have in our sample from group <span class="math inline">\(A\)</span>, and <span class="math inline">\(n_B\)</span> the number of observations in our sample from group <span class="math inline">\(B\)</span>. Note: this only works if <strong>all observations are independent of each other</strong>.</p>
+<p>Now, how do best find a good estimate for <span class="math inline">\(\sigma^2\)</span>? If we only had one group, we would use <span class="math inline">\(S^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2\)</span>. Since we assume that the variance is the same in the two groups, it is sort of like if we only have one group. So maybe using this strategy isn’t such a bad idea?</p>
+<p>It turns out that pretending the two samples are just one big sample is a really good idea, but we have to make a minor tweak to the estimator. Instead of dividing by <span class="math inline">\(N-1\)</span> (where <span class="math inline">\(N = n_A + n_B\)</span> is the total sample size), we need to divide by <span class="math inline">\(N-2\)</span>. The resulting estimator is called the <em>pooled</em> standard deviation, and it can actually be found using just <span class="math inline">\(n_A, n_B, S_A^2\)</span>, and <span class="math inline">\(S_B^2\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+  S_{pooled}^2 &amp;= \frac{1}{N - 2}\left(\sum_{i = 1}^{n_A}(X_{A,i} - \bar{X}_A)^2 + \sum_{i=1}^{n_B}(X_{B,i} - \bar{X}_B)^2\right) \\
+               &amp;= \frac{1}{n_A + n_B - 2}\left((n_A - 1) S_A^2 + (n_B - 1) S_B^2 \right).
+\end{align*}\]</span></p>
+<p>So if we’re in a situation where we can assume equal variances, then the test statistic is <span class="math inline">\(T = \frac{\bar{X}_A - \bar{X}_B}{S_{pooled}\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}}\)</span>. It turns out this follows a <span class="math inline">\(t\)</span>-distribution with <span class="math inline">\(n_A + n_B - 2\)</span> degrees of freedom.</p>
+</div>
+<div id="unequal-variance" class="section level3">
+<h3><span class="header-section-number">13.3.2</span> Unequal Variance</h3>
+<p>Things are a bit different if we cannot assume equal variances. First of all, pooling the variances makes no sense. If we cannot assume the variances are the same, then why would we treat the two samples as one big one? Instead, we simply estimate the variance as follows: since the observations are assumed to be completely independent of each other,</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\bar{X}_A - \bar{X}_B) &amp;= \text{Var}(\bar{X}_A) + \text{Var}(\bar{X}_B) \\
+                              &amp;= \frac{\sigma_A^2}{n_A} + \frac{\sigma_B^2}{n_B},
+\end{align*}\]</span></p>
+<p>and we simply use our usual estimators of <span class="math inline">\(\sigma_A^2\)</span> and <span class="math inline">\(\sigma_B^2\)</span> to plug in above. I.e. our test statistic becomes <span class="math inline">\(T = \frac{\bar{X}_A - \bar{X}_B}{\sqrt{\frac{S_A^2}{n_A} + \frac{S_B^2}{n_B}}}\)</span>.</p>
+<p>Now, this is where things get icky. When we cannot assume equal variance, the test statistic <span class="math inline">\(T\)</span> follows a <span class="math inline">\(t\)</span>-distribution with</p>
+<p><span class="math display" id="eq:ugly-df">\[\begin{equation}
+  \frac{\left(\frac{S_A^2}{n_A} + \frac{s_B^2}{n_B}\right)^2}{\frac{\left(S_A^2/n_A\right)^2}{n_A - 1} + \frac{\left(S_B^2/n_B\right)^2}{n_B - 1}} \tag{13.1}
+\end{equation}\]</span></p>
+<p>degrees of freedom. If this is not an integer, round down!</p>
+<p>This isn’t exactly a nice expression, but it truly doesn’t matter in real life – this is exactly why we have statistical software!</p>
+<p>A really good question at this point would be: when can we then assume equal variance? A widely used rule of thumb is if the variances are within a factor of <span class="math inline">\(4\)</span>, then it is safe to assume equal variance. Otherwise, you should not.</p>
+</div>
+</div>
+<div id="one-sample-test-for-proportion" class="section level2">
+<h2><span class="header-section-number">13.4</span> One Sample Test for Proportion</h2>
+<p>Let’s consider a slightly different setup. We’re no longer interested in testing if the mean of a population is equal to some number, but instead if the proportion of people in the population is. I.e. our null hypothesis is now of the form <span class="math inline">\(H_0: \pi = \pi_0\)</span>.</p>
+<p>The proportion is estimated by the number of people in our sample with the feature of interest (disease, gender, etc.) out of the total number of people in the sample. I.e. <span class="math inline">\(\hat{p} = \frac{\sum_{i = 1}^n X_i}{n}\)</span>, where <span class="math inline">\(X_i\)</span> the the random variable that is <span class="math inline">\(1\)</span> if individual <span class="math inline">\(i\)</span> has the feature, and <span class="math inline">\(0\)</span> if individual <span class="math inline">\(i\)</span> does not have the feature.</p>
+<p>On closer inspection, we see that <span class="math inline">\(\hat{p}\)</span> is actually an average! So, according to the central limit theorem, <span class="math inline">\(\hat{p}\)</span> will be normally distributed when <span class="math inline">\(n\)</span> is “large enough”. When is <span class="math inline">\(n\)</span> “large enough”? A common rule of thumb is when <span class="math inline">\(n\cdot \pi &gt; 5\)</span> and <span class="math inline">\(n \cdot (1-\pi) &gt; 5\)</span>. Since we do not know <span class="math inline">\(\pi\)</span>, we use <span class="math inline">\(\hat{p}\)</span> to check this. (Once you plug everything in, you’ll find that what you really need is more than five people in each of the two groups.)</p>
+<p>Now, if <span class="math inline">\(\hat{p}\)</span> is normally distributed, we can follow the usual setup! I.e. use a test statistic of the form <span class="math inline">\(\frac{\hat{p} - E(\hat{p})}{\text{SD}(\hat{p})}\)</span>, where <span class="math inline">\(E(\hat{p})\)</span> and <span class="math inline">\(\text{SD}(\hat{p})\)</span> are calculated <strong>assuming the null hypothesis is true</strong>! If the null hypothesis is true, then <span class="math inline">\(E(\hat{p}) = \pi\)</span>. Also, if <span class="math inline">\(H_0\)</span> is true,</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\hat{p}) &amp;= \text{Var}\left(\frac{\sum_{i=1}^n X_i}{n}\right) \\
+                &amp;= \frac{\text{Var}\left(\sum_{i=1}^n X_i\right)}{n^2} \\
+                &amp;= \frac{\sum_{i=1}^n \text{Var}\left( X_i\right)}{n^2},
+\end{align*}\]</span></p>
+<p>since we (as always) assume that all the observations are independent of each other. Now, since <span class="math inline">\(X_i\)</span> is a Bernoulli random variable (i.e. a <span class="math inline">\(0/1\)</span> random variable), and the “probability of success” is <span class="math inline">\(\pi\)</span>, <span class="math inline">\(\text{Var}(X_i) = \pi(1-\pi)\)</span> for all <span class="math inline">\(i\)</span>. But remember, we’re assuming the null hypothesis is true. Therefore, <span class="math inline">\(\text{Var}(X_i) = \pi_0(1-\pi_0)\)</span>. So,</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\hat{p}) = \frac{\pi_0(1-\pi_0)}{n}.
+\end{align*}\]</span></p>
+<p>In other words, when we assume that the null hypothesis is true, <strong>we actually know the true variance</strong>! So, in this case, the test statistic is actually normally distributed with mean <span class="math inline">\(0\)</span> and standard deviation <span class="math inline">\(1\)</span>:</p>
+<p><span class="math display">\[
+  Z = \frac{\hat{p} - \pi_0}{\sqrt{\pi_0(1-\pi_0)/n}} \sim N(0,1)
+\]</span></p>
+<p>The rest, as they say, is history… (I.e. same procedure as always: find <span class="math inline">\(z_{obs}\)</span>, calculate the p-value that fits the alternative hypothesis, and draw a conclusion by comparing to <span class="math inline">\(\alpha\)</span>.)</p>
+</div>
+<div id="two-sample-test-for-proportions" class="section level2">
+<h2><span class="header-section-number">13.5</span> Two Sample Test for Proportions</h2>
+<p>Now, as with the t-test, we can expand the test for a single proportion to test for a difference between two proportions. So, let’s say we’re looking at two populations, and want to find out if there’s a difference in the proportion in the two with a specific disease. In other words, we want to test if <span class="math inline">\(H_0: \pi_A = \pi_B\)</span>. This can be rewritten as <span class="math inline">\(H_0: \pi_A - \pi_B = 0\)</span>.</p>
+<p>Similarly to the two sample t-test, we use <span class="math inline">\(\hat{p}_A - \hat{p}_B\)</span>. As we saw above, <span class="math inline">\(\hat{p}_A\)</span> and <span class="math inline">\(\hat{p}_B\)</span> are both normally distributed<a href="references.html#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>, and so the difference is also normally distributed. So, again, we construct a test statistic by looking at <span class="math inline">\(\frac{\hat{p}_A - \hat{p}_B - E(\hat{p}_A - \hat{p}_B)}{\text{SD}(\hat{p}_A - \hat{p}_B)}\)</span>.</p>
+<p>Assuming the null hypothesis is true, <span class="math inline">\(\pi_A = \pi_B\)</span>. So, <span class="math inline">\(E(\hat{p}_A - \hat{p}_B) = E(\hat{p}_A) - E(\hat{p}_B) = \pi_A - \pi_B = 0\)</span>. Also,</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\hat{p}_A - \hat{p}_B) &amp;= \text{Var}(\hat{p}_A) + \text{Var}(\hat{p}_B) \\
+                              &amp;= \frac{\pi_A(1-\pi_A)}{n_B^2} + \frac{\pi_B(1-\pi_B)}{n_B^2}.
+\end{align*}\]</span></p>
+<p>We’re assuming <span class="math inline">\(\pi_A\)</span> and <span class="math inline">\(\pi_B\)</span> are the same (i.e. <span class="math inline">\(H_0\)</span> is correct). Let’s say whatever number they are equal to is <span class="math inline">\(\pi\)</span>, so <span class="math inline">\(\pi_A = \pi_B = \pi_0\)</span>. Then we can simplify the variance a bit:</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Var}(\hat{p}_A - \hat{p}_B) &amp;= \text{Var}(\hat{p}_A) + \text{Var}(\hat{p}_B) \\
+                              &amp;= \frac{\pi_A(1-\pi_A)}{n_B^2} + \frac{\pi_B(1-\pi_B)}{n_B^2} \\
+                              &amp;= \pi_0(1-\pi_0)\left(\frac{1}{n_B^2} + \frac{1}{n_B^2}\right).
+\end{align*}\]</span></p>
+<p>What seems to be a good way to estimate <span class="math inline">\(\pi_0\)</span>? How about we pretend there’s only one big sample, and then calculate the proportion in this sample. This seems pretty reasonable to me, since everything we’re doing here is assuming that the two proportions <span class="math inline">\(\pi_A\)</span> and <span class="math inline">\(\pi_B\)</span> are the same, effectively saying the two populations are the same!<a href="references.html#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a> So, in the end, our test statistic for testing <span class="math inline">\(H_0: \pi_A = \pi_B\)</span> is</p>
+<p><span class="math display">\[
+  Z = \frac{\hat{p}_A - \hat{p}_B}{\hat{p}\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}} \sim N(0,1)
+\]</span></p>
+<p>The hypothesis is tested in the exact same fashion as always: find the observed value of <span class="math inline">\(Z\)</span>, <span class="math inline">\(z_{obs}\)</span>, calculate the p-value (which depends on the alternative hypothesis), and reject if the p-value is smaller than the chosen level of significance <span class="math inline">\(\alpha\)</span>.</p>
+<!-- ## Wilcoxon Rank Sum Test -->
+<!-- ## Test for Odds Ratio -->
+<!-- ## Test for Relative Risk -->
+</div>
+<div id="stat-tests-overview" class="section level2">
+<h2><span class="header-section-number">13.6</span> Summary</h2>
+<p>We’ve seen 5 examples of tests, all of the same general form: <span class="math inline">\(\frac{XX - E(XX)}{\text{SD}(XX)}\)</span>. Depending on the specific test, there are subtle differences in how we calculate the standard deviation, and what assumptions we need to check before we can go through with it. The assumption to check are basically to make sure that the distribution of our test statistic is the one we say it is. For example, if the observations are not independent, then we cannot calculate the standard deviation in the one sample z-test (or any of the other tests, for that matter…).</p>
+<p>Below is a summary that lists all the tests mentioned above (and then some) with typically used names, what assumptions are made, and how to find the standard deviation in each case.</p>
+<ul>
+<li><strong>One sample z-test</strong>
+<ul>
+<li>AKA: one sample test of mean with known variance</li>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li>known variance <span class="math inline">\(\sigma^2\)</span></li>
+<li>Observations are normally distributed OR <span class="math inline">\(n &gt; 30\)</span></li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \mu = \mu_0\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\sigma/\sqrt{n}\)</span></li>
+<li>Distribution: <span class="math inline">\(N(0,1)\)</span></li>
+</ul></li>
+<li><strong>One sample t-test</strong>
+<ul>
+<li>AKA: One sample test of mean with unknown variance</li>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li>observations are normally distributed OR <span class="math inline">\(n&gt;30\)</span></li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \mu = \mu_0\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\frac{s}{\sqrt{n}}\)</span></li>
+<li>Distribution: <span class="math inline">\(t_{n-1}\)</span></li>
+<li>Needed formula: <span class="math inline">\(s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2\)</span></li>
+</ul></li>
+<li><strong>Two sample t-test</strong>
+<ul>
+<li>AKA: Two sample test for difference in means</li>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li>observations are normally distributed OR <span class="math inline">\(n_A&gt;30, n_B&gt;30\)</span></li>
+</ol></li>
+<li>Standard deviation:
+<ol style="list-style-type: lower-roman">
+<li>if assuming equal variance: <span class="math inline">\(S_p\sqrt{\frac{1}{n_A} + \frac{1}{n_B}}\)</span></li>
+<li>if not assuming equal variance: <span class="math inline">\(\sqrt{\frac{S_A^2}{n_A} + \frac{S_B^2}{n_B}}\)</span></li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \mu_A = \mu_B\)</span></li>
+<li>Distribution:
+<ol style="list-style-type: lower-roman">
+<li>if assuming equal variance: <span class="math inline">\(t_{n_A + n_B - 2}\)</span></li>
+<li>if not assuming equal variance: <span class="math inline">\(t_{\text{ugly df}}\)</span></li>
+</ol></li>
+<li>Needed formulae:
+<ol style="list-style-type: lower-roman">
+<li>if assuming equal variance: <span class="math inline">\(S_p^2 = \frac{(n_A - 1)S_A^2 + (n_B - 1)S_B^2}{n_A + n_B - 2}\)</span></li>
+<li>if not assuming equal variance: see equation <a href="examples-of-statistical-tests.html#eq:ugly-df">(13.1)</a> for ugly degrees of freedom</li>
+<li>assume equal variance if <span class="math inline">\(0.25 &lt; S_A^2/S_B^2 &lt; 4\)</span>.</li>
+</ol></li>
+</ul></li>
+<li><strong>One sample test for proportion</strong>
+<ul>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li><span class="math inline">\(n\cdot \hat{p} &gt; 5,\ n\cdot(1-\hat{p}) &gt; 5\)</span></li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \pi = \pi_0\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\sqrt{\pi_0(1-\pi_0)/n}\)</span></li>
+<li>Distribution: <span class="math inline">\(N(0,1)\)</span></li>
+</ul></li>
+<li><strong>Two sample test for proportions</strong>
+<ul>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li><span class="math inline">\(n_A\cdot \hat{p}_A &gt; 5,\ n_A\cdot(1-\hat{p}_A) &gt; 5,\ n_B\cdot \hat{p}_B &gt; 5,\ n_B\cdot(1-\hat{p}_B) &gt; 5\)</span></li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \pi_A = \pi_B\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_A} + \frac{1}{n_B}\right)}\)</span></li>
+<li>Distribution: <span class="math inline">\(N(0,1)\)</span></li>
+<li>Needed formula:
+<ol style="list-style-type: lower-roman">
+<li><span class="math inline">\(\hat{p} = \frac{x_A + x_B}{n_A + n_B}\)</span> where <span class="math inline">\(x_A\)</span> is the number of people with the feature in group <span class="math inline">\(A\)</span>, <span class="math inline">\(x_B\)</span> the number of people with the feature in group <span class="math inline">\(B\)</span></li>
+</ol></li>
+</ul></li>
+<li><strong>Test for <span class="math inline">\(\log(\text{Relative Risk})\)</span></strong>
+<ul>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li><span class="math inline">\(n\)</span> “large enough” (not really a good rule of thumb here)</li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: \log(RR) = r\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}}\)</span>, where
+<ul>
+<li><span class="math inline">\(n_1\)</span> is the number of individuals in the exposed group</li>
+<li><span class="math inline">\(n_2\)</span> is the number of individuals in the non-exposed group</li>
+<li><span class="math inline">\(x_1\)</span> is the number of individuals in the exposed group WITH the disease</li>
+<li><span class="math inline">\(x_2\)</span> is the number of individuals in the non-exposed group WITH the disease</li>
+</ul></li>
+<li>Distribution: <span class="math inline">\(N(0,1)\)</span></li>
+</ul></li>
+<li><strong>Test for $()</strong>
+<ul>
+<li>Assumptions:
+<ol style="list-style-type: lower-roman">
+<li>independent observations</li>
+<li><span class="math inline">\(n\)</span> “large enough” (not really a good rule of thumb here)</li>
+</ol></li>
+<li>Null hypothesis: <span class="math inline">\(H_0: log(OR) = r\)</span></li>
+<li>Standard deviation: <span class="math inline">\(\sqrt{1/a + 1/b + 1/c + 1/d}\)</span>, where <span class="math inline">\(a,b,c,d\)</span> are the counts in the 2-by-2 contingency table.</li>
+<li>Distribution: <span class="math inline">\(N(0,1)\)</span></li>
+</ul></li>
+</ul>
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction-to-statistical-hypothesis-testing.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="introduction-to-confidence-intervals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

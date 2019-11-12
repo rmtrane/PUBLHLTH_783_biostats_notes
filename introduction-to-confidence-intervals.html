@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 What is “probability”? | Biostatistics in Public Health</title>
-  <meta name="description" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <title>14 Introduction to Confidence Intervals | Biostatistics in Public Health</title>
+  <meta name="description" content="14 Introduction to Confidence Intervals | Biostatistics in Public Health" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <meta property="og:title" content="14 Introduction to Confidence Intervals | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <meta name="twitter:title" content="14 Introduction to Confidence Intervals | Biostatistics in Public Health" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="grey-areas.html"/>
-<link rel="next" href="conditional-probability.html"/>
+<link rel="prev" href="examples-of-statistical-tests.html"/>
+<link rel="next" href="examples-of-confidence-intervals.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -225,141 +225,64 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="what-is-probability" class="section level1">
-<h1><span class="header-section-number">8</span> What is “probability”?</h1>
-<p>A <em>probability</em> is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 <strong>always</strong> occurs, while an event with probability of 0 <strong>never</strong> occurs. Every number in between are a bit harder to interpret.</p>
-<p>For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there’s a 0.5 (i.e. 50%) chance of rain tomorrow? We can only observe if it rains tomorrow once, so the probability surely must be 0 (it doesn’t rain) or 1 (it rains), right?</p>
-<div id="definitions" class="section level2">
-<h2><span class="header-section-number">8.1</span> Definitions</h2>
-<p>As hinted at above, the concept of “probability” can be a bit challenging to wrap your head around. There are generally two ways that the term is introduced. Though they are very similar once you understand the concepts, they can seem radically different at first.</p>
-
-<div class="definition">
-<p><span id="def:prob-def-1" class="definition"><strong>Definition 8.1  </strong></span>The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, <strong>IF</strong> all outcomes are equally likely:</p>
-<span class="math display">\[
-  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}.
-\]</span>
-</div>
-
-<p>We often refer to the numerator in this fraction as the number of favorable outcomes.</p>
-<p>I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: “IF all outcomes are equally likely”. We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption.</p>
-<p>The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and (by far!!) most boring examples in the history of statistics. However, they are super useful for two reasons:</p>
-<ol style="list-style-type: decimal">
-<li>They are so simple that it is possible to better grasp what’s going on</li>
-<li>A lot of more complicated examples can be simplified by comparing them to these two</li>
-</ol>
-<div id="examples-3" class="section level3">
-<h3><span class="header-section-number">8.1.1</span> Examples</h3>
-<div id="coin-flip" class="section level4">
-<h4><span class="header-section-number">8.1.1.1</span> Coin Flip</h4>
-<p>We want to find the probability <span class="math inline">\(P(\text{coin comes up heads})\)</span>. A natural assumption is that when flipping a coin, heads and tails are the only outcomes<a href="references.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, and they are equally likely. Therefore,</p>
+<div id="introduction-to-confidence-intervals" class="section level1">
+<h1><span class="header-section-number">14</span> Introduction to Confidence Intervals</h1>
+<p>The statistical hypothesis test approach to trying to answer research questions is in many ways a rather destructive and inefficient approach – destructive as we can only reject hypotheses in favor of another, and inefficient as the rejection is based on a single possible value. A <em>confidence interval</em>, although related to the hypothesis tests seen in the previous <a href="#statistical-tests">section</a>, is a much more useful way of answering research questions. Here, we do not seek to reject any particular potential value, but rather provide a range of values that, given the data, we think includes the true value.</p>
+<p>The backbone of the confidence interval is a statistical test. In fact, most confidence intervals (at least all that we will see in this class) is “simply” the range of values that the corresponding test would NOT reject. To see how this works, we will consider the simplest test, the one-sample z-test, but note that the procedure is the same for all the tests.</p>
+<p>In the one-sample z-test, we assume that we have a sample of independent observations of continuous random variables for which we know the true standard deviation <span class="math inline">\(\sigma\)</span>. Furthermore, we need the sample average <span class="math inline">\(\bar{X}\)</span> to be normally distributed. (This happens if a) the data itself is normally distributed, or b) the sample size is greater than <span class="math inline">\(30\)</span>.) Since <span class="math inline">\(\bar{X}\)</span> is normally distributed, we know that <span class="math inline">\(Z = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} \sim N(0,1)\)</span>. Since <span class="math inline">\(\sigma\)</span> is known, we know that <span class="math inline">\(\text{SD}(\bar{X}) = \frac{\sigma}{\sqrt{n}}\)</span>. We are interested in testing the null hypothesis <span class="math inline">\(H_0: \mu = \mu_0\)</span> against the alternative <span class="math inline">\(H_A: \mu \neq \mu_0\)</span>. Assuming that the null hypothesis is true, <span class="math inline">\(E(\bar{X}) = E(X_i) = \mu_0\)</span>, and so <span class="math inline">\(Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\)</span> <strong>IF</strong> <span class="math inline">\(H_0\)</span> is true.</p>
+<p>To judge if <span class="math inline">\(H_0\)</span> seems plausible, we calculate the observed value of <span class="math inline">\(Z\)</span> by simply plugging in the observed average: <span class="math inline">\(z_\text{obs} = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}\)</span>. If this value is large (in absolute value, i.e. “far from zero”), then the observed value of the sample average <span class="math inline">\(\bar{x}\)</span> is far from <span class="math inline">\(\mu_0\)</span>, and therefore we reject the idea that <span class="math inline">\(\mu_0\)</span> is the true population mean. To assess if <span class="math inline">\(z_\text{obs}\)</span> is “far from zero”, we calculate the probability of observing a value of <span class="math inline">\(Z\)</span> that is even further from <span class="math inline">\(0\)</span> <em>if <span class="math inline">\(H_0\)</span> is true</em>. This probability is called the p-value. We then proceed to reject the null hypothesis if the p-value is smaller than some pre-specified value, often denoted <span class="math inline">\(\alpha\)</span>, which is called the significance level.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-85-1.png" width="672" /></p>
+<p>What we haven’t talked about yet is a different way of drawing the conclusion. Instead of calculating the probability of observing something “further away from 0”, we can find the cut-off points (called <em>critical values</em>) that cut off <span class="math inline">\(\alpha\)</span> in the tails of the curve. We then reject if our observed value of the test statistic <span class="math inline">\(z_\text{obs}\)</span> is outside of the interval given by the critical values.</p>
+<p>Say that we choose <span class="math inline">\(\alpha = 0.05\)</span>. In this case, the critical values are <span class="math inline">\(\pm 1.96\)</span>. So, we would reject the null hypothesis if <span class="math inline">\(z_\text{obs}\)</span> is smaller than <span class="math inline">\(-1.96\)</span> or greater than <span class="math inline">\(1.96\)</span>.</p>
+<p><img src="783_biostats_files/figure-html/unnamed-chunk-86-1.png" width="672" /></p>
+<p>It’s important to note that the two approaches will lead to the same conclusion: if the p-value is smaller than <span class="math inline">\(\alpha\)</span>, then the observed value is outside the interval defined by the critical values, and vice versa. But this second approach allows us to clearly describe all the values that would NOT lead us to reject the null hypothesis: namely the values <em>between</em> <span class="math inline">\(z_\text{crit,1}\)</span> and <span class="math inline">\(z_\text{crit}\)</span>. In more mathy terms, if <span class="math inline">\(z_\text{crit,1} &lt; z_\text{obs} &lt; z_\text{crit,2}\)</span> we won’t reject the null hypothesis. Since <span class="math inline">\(z_\text{obs} = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}\)</span>, we can then find all the values of <span class="math inline">\(\mu_0\)</span> that would NOT be rejected! This is simply all values of <span class="math inline">\(\mu_0\)</span> that results in <span class="math inline">\(z_\text{obs}\)</span> being greater than <span class="math inline">\(z_\text{crit,1}\)</span> AND smaller than <span class="math inline">\(z_\text{crit,2}\)</span>. Looking at the first inequality, i.e. <span class="math inline">\(z_\text{crit,1} &lt; z_\text{obs}\)</span>, we see that <span class="math inline">\(\mu_0\)</span> must be satisfy the following:</p>
 <p><span class="math display">\[\begin{align*}
-  P(\text{coin comes up heads}) &amp;= \frac{\text{number of possible outcomes that come up heads}}{\text{number of possible outcomes}} \\
-  &amp;= \frac{1}{2} \\
-  &amp;= 0.5.
+  z_\text{crit,1} &amp; &lt; z_\text{obs} &amp;\iff \\
+  z_\text{crit,1} &amp; &lt; \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} &amp;\iff \\
+  z_\text{crit,1}\sigma/\sqrt{n} &amp; &lt; \bar{x} - \mu_0 &amp;\iff \\
+  \mu_0 + z_\text{crit,1}\sigma/\sqrt{n} &amp; &lt; \bar{x} &amp;\iff \\
+  \mu_0 &lt; \bar{x} - z_\text{crit,1}\sigma/\sqrt{n} &amp; 
 \end{align*}\]</span></p>
-<p>Similarly, one can find the probability that the coin comes up tails:</p>
-<p><span class="math display">\[\begin{align}
-  P(\text{coin comes up tails}) &amp;= \frac{\text{number of possible outcomes that come up tails}}{\text{number of possible outcomes}} \\
-  &amp;= \frac{1}{2} \\
-  &amp;= 0.5.
-\end{align}\]</span></p>
+<p>Looking at the second inequality, i.e. <span class="math inline">\(z_\text{obs} &lt; z_\text{crit,2}\)</span>, we see that <span class="math inline">\(\mu_0\)</span> must be satisfy the following:</p>
+<p><span class="math display">\[\begin{align*}
+  z_\text{obs} &amp;&lt; z_\text{crit,2} &amp;\iff \\
+  \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} &amp;&lt; z_\text{crit,2} &amp;\iff \\
+  \bar{x} - \mu_0 &amp;&lt; z_\text{crit,2} \sigma/\sqrt{n} &amp;\iff \\
+  \bar{x} &amp;&lt; \mu_0 + z_\text{crit,2} \sigma/\sqrt{n} &amp;\iff \\
+  \bar{x} - z_\text{crit,2} \sigma/\sqrt{n} &amp;&lt; \mu_0 &amp; 
+\end{align*}\]</span></p>
+<p>So all values of <span class="math inline">\(\mu_0\)</span> that fall between <span class="math inline">\(\bar{x} - z_\text{crit,2} \sigma/\sqrt{n}\)</span> and <span class="math inline">\(\bar{x} - z_\text{crit,1} \sigma/\sqrt{n}\)</span> would not be rejected. We call this interval a <span class="math inline">\((1-\alpha)\cdot 100 \%\)</span> <em>Confidence Interval</em>. If <span class="math inline">\(\alpha = 0.05\)</span>, as it often is, then this turns out to be a <span class="math inline">\(95\%\)</span> Confidence Interval for <span class="math inline">\(\mu\)</span> (the true population mean). We say that we are <span class="math inline">\(95\%\)</span> <em>confident</em> that the true value is in this interval.</p>
+<div id="faq" class="section level2">
+<h2><span class="header-section-number">14.1</span> FAQ</h2>
+<div id="youre-telling-me-there-are-two-critical-values" class="section level3">
+<h3><span class="header-section-number">14.1.1</span> You’re telling me there are <strong>TWO</strong> critical values?</h3>
+<p>Yes, there are actually two critical values. However, whenever the distribution we’re looking at is symmetrical, the two critical values are actually just plus/minus one value. For example, if we’re constructing a one-sample z confidence interval with confidence <span class="math inline">\(95\%\)</span>, the critical values are <span class="math inline">\(\pm 1.96\)</span>. This also means that the confidence interval takes on a bit simpler form: <span class="math inline">\(\bar{x} \pm 1.96\cdot \sigma/\sqrt{n}\)</span>.</p>
 </div>
-<div id="roll-of-a-die" class="section level4">
-<h4><span class="header-section-number">8.1.1.2</span> Roll of a Die</h4>
-<p>Another classic example: calculate different probabilities when rolling a die. (Done in class – see lecture notes.)</p>
-<hr />
-<p>The two examples above show situations where all possible outcomes are equally likely. What if that is not the case?</p>
+<div id="where-does-the-95-come-from" class="section level3">
+<h3><span class="header-section-number">14.1.2</span> Where does the “95%” come from?</h3>
+<p>Remember how the sample average <span class="math inline">\(\bar{X}\)</span> is a random variable with a distribution? In the same vein, you can consider the confidence interval as a random variable. Again, we’ll use the one sample Z confidence interval as an example: <span class="math inline">\((\bar{X} - 1.96 \cdot \sigma/\sqrt{n},\ \bar{X} - 1.96 \cdot \sigma/\sqrt{n})\)</span>. You can then ask, <em>before performing the experiment</em>, what is the probability the true value <span class="math inline">\(\mu\)</span> is contained in the interval?</p>
+<p><span class="math display">\[\begin{align*}
+  P(\bar{X} - 1.96 \cdot \sigma/\sqrt{n} &amp;&lt; \mu &lt; \bar{X} + 1.96 \cdot \sigma/\sqrt{n}) \\ 
+                  &amp;= P(\mu &lt; \bar{X} + 1.96 \cdot \sigma/\sqrt{n}) - P(\mu &lt; \bar{X} &lt; 1.96 \cdot \sigma/\sqrt{n}) \\
+                  &amp;= P(\mu - 1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X}) - P(\mu - 1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X}) \\
+                  &amp;= P(-1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X} - \mu) - P(\bar{X} - \mu &lt;  1.96 \cdot \sigma/\sqrt{n}) \\
+                  &amp;= P(-1.96 &lt; \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}) - P(\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} &lt;  1.96) \\
+                  &amp;= P(-1.96 &lt; Z) - P(Z &lt; 1.96) \\
+                  &amp;= [1 - P(Z &lt; -1.96)] - P(Z &lt; 1.96) \\
+                  &amp;= 1 - \alpha/2 - \alpha/2 = 1 - \alpha.
+\end{align*}\]</span></p>
+<p>So the probability that a confidence interval constructed in this way contains the true value is <span class="math inline">\(1-\alpha\)</span>. If <span class="math inline">\(\alpha = 0.05\)</span>, then
+<span class="math inline">\(P(\text{CI contains true value}) = 0.95\)</span>. Hence, we call it a <span class="math inline">\(95\%\)</span> Confidence Interval, and say “we are 95% sure the true value lies in the confidence interval”.</p>
 </div>
+<div id="FAQprob" class="section level3">
+<h3><span class="header-section-number">14.1.3</span> Why can’t we say there’s a 95% chance that the true value is in a 95% Confidence Interval?</h3>
+<p>This is one excellent question! We just saw above that the probability that a confidence interval constructed in this way contains the true value is <span class="math inline">\(1-\alpha\)</span>, so why not say the true value is in the confidence interval with probability <span class="math inline">\(1-\alpha\)</span>?</p>
+<p>Any statement about probabilities has to deal with some randomness. Once you’ve conducted your experiment, all the randomness is gone. You have one fixed value for your lower bound, and one fixed value for your upper bound. I.e. nothing is random anymore. And although we do not know what the true value is, it is a fixed value, and not random.</p>
+<p>Say you performed your experiment and got a confidence interval for <span class="math inline">\(\mu\)</span> of <span class="math inline">\((26, 35)\)</span>. If you were to think about something like <span class="math inline">\(P(26 &lt; \mu &lt; 35)\)</span>, you would run into the exact problem mentioned above: there are no random variables involved. Actually, this probability is either <span class="math inline">\(1\)</span> (<span class="math inline">\(\mu\)</span> happens to be in the interval), or <span class="math inline">\(0\)</span> (<span class="math inline">\(\mu\)</span> happens to NOT be in the interval), but we will never know if it’s one of the other.</p>
 </div>
-<div id="example-disease-status" class="section level3">
-<h3><span class="header-section-number">8.1.2</span> Example: disease status</h3>
-<p>Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might conclude that the probability of a subject being obese if <span class="math inline">\(\frac{1}{2}\)</span>, i.e. <span class="math inline">\(0.5\)</span>.</p>
-<p>This is obviously not the case. The problem with this approach is that the two outcomes – those being “the subject is obese”, and “the subject is NOT obese” – are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good.</p>
-<hr />
-<p>To find a more satisfying answer to the question asked in the last example, we need to consider a different approach to probabilities.</p>
-
-<div class="definition">
-<span id="def:prob-def-2" class="definition"><strong>Definition 8.2  </strong></span>The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an <em>infinite number of times</em>.
-</div>
-
-<p>Repeating an experiment an infinite number of times is obviously not possible, so in practice “an infinite number of times” becomes “a very large number of times”.</p>
-<p>When introducing this different approach to probabilities, first we need to make sure it doesn’t contradict our previous approach.</p>
-</div>
-<div id="example-coin-flip-revisited" class="section level3">
-<h3><span class="header-section-number">8.1.3</span> Example: coin flip (revisited)</h3>
-<p>We previously established that when flipping a coin, the probability of heads is <span class="math inline">\(0.5\)</span>. Hopefully this new definition will yield a similar answer.</p>
-<p>To find out if that is actually the case, we would have to flip a coin “an infinite number of times”. Obviously, this is not possible, so we will have to settle for “a very large number of times”. So, imagine we flip a coin 100000 times. Every time it is flipped, we write down the result, and count how many times we’ve seen heads, and how many times we’ve seen tails so far. If the probability of seeing heads is <span class="math inline">\(0.5\)</span>, we should eventually see about as many heads as tails.</p>
-<p>Below is an animation that shows the results of such an experiment. The bars show you the proportion of heads and tails, which in the end (by the definition above) will converge to the probability. The first 100 flips are all shown, then only the results after every 100 flips, and finally results after every 1000 flips are shown. Note how at the very end the two bars are both very close to <span class="math inline">\(0.5\)</span>.</p>
-<video controls>
-<source src="coin_flip.mp4" type="video/mp4">
-</video>
-</div>
-<div id="example-roll-of-a-die-revisited" class="section level3">
-<h3><span class="header-section-number">8.1.4</span> Example: roll of a die (revisited)</h3>
-<p>Similarly to what we did above for the coin flip, we will do here for the roll of a die.</p>
-<video controls>
-<source src="die_roll.mp4" type="video/mp4">
-</video>
-</div>
-<div id="example-disease-status-1" class="section level3">
-<h3><span class="header-section-number">8.1.5</span> Example: disease status</h3>
-<p>Okay, so both when flipping a coin and rolling a die, the second definition agrees with the first one. But how can we use this way of thinking in the disease status example? What does it even mean to “repeat the experiment”, let alone “repeat an infinite number of times”?!</p>
-<p>In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are “similar enough” that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease.</p>
-<p>Let’s consider the probability that a person from the SHOW population is mildly depressed. To estimate this, we simply divide the number of individuals in the population who are mildly depressed with the total number of people in the population.</p>
-<p>Below are estimated probabilities for all depression severity levels. Note: <span class="math inline">\(P(\text{mildly depressed}) = \frac{454}{3381} \approx 0.134\)</span>.</p>
-<table style="width:81%;">
-<colgroup>
-<col width="36%" />
-<col width="11%" />
-<col width="33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">Depression Severity</th>
-<th align="center">Count</th>
-<th align="center">Estimated Probability</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">[1] No depression</td>
-<td align="center">1629</td>
-<td align="center">0.482</td>
-</tr>
-<tr class="even">
-<td align="center">[2] Mild depression</td>
-<td align="center">454</td>
-<td align="center">0.134</td>
-</tr>
-<tr class="odd">
-<td align="center">[3] Moderate depression</td>
-<td align="center">125</td>
-<td align="center">0.037</td>
-</tr>
-<tr class="even">
-<td align="center">[4] Moderately severe
-depression</td>
-<td align="center">52</td>
-<td align="center">0.0154</td>
-</tr>
-<tr class="odd">
-<td align="center">[5] Severe depression</td>
-<td align="center">15</td>
-<td align="center">0.00444</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">1106</td>
-<td align="center">0.327</td>
-</tr>
-<tr class="odd">
-<td align="center">Total</td>
-<td align="center">3381</td>
-<td align="center">1</td>
-</tr>
-</tbody>
-</table>
-
+<div id="follow-up-but-why-even-bother-with-a-confidence-interval-then" class="section level3">
+<h3><span class="header-section-number">14.1.4</span> Follow-up: But why even bother with a confidence interval, then?!?!?!</h3>
+<p>Although we cannot say anything about one single confidence interval, we still know that <em>if</em> we were to repeat the experiment many, many times constructing confidence intervals in this way each time, (and our assumptions are correct) then <span class="math inline">\(95\%\)</span> of the constructed confidence intervals will contain the true value! Yet another reason to repeat experiments rather than draw conclusions based on a single one.</p>
 </div>
 </div>
 </div>
@@ -368,8 +291,8 @@ depression</td>
           </div>
         </div>
       </div>
-<a href="grey-areas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="conditional-probability.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="examples-of-statistical-tests.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="examples-of-confidence-intervals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

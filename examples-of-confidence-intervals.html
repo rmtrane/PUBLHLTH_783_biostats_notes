@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 What is “probability”? | Biostatistics in Public Health</title>
-  <meta name="description" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <title>15 Examples of Confidence Intervals | Biostatistics in Public Health</title>
+  <meta name="description" content="15 Examples of Confidence Intervals | Biostatistics in Public Health" />
   <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <meta property="og:title" content="15 Examples of Confidence Intervals | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 What is “probability”? | Biostatistics in Public Health" />
+  <meta name="twitter:title" content="15 Examples of Confidence Intervals | Biostatistics in Public Health" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="grey-areas.html"/>
-<link rel="next" href="conditional-probability.html"/>
+<link rel="prev" href="introduction-to-confidence-intervals.html"/>
+<link rel="next" href="lecture-slides.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -225,151 +225,163 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="what-is-probability" class="section level1">
-<h1><span class="header-section-number">8</span> What is “probability”?</h1>
-<p>A <em>probability</em> is a number between 0 and 1 that indicates how likely it is that a certain event happens. An event that has the probability of 1 <strong>always</strong> occurs, while an event with probability of 0 <strong>never</strong> occurs. Every number in between are a bit harder to interpret.</p>
-<p>For example, an event with probability 0.5 supposedly happens every other time. This makes sense if you think about something that can be repeated, such as a coin flip, or the roll of a die, but how does that work if we consider an event that only occurs once? For example, how do we interpret a weather forecast that claims there’s a 0.5 (i.e. 50%) chance of rain tomorrow? We can only observe if it rains tomorrow once, so the probability surely must be 0 (it doesn’t rain) or 1 (it rains), right?</p>
-<div id="definitions" class="section level2">
-<h2><span class="header-section-number">8.1</span> Definitions</h2>
-<p>As hinted at above, the concept of “probability” can be a bit challenging to wrap your head around. There are generally two ways that the term is introduced. Though they are very similar once you understand the concepts, they can seem radically different at first.</p>
-
-<div class="definition">
-<p><span id="def:prob-def-1" class="definition"><strong>Definition 8.1  </strong></span>The probability of an event is the number of outcomes that ensure the event happens divided by the total number of possible outcomes, <strong>IF</strong> all outcomes are equally likely:</p>
-<span class="math display">\[
-  P(\text{event}) = \frac{\text{number of outcomes that result in event}}{\text{total number of possible outcomes}}.
-\]</span>
-</div>
-
-<p>We often refer to the numerator in this fraction as the number of favorable outcomes.</p>
-<p>I want to take a second to draw your attention to that small, but incredibly important, final bit of the definition: “IF all outcomes are equally likely”. We will later discuss what to do if this is not the case, but for now, this will be an underlying assumption.</p>
-<p>The best way to become comfortable with this definition is by considering a few simple examples. The following two examples are the most commonly used, and (by far!!) most boring examples in the history of statistics. However, they are super useful for two reasons:</p>
-<ol style="list-style-type: decimal">
-<li>They are so simple that it is possible to better grasp what’s going on</li>
-<li>A lot of more complicated examples can be simplified by comparing them to these two</li>
-</ol>
-<div id="examples-3" class="section level3">
-<h3><span class="header-section-number">8.1.1</span> Examples</h3>
-<div id="coin-flip" class="section level4">
-<h4><span class="header-section-number">8.1.1.1</span> Coin Flip</h4>
-<p>We want to find the probability <span class="math inline">\(P(\text{coin comes up heads})\)</span>. A natural assumption is that when flipping a coin, heads and tails are the only outcomes<a href="references.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, and they are equally likely. Therefore,</p>
-<p><span class="math display">\[\begin{align*}
-  P(\text{coin comes up heads}) &amp;= \frac{\text{number of possible outcomes that come up heads}}{\text{number of possible outcomes}} \\
-  &amp;= \frac{1}{2} \\
-  &amp;= 0.5.
-\end{align*}\]</span></p>
-<p>Similarly, one can find the probability that the coin comes up tails:</p>
-<p><span class="math display">\[\begin{align}
-  P(\text{coin comes up tails}) &amp;= \frac{\text{number of possible outcomes that come up tails}}{\text{number of possible outcomes}} \\
-  &amp;= \frac{1}{2} \\
-  &amp;= 0.5.
-\end{align}\]</span></p>
-</div>
-<div id="roll-of-a-die" class="section level4">
-<h4><span class="header-section-number">8.1.1.2</span> Roll of a Die</h4>
-<p>Another classic example: calculate different probabilities when rolling a die. (Done in class – see lecture notes.)</p>
-<hr />
-<p>The two examples above show situations where all possible outcomes are equally likely. What if that is not the case?</p>
-</div>
-</div>
-<div id="example-disease-status" class="section level3">
-<h3><span class="header-section-number">8.1.2</span> Example: disease status</h3>
-<p>Let us consider the SHOW data set. We might be interested in the probability of a subject being obese. Now, there seems to be only two outcomes here: either the subject is obese, or the subject is not. So, using the same string of thoughts as above, one might conclude that the probability of a subject being obese if <span class="math inline">\(\frac{1}{2}\)</span>, i.e. <span class="math inline">\(0.5\)</span>.</p>
-<p>This is obviously not the case. The problem with this approach is that the two outcomes – those being “the subject is obese”, and “the subject is NOT obese” – are not equally likely, so the simple approach of simply dividing the number of favorable outcomes by the number of possible outcomes is not doing us any good.</p>
-<hr />
-<p>To find a more satisfying answer to the question asked in the last example, we need to consider a different approach to probabilities.</p>
-
-<div class="definition">
-<span id="def:prob-def-2" class="definition"><strong>Definition 8.2  </strong></span>The probability of a specific outcome from an experiment is the proportion of times the outcome occurs if the experiment is repeated an <em>infinite number of times</em>.
-</div>
-
-<p>Repeating an experiment an infinite number of times is obviously not possible, so in practice “an infinite number of times” becomes “a very large number of times”.</p>
-<p>When introducing this different approach to probabilities, first we need to make sure it doesn’t contradict our previous approach.</p>
-</div>
-<div id="example-coin-flip-revisited" class="section level3">
-<h3><span class="header-section-number">8.1.3</span> Example: coin flip (revisited)</h3>
-<p>We previously established that when flipping a coin, the probability of heads is <span class="math inline">\(0.5\)</span>. Hopefully this new definition will yield a similar answer.</p>
-<p>To find out if that is actually the case, we would have to flip a coin “an infinite number of times”. Obviously, this is not possible, so we will have to settle for “a very large number of times”. So, imagine we flip a coin 100000 times. Every time it is flipped, we write down the result, and count how many times we’ve seen heads, and how many times we’ve seen tails so far. If the probability of seeing heads is <span class="math inline">\(0.5\)</span>, we should eventually see about as many heads as tails.</p>
-<p>Below is an animation that shows the results of such an experiment. The bars show you the proportion of heads and tails, which in the end (by the definition above) will converge to the probability. The first 100 flips are all shown, then only the results after every 100 flips, and finally results after every 1000 flips are shown. Note how at the very end the two bars are both very close to <span class="math inline">\(0.5\)</span>.</p>
-<video controls>
-<source src="coin_flip.mp4" type="video/mp4">
-</video>
-</div>
-<div id="example-roll-of-a-die-revisited" class="section level3">
-<h3><span class="header-section-number">8.1.4</span> Example: roll of a die (revisited)</h3>
-<p>Similarly to what we did above for the coin flip, we will do here for the roll of a die.</p>
-<video controls>
-<source src="die_roll.mp4" type="video/mp4">
-</video>
-</div>
-<div id="example-disease-status-1" class="section level3">
-<h3><span class="header-section-number">8.1.5</span> Example: disease status</h3>
-<p>Okay, so both when flipping a coin and rolling a die, the second definition agrees with the first one. But how can we use this way of thinking in the disease status example? What does it even mean to “repeat the experiment”, let alone “repeat an infinite number of times”?!</p>
-<p>In such a situation, we make a (very crude, but very necessary) assumption: we assume that all the subjects in the cohort are “similar enough” that we can pretend that observing the disease status of multiple people constitutes multiple experiments. We then estimate the probability of having the disease as the proportion of subjects with the disease.</p>
-<p>Let’s consider the probability that a person from the SHOW population is mildly depressed. To estimate this, we simply divide the number of individuals in the population who are mildly depressed with the total number of people in the population.</p>
-<p>Below are estimated probabilities for all depression severity levels. Note: <span class="math inline">\(P(\text{mildly depressed}) = \frac{454}{3381} \approx 0.134\)</span>.</p>
-<table style="width:81%;">
+<div id="examples-of-confidence-intervals" class="section level1">
+<h1><span class="header-section-number">15</span> Examples of Confidence Intervals</h1>
+<p>To actually calculate confidence intervals, we refer to the overview given in section <a href="examples-of-statistical-tests.html#stat-tests-overview">13.6</a>. For any of the quantities mentioned, a confidence interval can be found as <span class="math inline">\(XX \pm \text{critical value} \cdot \text{SD}(XX)\)</span>, where the standard deviation is as shown in section <a href="examples-of-statistical-tests.html#stat-tests-overview">13.6</a>, and the critical value is found using the distribution mentioned. The critical value depends on the coverage wanted – if you want to find a <span class="math inline">\((1-\alpha)\cdot 100\%\)</span> confidence interval, your critical value it the value that cuts off <span class="math inline">\(\alpha/2\)</span> in the distribution.</p>
+<div id="difference-in-means" class="section level2">
+<h2><span class="header-section-number">15.1</span> Difference in Means</h2>
+<p>Using the SHOW data, we would like to calculate a <span class="math inline">\(95\%\)</span> for the difference in mean BMI between those depressed and those not depressed. To do so, we first need to decide whether we’re willing to assume equal variance in the two groups or not. To do so, we calculate the variances in the two groups.</p>
+<table style="width:53%;">
 <colgroup>
-<col width="36%" />
-<col width="11%" />
-<col width="33%" />
+<col width="18%" />
+<col width="9%" />
+<col width="9%" />
+<col width="15%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="center">Depression Severity</th>
-<th align="center">Count</th>
-<th align="center">Estimated Probability</th>
+<th align="center">Depression</th>
+<th align="center">n</th>
+<th align="center">mean</th>
+<th align="center">Variance</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">[1] No depression</td>
+<td align="center">0</td>
 <td align="center">1629</td>
-<td align="center">0.482</td>
+<td align="center">29.2</td>
+<td align="center">49.9</td>
 </tr>
 <tr class="even">
-<td align="center">[2] Mild depression</td>
-<td align="center">454</td>
-<td align="center">0.134</td>
-</tr>
-<tr class="odd">
-<td align="center">[3] Moderate depression</td>
-<td align="center">125</td>
-<td align="center">0.037</td>
-</tr>
-<tr class="even">
-<td align="center">[4] Moderately severe
-depression</td>
-<td align="center">52</td>
-<td align="center">0.0154</td>
-</tr>
-<tr class="odd">
-<td align="center">[5] Severe depression</td>
-<td align="center">15</td>
-<td align="center">0.00444</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">1106</td>
-<td align="center">0.327</td>
-</tr>
-<tr class="odd">
-<td align="center">Total</td>
-<td align="center">3381</td>
 <td align="center">1</td>
+<td align="center">646</td>
+<td align="center">31.2</td>
+<td align="center">89.3</td>
 </tr>
 </tbody>
 </table>
+<p>The rule of thumb for equal variance is if the variances are within a factor of <span class="math inline">\(4\)</span> of each other. Since <span class="math inline">\(\frac{89.29}{49.92} \approx 1.79\)</span>, the variances are within a factor of <span class="math inline">\(4\)</span> of each other, so we can safely assume equal variance. In this case, we need to calculate the pooled variance <span class="math inline">\(s_p^2 = \frac{(n_A - 1)s_A^2 + (n_B - 1)s_B^2}{n_A + n_B - 2}\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+  s_p^2 &amp;= \frac{1628 \cdot 49.92 + 645 \cdot 89.29}{1629 + 646 - 2} \\
+        &amp;= \frac{1.3886181\times 10^{5}}{2273} \\
+        &amp;= 61.09
+\end{align*}\]</span></p>
+<p>We can the find the <span class="math inline">\(95\%\)</span> confidence interval as</p>
+<p><span class="math display">\[\begin{align*}
+  (\bar{X}_1 - \bar{X}_0) \pm 1.96 \cdot s_p \sqrt{1/n_1 + 1/n_0} &amp;= 1.93 \pm 1.96 \cdot 61.09 \cdot 0.0464958 \\
+  &amp;= 1.93 \pm 5.57 \\
+  &amp;= [-3.64, 7.5]
+\end{align*}\]</span></p>
+<p>We’re <span class="math inline">\(95\%\)</span> confident that the true difference in means lies in the interval [-3.64, 7.5]. This also means that, if we were to test if there is a difference at a <span class="math inline">\(5\%\)</span> significance level, we would not reject the null hypothesis of <span class="math inline">\(H_0: \mu_1 - \mu_0 = 0\)</span>, since <span class="math inline">\(0\)</span> is in the interval. Remember, the interval consists of all the values we would NOT reject.</p>
+</div>
+<div id="difference-in-proportions" class="section level2">
+<h2><span class="header-section-number">15.2</span> Difference in Proportions</h2>
+<p>Say we want a confidence interval for the difference in the proportion of obese people (BMI <span class="math inline">\(\ge 30\)</span>) between those that are married, and those that are unmarried. The table below shows proportions (numbers) of married and unmarried that are obese.</p>
+<table style="width:94%;">
+<colgroup>
+<col width="26%" />
+<col width="26%" />
+<col width="26%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Married \ Obese</th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Married</td>
+<td align="center">0.5915643 (1108)</td>
+<td align="center">0.4084357 (765)</td>
+<td align="center">1 (1873)</td>
+</tr>
+<tr class="even">
+<td align="center">Unmarried</td>
+<td align="center">0.6062619 (639)</td>
+<td align="center">0.3937381 (415)</td>
+<td align="center">1 (1054)</td>
+</tr>
+<tr class="odd">
+<td align="center">Total</td>
+<td align="center">0.5968569 (1747)</td>
+<td align="center">0.4031431 (1180)</td>
+<td align="center">1 (2927)</td>
+</tr>
+</tbody>
+</table>
+<p>Before we can go ahead and calculate the confidence interval, we need to make sure the assumptions behind the test of a difference in proportions are met. Per section <a href="examples-of-statistical-tests.html#stat-tests-overview">13.6</a>, those are i) independent observation, and ii) all cell counts have to be greater than <span class="math inline">\(5\)</span>. ii) is definitely satisfied, but i) is much harder to verify. Let us assume that the sample we have is a simple random sample. So, i) is also satisfied.</p>
+<p>To find the <span class="math inline">\(95\%\)</span> confidence interval for the difference, we need to calculate <span class="math inline">\((\hat{p}_\text{married} - \hat{p}_\text{unmarried}) \pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)}\)</span>. All the quantities needed can be directly read off of the table above. So,</p>
+<p><span class="math display">\[\begin{align*}
+  (\hat{p}_\text{married} - \hat{p}_\text{unmarried}) &amp;\pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)} \\
+  &amp;= (0.408 - 0.394) \pm 1.96 \cdot 0.403\cdot \sqrt{1/765 + 1/415} \\
+  &amp;=  0.014 \pm 0.0481557\\
+  &amp;= [-0.033, 0.063]
+\end{align*}\]</span></p>
+</div>
+<div id="relative-risk" class="section level2">
+<h2><span class="header-section-number">15.3</span> Relative Risk</h2>
+<p>To find a confidence interval for the relative risk is a bit more tricky, as we cannot directly work with the relative risk, but instead have to deal with <span class="math inline">\(\log(RR)\)</span> for a second. This is because the distribution of the relative risk is not easy to determine, but <a href="estimators-and-their-distributions.html#estimators-examples">the distribution of <span class="math inline">\(\log(RR)\)</span> is actually normal</a>.</p>
+<p>Say we want to find a <span class="math inline">\(95\%\)</span> confidence interval for the relative risk of depression between men and women. The table below shows proportions (numbers) of males and females with and without depression.</p>
+<table style="width:97%;">
+<colgroup>
+<col width="31%" />
+<col width="25%" />
+<col width="25%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Gender \ Depression</th>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Female</td>
+<td align="center">0.6692367 (868)</td>
+<td align="center">0.3307633 (429)</td>
+<td align="center">1 (1297)</td>
+</tr>
+<tr class="even">
+<td align="center">Male</td>
+<td align="center">0.7781186 (761)</td>
+<td align="center">0.2218814 (217)</td>
+<td align="center">1 (978)</td>
+</tr>
+</tbody>
+</table>
+<p>The confidence interval for <span class="math inline">\(\log(RR)\)</span> is found as <span class="math inline">\(\log(RR) \pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}}\)</span>. All the values needed can be directly read off of the table above. So,</p>
+<p><span class="math display">\[\begin{align*}
+  \log(RR) &amp;\pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_2 - x_2)/x_2}{n_2}} \\
+  &amp;= \log\left(\frac{0.222}{0.331}\right) \pm 1.96 \cdot \sqrt{\frac{(978 - 217)/217}{978} + \frac{(1297 - 868)/868}{1297}} \\
+  &amp;= -0.399 \pm 0.1234468 \\
+  &amp;= [-0.523, -0.276]
+\end{align*}\]</span></p>
+<p>So, we are <span class="math inline">\(95\%\)</span> confident that the true log relative risk is in this interval. Unfortunately, that’s not super useful. Interpretig this value is next to impossible. What we really want is a <span class="math inline">\(95\%\)</span> confidence interval for the relative risk. Luckily, it is super easy to go from the confidence interval for the log relative risk to a confidence interval for the relative risk.</p>
+<p>Notice that <span class="math inline">\(\exp(\log(RR)) = RR\)</span>. So it seems reasonable that to go from the log relative risk CI to the relative risk CI, we simply exponentiate the limits. That is exactly how we do it. So, a <span class="math inline">\(95\%\)</span> confidence interval for the relative risk is given by</p>
+<p><span class="math display">\[
+  [e^{-0.523}, e^{-0.276}] = [0.593, 0.759].
+\]</span></p>
 
 </div>
 </div>
-</div>
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="grey-areas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="conditional-probability.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="introduction-to-confidence-intervals.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lecture-slides.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
