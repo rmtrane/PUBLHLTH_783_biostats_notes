@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health</title>
   <meta name="description" content="12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health" />
-  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.15 and GitBook 2.6.7" />
 
   <meta property="og:title" content="12 Introduction to Statistical Hypothesis Testing | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
@@ -57,7 +57,7 @@
 <link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.9/datatables.js"></script>
+<script src="libs/datatables-binding-0.10/datatables.js"></script>
 <link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
@@ -262,7 +262,7 @@ Figure 12.4: Actually seeing the data makes everything clear.
 </div>
 <p>Now I all of a sudden feel much more informed. In the case of the sample in subfigure A, I would definitely argue that the sample average is far from the hypothesized population mean – the average is found in a sample where only one observation is larger than the hypothesized mean. On the other hand, the sample in subfigure B indicates to me that the two lines aren’t that different at all.</p>
 <p>When looking at the two figures, I subconsciously compare the difference between the sample average and the hypothesized population mean to the variation of the data. If the difference is big compared to the variation of the data, I think the difference between the sample average and the hypothesized population mean is large, and therefore the hypothesized population mean doesn’t seem to plausibly be the correct population mean. If the difference is small compared to the variation of the data, I would probably think this is simply due to randomness from the sampling rather than due to the true population mean being different from the hypothesized population mean. So, in subfigure A above I would probably conclude that the hypothesis is incorrect, and therfore reject it, while in subfigure B I would probably NOT come to the same conclusion.</p>
-<p>The next question is then when the difference is “large enough”<a href="references.html#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> relative to the variation that we no longer believe the hypothesized population mean to be the Truth<sup>TM</sup>. As an example, consider the figures below. Here the variation is the same, but the actual sample averages are different. When is the separation between the data and the hypothesized mean so large that we no longer think it can be attributed to randomness from sampling, and more likely is due to a wrong hypothesis?</p>
+<p>The next question is then when the difference is “large enough”<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> relative to the variation that we no longer believe the hypothesized population mean to be the Truth<sup>TM</sup>. As an example, consider the figures below. Here the variation is the same, but the actual sample averages are different. When is the separation between the data and the hypothesized mean so large that we no longer think it can be attributed to randomness from sampling, and more likely is due to a wrong hypothesis?</p>
 <div class="figure"><span id="fig:comp5"></span>
 <img src="783_biostats_files/figure-html/comp5-1.png" alt="When is the data far enough from the hypothesized mean?" width="672" />
 <p class="caption">
@@ -274,7 +274,7 @@ Figure 12.5: When is the data far enough from the hypothesized mean?
 <p>Compare the observed values of the sample average to the distribution it would follow <em>IF</em> the true population mean is indeed <span class="math inline">\(\mu_0\)</span> on the figure below.</p>
 <p><img src="783_biostats_files/figure-html/comp-to-dist-1.png" width="672" /></p>
 <p>In each of the four cases, what is the probability of observing something “further away”? First, we need to define what is “further away”. There’s basically three options: further to the left, further to the right, or either. Which realm we’re in depends on our alternative hypothesis. The alternative hypothesis basically decides which direction we care about. If the alternative is <span class="math inline">\(H_A: \mu &lt; \mu_0\)</span> we only care about being “further to the left”. If the alternative is <span class="math inline">\(H_A: \mu &gt; \mu_0\)</span> we only care about being “further to the right”. If the alternative is <span class="math inline">\(H_A: \mu \neq \mu_0\)</span>, we care about both.</p>
-<p>In the second paragraph in this section, we decided on using <span class="math inline">\(H_A: \mu \neq \mu_0\)</span> as the alternative. Recall we find probabilities for continuous random variables as the area under the curve. So the probability of observing something “further away”, if the true population mean is indeed <span class="math inline">\(\mu_0\)</span>, would be the shaded areas below.<a href="references.html#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a></p>
+<p>In the second paragraph in this section, we decided on using <span class="math inline">\(H_A: \mu \neq \mu_0\)</span> as the alternative. Recall we find probabilities for continuous random variables as the area under the curve. So the probability of observing something “further away”, if the true population mean is indeed <span class="math inline">\(\mu_0\)</span>, would be the shaded areas below.<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a></p>
 <p><img src="783_biostats_files/figure-html/unnamed-chunk-74-1.png" width="672" /></p>
 <p>So now we have a metric for being “far away” that is completely independent of the scale of the data! In all cases, the probability of being “further away” is between 0 and 1. There’s still a subjective question left to answer: when is the probability of being “further away” small enough that we conclude what we observed is indeed far away? The scientific community has to a large extent decided that 0.05 is a good cut-off point. Note that this is completely arbitrary, and any cut-off could be used! It comes down to how harsh you want to be: a smaller cut-off needs “more evidence”.</p>
 <p>In the above discussion, we pivoted from looking at the data (the difference between the average and the hypothesized mean compared to the variation in the data) to look at the probability of observing an average that is farther away from the hypothesized mean than what we have observed in the sample, <em>IF</em> the hypothesized mean is indeed the true population mean. We could only do this because we assumed that we actually know the true standard deviation. In this case, the Central Limit Theorem gives us the distribution of <span class="math inline">\(\bar{X}\)</span>. Specifically, it tells us that <span class="math inline">\(\bar{X} \sim N\left(\mu_0, \frac{\sigma^2}{n}\right)\)</span> (again, assuming <span class="math inline">\(\mu_0\)</span> is the true population mean). In this case, we know from section <a href="random-variables-and-distributions.html#lin-comb-normals">10.4.3.1</a> that <span class="math inline">\(\frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} \sim N(0,1)\)</span> (take a normally distributed random variable, subtract its mean, and divide by the standard deviation). If we look at this quantity, it is <em>exactly</em> what we started out with: it is the difference between the average and the hypothesized population mean relative to the variation of the data! (Recall, <span class="math inline">\(\sigma\)</span> is the standard deviation of the data.) So not only can we actually find the distribution this quantity follows (<em>IF</em> the hypothesized mean is truly the population mean), it is also a metric for the thing we actually want to measure! In general, such a quantity is called a <em>test statistic</em>. It is the statistic (i.e. function of the data) that we will use to perform our test. This particular quantity is called the <em>z-score</em> or <em>z-statistic</em>, and will be the backbone of many of the hypothesis tests we will see in this section.</p>
@@ -318,6 +318,13 @@ Figure 12.5: When is the data far enough from the hypothesized mean?
 
 </div>
 </div>
+<div class="footnotes">
+<hr />
+<ol start="16">
+<li id="fn16"><p>note: this could be in either the positive or negative direction!<a href="introduction-to-statistical-hypothesis-testing.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn17"><p>To see this, ask yourself: “which is further away from 2: 3 or -1?” This is why we consider both sides of the hypothesized population mean.<a href="introduction-to-statistical-hypothesis-testing.html#fnref17" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
             </section>
 
           </div>
@@ -340,15 +347,13 @@ Figure 12.5: When is the data far enough from the hypothesized mean?
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",

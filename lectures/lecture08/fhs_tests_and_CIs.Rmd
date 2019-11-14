@@ -1,0 +1,453 @@
+---
+title: "Framingham Heart Study part II"
+author: "Ralph Trane"
+date: "11/12/2019"
+output: 
+  html_document: 
+    code_folding: hide
+---
+
+<style>
+.column-left{
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+.column-right{
+  float: left;
+  width: 50%;
+  text-align: left;
+}
+</style>
+
+```{r warning=FALSE, message = FALSE}
+## Set code chunk option defaults
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+## Load packages needed
+library(tidyverse); library(glue)
+library(viridis)
+
+## Set theme for plots (only works when you load ggplot2, which can be done using library(ggplot2) OR with library(tidyverse))
+theme_set(theme_bw())
+
+scale_color_continuous <- function(...) scale_color_viridis_c(...)
+scale_fill_continuous <- function(...) scale_fill_viridis_c(...)
+
+scale_color_discrete <- function(...) scale_color_viridis_d(...)
+scale_fill_discrete <- function(...) scale_fill_viridis_d(...)
+
+## Import data and manipulate a bit
+framingham <- read_csv("../../data/Framingham/framingham.csv") %>% 
+  rename(gender = male) %>% 
+  mutate(gender = if_else(gender == 1, 'male', 'female'))
+```
+
+## Introduction
+
+About FHS:
+
+* Started in 1948 to investigate cardiovascular disease (CVD)
+
+* At the time, little was known about CVD, but death rates were increasing
+
+* Researchers recruited 5,209 men and women between the ages of 30 and 62
+
+* Subjects returned every two years for detailed medical history and physical examinations
+
+* In 1971, enrolled 5,124 new subjects - offspring of the original subjects!
+
+* In 2002, started enrolling third generation!
+
+Side note: Beaver Dam Eye Study here in Wisconsin is very similar. They are now on their third generation of subjects as well. 
+
+Subset of FHS data (from [kaggle](https://www.kaggle.com/amanajmera1/framingham-heart-study-dataset)). Data from `r nrow(framingham)` subjects collected over a 10 year period. Outcome: risk factors for developing Coronary Heart Disease (CHD).
+
+```{r}
+## Set options for DT
+options(DT.options = list(scrollX = TRUE))
+
+## Print data using DT::datatable
+framingham %>% 
+  DT::datatable()
+```
+
+```{r}
+cat_vars <- c('gender', 'currentSmoker', 'BPMeds', 'prevalentStroke', 'prevalentHyp', 'diabetes', 'TenYearCHD')
+
+ord_vars <- 'education'
+
+cont_vars <- setdiff(colnames(framingham), c(cat_vars, ord_vars))
+```
+
+In this data set we have `r length(cat_vars)` categorical variables, `r length(ord_vars)` ordinal variable, and `r length(cont_vars)` continuous variables. We previously looked at various ways of summarizing and describing this data set. Here, we will perform different tests, and calculate confidence intervals for different parameters. We will look for differences between those that developed CHD over the ten year period, and those who did not. 
+
+## Summaries
+
+```{r}
+variables_and_types <- tibble(variable = c(cat_vars, ord_vars, cont_vars),
+                              type = rep(c("categorical", "continuous"), times = c(length(cat_vars) + 1, length(cont_vars))))
+
+for_analyses <- framingham %>% 
+  gather(key = 'variable', value = 'value', -TenYearCHD) %>% 
+  group_by(variable) %>% 
+  nest(Data = c(TenYearCHD, value)) %>% 
+  left_join(variables_and_types) %>% 
+  mutate(Data = map(Data, function(x) filter(x, complete.cases(x))),
+         n_categories = map2_dbl(Data, type, function(x,y){
+           if(y == "categorical"){
+             x %>% pull(value) %>% unique() %>% length()
+           } else {
+             NA_real_
+           }
+         })) %>% 
+  arrange(type, n_categories)
+```
+
+First, contingency tables for categorical variables:
+
+```{r results="asis"}
+contingency_tables <- for_analyses %>% 
+  filter(type == "categorical") %>% 
+  unnest(cols = Data) %>% 
+  count(variable, TenYearCHD, value) %>% 
+  group_by(variable, value) %>% 
+  mutate(Totals = sum(n),
+         n = glue("{round(n/Totals, digits = 4)} (n = {n})"),
+         TenYearCHD = paste("TenYearCHD", TenYearCHD)) %>% 
+  spread(TenYearCHD, n) %>% 
+  ungroup() %>% 
+  split(.$variable) %>% 
+  map2(.x = ., .y = names(.), 
+       #~print(.y))
+       ~.x %>% rename(!!.y := value) %>% select(-variable))
+
+contingency_tables %>% 
+  pander::pander()
+```
+
+Means, standard deviations, and number of observations for continuous variables: 
+
+```{r}
+means_and_sds <- for_analyses %>% 
+  filter(type == "continuous") %>% 
+  select(variable, Data) %>% 
+  unnest(cols = Data) %>% 
+  group_by(variable, TenYearCHD) %>% 
+  summarise(s = round(sd(as.numeric(value)), digits = 4),
+            m = round(mean(as.numeric(value)), digits = 4),
+            n = n()) %>% 
+  ungroup() %>% 
+  mutate(TenYearCHD = paste("TenYearCHD =", TenYearCHD),
+         out = glue("{m} (SD = {s}; n = {n})")) %>% 
+  select(variable, TenYearCHD, out) %>% 
+  spread(TenYearCHD, out)
+
+pander::pander(means_and_sds)
+```
+
+## Hypothesis Tests
+
+For each of the variables, we can perform a test to see if there's a "statistically significant difference" between the two groups (i.e. those that developed CHD, and those that did not). Here, we'll perform a chi-square test for the categorical variables, and a two sample t-test for continuous variables. 
+
+```{r}
+chisq_results <- for_analyses %>% 
+  filter(type == "categorical") %>% 
+  mutate(test = map(Data, ~broom::tidy(chisq.test(x = .x$TenYearCHD, y = .x$value)))) %>% 
+  unnest_wider(test) %>% 
+  select(variable, statistic, p.value, method) 
+
+ttests <- for_analyses %>% 
+  filter(type == "continuous") %>% 
+  ungroup() %>% 
+  select(variable, Data) %>% 
+  mutate(test = map(Data, function(x){
+    sds <- x %>% group_by(TenYearCHD) %>% summarise(sd = sd(as.numeric(value))) %>% pull(sd)
+    broom::tidy(t.test(as.numeric(x$value) ~ x$TenYearCHD, var.equal = (max(sds)/min(sds) < 2)))
+    })) %>% 
+  unnest_wider(test) %>% 
+  mutate(estimate = estimate1 - estimate2) %>% 
+  select(variable, estimate, statistic, p.value, conf.low, conf.high, method)
+
+chisq_results %>% 
+  mutate(p.value = if_else(p.value < 0.0001, "<0.0001", format(round(p.value, digits = 4), scientific = FALSE))) %>% 
+  pander::pander()
+```
+
+
+```{r}
+ttests %>% 
+  mutate_if(is.numeric, round, digits = 5) %>% 
+  mutate(p.value = if_else(p.value < 0.0001, "<0.0001", as.character(p.value))) %>% 
+  select(-contains("conf.")) %>% 
+  pander::pander()
+```
+
+
+What does this tell us? Most variables seem to be different between the two groups. Given the variables collected, this might not be a huge surprise. 
+
+### Recap: how to do a chi square test
+
+<!-- Let us refresh how we perform a two sample t-test by looking at the `cigsPerDay` variable. First, we have to verify all assumptions. For a two sample t-test, we assume that the averages in the two groups are normally distributed, and that the observations are independent. The first assumption is satisfied here, since $n$ is so large that we can rely on the Central Limit Theorem for normality. The second is always harder to verify, and often we simply justify it by saying that the sample was obtained in a reasonable way. I don't know exactly how the sample here was obtained, so let us just assume the observations are independent of each other.  -->
+
+<!-- The first step in performing a two sample t-test is to write down the null and alternative hypotheses. In this case, $H_0: \mu_1 = \mu_0$ and $H_A: \mu_1 \neq \mu_0$, where $\mu_0$ is the mean `cigsPerDay` in the group with `TenYearCHD = 1`, and $\mu_0$ is the mean `cigsPerDay` in the group with `TenYearCHD = 0`.  -->
+
+<!-- Next, we need to find out if we can safely assume equal variances or not. The rule of thumb here is if the standard deviations are within a factor of $2$ (or equivalently the variances within a factor of $4$), then it is safe to assume equal variances. Here, $\frac{13.0066}{11.6949} < 2$, so we will assume equal variances. (In this case, it doesn't really change anything, since the sample size is so large.) -->
+
+Let us refresh how to perform a chi-square test by testing if there's a difference in the distribution of the educational level between the two groups. 
+
+To do so, first we (as always) write down our hypotheses: $H_0: \text{no difference in distributions}$ and $H_A: \text{some difference in distributions}$. 
+
+Next, we create the contingency table:
+
+```{r}
+four_by_two <- for_analyses %>% 
+  filter(variable == "education") %>% 
+  unnest(cols = Data) %>% 
+  janitor::tabyl(TenYearCHD, value) %>% 
+  janitor::adorn_totals(where = c("row", "col")) %>% 
+  rename(`TenYearCHD \\\\ Education` = TenYearCHD)
+
+four_by_two %>% 
+  pander::pander()
+```
+
+Now, the idea is that if there's no difference in the distribution between the two groups, then the people that developed CHD and the people that don't should be distributed across the educational levels the same as the overall sample. In other words, the 3507 in the first row should be distributed across the levels 1 through 4 in the same way as the 4135 in the Total row. Same holds for the 628 in the second row. 
+
+So, if the null hypothesis is true, we can find the *expected number of people in each of the cells*. To do so, we start by creating a duplicate table where we remove all the values in the cells.
+
+```{r}
+empty_cells <- four_by_two %>% 
+  mutate_at(vars(`1`:`4`), function(x) c("", "", x[3])) 
+
+empty_cells %>% 
+  pander::pander()
+```
+
+We then begin to fill it out. To do so, we find the proportion of the total number of people in each of the columns, and then we distribute the two other row totals in a similar way:
+
+```{r}
+expected_counts <- empty_cells %>% 
+  mutate(`1` = Total*as.numeric(`1`)[!is.na(as.numeric(`1`))]/4135,
+         `2` = Total*as.numeric(`2`)[!is.na(as.numeric(`2`))]/4135,
+         `3` = Total*as.numeric(`3`)[!is.na(as.numeric(`3`))]/4135,
+         `4` = Total*as.numeric(`4`)[!is.na(as.numeric(`4`))]/4135)
+
+expected_counts %>% 
+  pander::pander()
+```
+
+
+```{r}
+exp_counts <- expected_counts %>% filter(row_number() < 3) %>% select(`1`:`4`)
+obs_counts <- four_by_two %>% filter(row_number() < 3) %>% select(`1`:`4`)
+
+diff_counts <- ((obs_counts-exp_counts)^2/obs_counts) 
+
+diff_counts %>% 
+  as_tibble() %>% 
+  mutate(`TenYearCHD \\\\ Education` = c(0,1)) %>% 
+  select(`TenYearCHD \\\\ Education`, everything()) %>% 
+  pander::pander()
+```
+
+Finally, we find the observe value of the chi square test statistic by simply adding up add the difference. The observed value is `r (obs_chisq <- sum(diff_counts))`. To find the p-value, we find the probability of observing something "more extreme". Some slightly tedious math shows us that the chi-square test statistic follows a $\chi^2_k$ distribution, where $k = (\text{number of rows} - 1)\cdot(\text{number of columns} - 1)$ is the degrees of freedom. 
+
+Notice how in this case, "more extreme" means greater -- always. This is because of the square in the test statistic. If the observations are further away from the expectation, then the test statistic gets bigger, and vice versa. At the same time, if the observations are closer to the expectation, the test statistic gets smaller, and vice versa. Therefore, the p-value is the probability of a $\chi^2_3$ random variable being greater than `r obs_chisq`. This is depicted below. The area is super small -- around `r round(pchisq(q = obs_chisq, df = 3, lower.tail = F), digits = 8)`, well below any significance level you might want to use. 
+
+```{r}
+chisq_dist <- data.frame(x = seq(0, 40, by = 0.01)) %>% 
+  ggplot(aes(x = x, y = dchisq(x, df = 3))) + 
+    geom_line(color = 'blue') + 
+    geom_vline(xintercept = sum(diff_counts),
+               linetype = 'dashed',
+               color = 'red') +
+    scale_y_continuous("", expand = expand_scale(mult = c(0, 0.1), add = 0))
+
+plotly::ggplotly(chisq_dist)
+```
+
+## $95\%$ Confidence Intervals
+
+To calculate confidence intervals for the continuous variables is fairly easy. Granted, you have to calculate the pooled variance $s_p^2 = \frac{(n_1 - 1)\cdot s_1^2 + (n_2 - 1)\cdot s_0^2}{n_1 + n_2 - 2}$, but once that is done, you simply find $\bar{\text{diff}} \pm 1.96 \cdot s_p \cdot \sqrt{1/n_1 + 1/n_0}$. The results can be found below.
+
+```{r}
+CI_BMI <- ttests %>% 
+  filter(variable == 'BMI') %>%
+  select(conf.low, conf.high) %>% 
+  mutate_all(round, digits = 4) %>% 
+  paste(collapse = ", ")
+
+ttests %>% 
+  pander::pander(split.table = Inf)
+```
+
+As discussed last week, confidence intervals provide so much more information than the results of the corresponding hypothesis tests. It provides us with a range of values that we are somewhat confident will contain the true value. 
+
+For example, we are $95\%$ that the true mean difference in BMI between those that developed CHD and those that did not is between $[`r CI_BMI`]$. First of all, we notice that $0$ is not in the interval. This tells us that the null hypothesis $H_0: \mu_1 - \mu_0 = 0$ would be rejected if we used a significance level of $0.05$. But it also gives us an idea of the range of the difference. For example, if it was well-known that a change in BMI doesn't really matter until it's a change of $1.5$ or more, then this tells us that, yes, there is a "statistically significant difference", but it might not matter in the real world. (The truth is, if you just increase the sample size enough, you will always reach a "statistically significant" result, even if in fact there's no difference.)
+
+So that's for the continuous variables, but how do we handle the categorical variables? To do so, we have to change our question a bit. 
+
+Using the chi square test simply answers the question: is there a difference? This is not exactly a quantity we can calculate a confidence interval for... In general, when dealing with categorical variables, you would probably take a look at relative risks (RRs) or odds ratios (ORs). When the variable is binary, this is straight forward. If not, then you would pick a group to use as a baseline, and then compare the rest of the groups to that group. 
+
+Let's consider the relative risks for the variables that are binary (i.e. all of them except education). To actually calculate confidence intervals for the relative risks, we need to take a detour. Unfortunately, the distribution of the relative risk is not super easy to find. Therefore we don't really know what distribution to look at when looking for critical values. However, the log relative risk is actually (approximately) normal! So, we will find a confidence interval for the log relative risk first, then translate that into a confidence interval for the relative risk. 
+
+```{r}
+library(fmsb)
+
+RRs <- for_analyses %>% 
+  filter(type == "categorical",
+         variable != "education") %>% 
+  unnest(cols = Data) %>% 
+  count(variable, TenYearCHD, value) %>% 
+  group_by(variable, TenYearCHD) %>% 
+  mutate(value = case_when(value == "male" ~ 1,
+                           value == "female" ~ 0,
+                           TRUE ~ as.numeric(value))) %>% 
+  ungroup() %>% 
+  mutate(TenYearCHD = paste("TenYearCHD", TenYearCHD),
+         value = paste("Group", value)) %>% 
+  spread(TenYearCHD, n) %>% 
+  group_by(variable) %>% 
+  nest() %>% 
+  mutate(
+    my_rrs = map(data, function(x){
+      RR_est <- (x[2,3]/(x[2,2] + x[2,3]))/((x[1,3]/(x[1,2] + x[1,3])))
+      SD <- sqrt((x[2,2]/x[2,3])/(x[2,2] + x[2,3]) + (x[1,2]/x[1,3])/(x[1,2] + x[1,3]))
+      lower_CI <- log(RR_est[[1]]) - 1.96*SD[[1]]
+      upper_CI <- log(RR_est[[1]]) + 1.96*SD[[1]]
+      
+      tibble(RR_est = RR_est[[1]], 
+             logRR_est = log(RR_est[[1]]),
+             lower_CI_log = lower_CI,
+             upper_CI_log = upper_CI) %>% 
+        return()
+    }))
+
+RRs_tibble <- RRs %>% 
+  select(variable, my_rrs) %>% 
+  unnest_wider(col = my_rrs) 
+```
+
+As an example of how to do these calculations, we'll consider the `BPMeds` variable. First step is to calculate the contingency table:
+
+```{r}
+BPMeds_table <- for_analyses %>% 
+  filter(variable == "BPMeds") %>% 
+  unnest(cols = Data) %>% 
+  janitor::tabyl(value, TenYearCHD) %>% 
+  janitor::adorn_totals("col") %>% 
+  rename(`BPMeds \\\\ TenYearCHD` = value)
+
+BPMeds_table_RR <- (41/(41+83))/(592/(592+3471))
+log_CI <- round(log(BPMeds_table_RR) + c(-1,1)*1.96*sqrt(((124 - 41)/41)/(124) + ((4063 - 592)/592)/4063), digits = 4)
+pander::pander(BPMeds_table)
+```
+
+The relative risk is estimated as $\hat{RR} = \frac{\hat{p}_1}{\hat{p}_0}$, i.e. the proportion of people with the disease that were exposed divided by the proportion of people wit the disease that were not exposed. So, $\hat{RR} = \frac{41/124}{592/4063} = `r round(BPMeds_table_RR, digits = 4)`$. 
+
+Now, a $95\%$ confidence interval for the log relative risk, we calculate $\log(RR) \pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_0 - x_0)/x_0}{n_0}}$, where $x_0, x_1$ are the number of people with the disease that were unexposed and exposed, respectively, and $n_0, n_1$ the total number of people exposed and unexposed, respectively. I.e. the $95%$ Confidence Interval is 
+
+\begin{align*}
+  \log(RR) \pm 1.96 \cdot \sqrt{\frac{(n_1 - x_1)/x_1}{n_1} + \frac{(n_0 - x_0)/x_0}{n_0}} &= log(`r BPMeds_table_RR`) \pm 1.96 \cdot \sqrt{\frac{(124 - 83)/83}{124} + \frac{(4063 - 3471)/3471}{4063}} \\
+  &= `r round(log(BPMeds_table_RR), digits = 4)` \pm 1.96*`r sqrt(((124 - 83)/83)/(124) + ((4063 - 3471)/3471)/4063)` \\
+  &= [`r paste(log_CI, collapse = ", ")`]
+\end{align*}
+
+This in itself isn't super useful -- how do you interpret a the log relative risk? However, we can easily create a confidence interval for the relative risk using this: simply exponentiate both limits. So, a $95\%$ confidence interval for the relative risk is $[\exp(`r log_CI[1]`), \exp(`r log_CI[2]`)] = [`r paste(round(exp(log_CI), digits = 4), collapse = ", ")`]$. 
+
+We can do this for all the binary variables. First, the confidence intervals for the log relative risks
+
+```{r}
+RRs_tibble %>% 
+  select(-RR_est) %>% 
+  pander::pander()
+```
+
+Then, the confidence intervals for the relative risks.
+
+```{r}
+RRs_tibble %>% 
+  select(-logRR_est) %>% 
+  mutate_at(vars(contains("log")), exp) %>% 
+  rename_at(vars(contains("log")), str_remove_all, "_log") %>% 
+  pander::pander()
+```
+
+How does this relate to the results of the chi square tests?
+
+## Overview of all tests
+
+Let's take a look at all the test results.
+
+```{r}
+all_test_results <- bind_rows(
+  ttests %>% 
+    select(variable, p.value),
+  chisq_results %>% 
+    select(variable, p.value)
+)
+
+all_test_results %>% 
+  mutate(p.value = if_else(p.value < 0.0001, "<0.0001", format(round(p.value, digits = 4), scientific = F))) %>% 
+  pander::pander()
+```
+
+That's a total of `r nrow(all_test_results)` tests. Now, none of these are close to our typical cutoff of 0.05, so correcting for multiple tests probably won't change much. But let's do it anyway.
+
+Bonferroni corrected p-values are found by multiplying the p-value by the number of tests, here `r nrow(all_test_results)`. 
+
+The Benjamini-Hochberg procedure works a bit differently. First, you rank your p-values from smallest to largest. Then, you calculate a corrected p-value as the p-value multiplied by the number of test over the rank. We then find the largest rank where the corrected p-value is smaller than 0.05, and reject all hypotheses before that -- regardless of the values of the p-values. Here, $k=13$ is the largest ranked p-value with corrected p-value less than 0.05, so we reject all hypotheses listed above that in the table below.
+
+```{r}
+all_test_results %>% 
+  arrange(p.value) %>% 
+  mutate(k = row_number(),
+         multiplier = 15/k,
+         corrected_p_value = p.value*multiplier) %>% 
+  pander::pander()
+```
+
+
+Here are all the p-values side by side. Notice how the Bonferroni method is way too conservative -- some of the p-values are corrected from $\approx 0.14$ and $\approx 0.22$ to $1$!!
+
+```{r}
+all_test_results %>% 
+  arrange(p.value) %>% 
+  mutate(p.value.bonf = p.adjust(p.value, method = "bonferroni"),
+         p.value.BH = p.adjust(p.value, method = "BH")) %>% 
+  pander::pander()
+```
+
+
+## Follow-up with visuals
+
+So, do we spot the difference we just found? For the continuous variables, let's look at boxplots.
+
+```{r}
+cont_boxplots <- framingham %>% 
+  gather(key = "variable", value = "value", {cont_vars}) %>% 
+  select(TenYearCHD, variable, value) %>% 
+  mutate(TenYearCHD = as.character(TenYearCHD)) %>% 
+  ggplot(aes(x = TenYearCHD, y = value, fill = TenYearCHD)) + 
+    geom_boxplot(alpha = 0.5) +
+    facet_wrap(variable~., scales = "free", ncol = 4) + 
+    scale_fill_discrete()
+
+plotly::ggplotly(cont_boxplots)
+```
+
+Not quite. Why not? 
+
+
+<!-- ```{r} -->
+<!-- logistic_model <- glm(data = framingham, -->
+<!--                       formula = TenYearCHD ~ age + BMI + cigsPerDay + diaBP + glucose + heartRate + sysBP + totChol) -->
+
+<!-- exp(coef(logistic_model)) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- summary(logistic_model) -->
+<!-- ``` -->
+
