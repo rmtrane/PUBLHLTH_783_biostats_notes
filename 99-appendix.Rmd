@@ -12,8 +12,12 @@
 
 **Lecture 5 (10/8)** [slides](./lectures/lecture05/lec05_slides.html)
 
-**Lecture 6 (10/8)** [slides](./lectures/lecture06/lec06_slides.html)
+**Lecture 6 (10/10)** [slides](./lectures/lecture06/lec06_slides.html)
 
-**Lecture 7 (10/8)** [slides](./lectures/lecture07/lec07_slides.html)
+**Lecture 7 (11/7)** [slides](./lectures/lecture07/lec07_slides.html)
+
+**Lecture 8 (11/12)** [slides](./lectures/lecture08/fhs_tests_and_CIs.html)
+
+**Lecture 9 (11/14)** [slides](./lectures/lecture09/lec09_slides.html)
 
 # References {-}

@@ -328,7 +328,7 @@ Below is a summary that lists all the tests mentioned above (and then some) with
     - Distribution: $N(0,1)$
     - Needed formula: 
         i. $\hat{p} = \frac{x_A + x_B}{n_A + n_B}$ where $x_A$ is the number of people with the feature in group $A$, $x_B$ the number of people with the feature in group $B$
-* **Test for $\log(\text{Relative Risk})$**
+* **Test for log(Relative Risk)**
     - Assumptions:
         i. independent observations
         ii. $n$ "large enough" (not really a good rule of thumb here)
@@ -339,7 +339,7 @@ Below is a summary that lists all the tests mentioned above (and then some) with
         * $x_1$ is the number of individuals in the exposed group WITH the disease
         * $x_2$ is the number of individuals in the non-exposed group WITH the disease
     - Distribution: $N(0,1)$
-* **Test for $\log(\text{Odds Ratio})**
+* **Test for log(Odds Ratio)**
     - Assumptions:
         i. independent observations
         ii. $n$ "large enough" (not really a good rule of thumb here)
