@@ -130,10 +130,11 @@ The rule of thumb for equal variance is if the variances are within a factor of 
 \begin{align*}
   s_p^2 &= \frac{1628 \cdot 49.92 + 645 \cdot 89.29}{1629 + 646 - 2} \\
         &= \frac{`r 1628 * 49.92 + 645 * 89.29`}{`r 1629 + 646 - 2`} \\
-        &= `r (s_p <- round((1628 * 49.92 + 645 * 89.29)/(1629 + 646 - 2), digits = 2))`
+        &= `r (s_p2 <- round((1628 * 49.92 + 645 * 89.29)/(1629 + 646 - 2), digits = 2))`
 \end{align*}
 
 ```{r echo = FALSE}
+s_p <- sqrt(s_p2)
 diff_in_means <- (31.16 - 29.23) + c(-1,1)*round(1.96*s_p*sqrt(1/646 + 1/1629), digits = 2)
 ```
 
@@ -141,12 +142,12 @@ diff_in_means <- (31.16 - 29.23) + c(-1,1)*round(1.96*s_p*sqrt(1/646 + 1/1629), 
 We can the find the $95\%$ confidence interval as 
 
 \begin{align*}
-  (\bar{X}_1 - \bar{X}_0) \pm 1.96 \cdot s_p \sqrt{1/n_1 + 1/n_0} &= `r (31.16 - 29.23)` \pm 1.96 \cdot `r s_p` \cdot `r sqrt(1/646 + 1/1629)` \\
+  (\bar{X}_1 - \bar{X}_0) \pm 1.96 \cdot s_p \sqrt{1/n_1 + 1/n_0} &= `r (31.16 - 29.23)` \pm 1.96 \cdot `r round(s_p, digits = 2)` \cdot `r round(sqrt(1/646 + 1/1629), digits = 2)` \\
   &= `r (31.16 - 29.23)` \pm `r round(1.96*s_p*sqrt(1/646 + 1/1629), digits = 2)` \\
   &= [`r paste(diff_in_means, collapse = ", ")`]
 \end{align*}
 
-We're $95\%$ confident that the true difference in means lies in the interval [`r paste(diff_in_means, collapse = ", ")`]. This also means that, if we were to test if there is a difference at a $5\%$ significance level, we would not reject the null hypothesis of $H_0: \mu_1 - \mu_0 = 0$, since $0$ is in the interval. Remember, the interval consists of all the values we would NOT reject. 
+We're $95\%$ confident that the true difference in means lies in the interval [`r paste(diff_in_means, collapse = ", ")`]. This also means that, if we were to test if there is a difference at a $5\%$ significance level, we would reject the null hypothesis of $H_0: \mu_1 - \mu_0 = 0$, since $0$ is not in the interval. Remember, the interval consists of all the values we would NOT reject, so all values outside the interval would be rejected. 
 
 ## Difference in Proportions
 

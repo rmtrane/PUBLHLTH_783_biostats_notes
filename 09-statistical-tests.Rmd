@@ -327,7 +327,7 @@ Below is a summary that lists all the tests mentioned above (and then some) with
     - Standard deviation: $\sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_A} + \frac{1}{n_B}\right)}$
     - Distribution: $N(0,1)$
     - Needed formula: 
-        i. $\hat{p} = \frac{x_A + x_B}{n_A + n_B}$ where $x_A$ is the number of people with the feature in group $A$, $x_B$ the number of people with the feature in group $B$
+        i. $\hat{p}_0 = \frac{x_A + x_B}{n_A + n_B}$ where $x_A$ is the number of people with the feature in group $A$, $x_B$ the number of people with the feature in group $B$
 * **Test for log(Relative Risk)**
     - Assumptions:
         i. independent observations
