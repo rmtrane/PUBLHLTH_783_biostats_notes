@@ -216,12 +216,7 @@ Best case scenario with sample size of 100 (i.e. 50/50 depressed/not depressed),
 
 So, only one in five experiments would correctly reject the null. 
 
-The sample size in each group needed to achieve 80% power:
-
-```{r}
-round(pwr::pwr.t.test(d = 1.8/8, power = 0.8)$power,
-      digits = 5)
-```
+The sample size in each group needed to achieve 80% power: $`r round(pwr::pwr.t.test(d = 1.8/8, power = 0.8)[['n']],digits = 0)`$. 
 
 ---
 
