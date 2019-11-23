@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>15 Examples of Confidence Intervals | Biostatistics in Public Health</title>
   <meta name="description" content="15 Examples of Confidence Intervals | Biostatistics in Public Health" />
-  <meta name="generator" content="bookdown 0.15 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
   <meta property="og:title" content="15 Examples of Confidence Intervals | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
@@ -318,9 +318,9 @@
 <p>To find the <span class="math inline">\(95\%\)</span> confidence interval for the difference, we need to calculate <span class="math inline">\((\hat{p}_\text{married} - \hat{p}_\text{unmarried}) \pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)}\)</span>. All the quantities needed can be directly read off of the table above. So,</p>
 <p><span class="math display">\[\begin{align*}
   (\hat{p}_\text{married} - \hat{p}_\text{unmarried}) &amp;\pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)} \\
-  &amp;= (0.408 - 0.394) \pm 1.96 \cdot 0.403\cdot \sqrt{1/765 + 1/415} \\
-  &amp;=  0.014 \pm 0.0481557\\
-  &amp;= [-0.033, 0.063]
+  &amp;= (0.408 - 0.394) \pm 1.96 \cdot \sqrt{0.403\cdot (1 - 0.403\cdot)(1/765 + 1/415)} \\
+  &amp;=  0.014 \pm 0.0586114\\
+  &amp;= [-0.044, 0.073]
 \end{align*}\]</span></p>
 </div>
 <div id="relative-risk" class="section level2">
@@ -397,6 +397,7 @@
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": true,
 "twitter": true,
 "linkedin": false,
@@ -415,6 +416,10 @@ gitbook.start({
 "text": null
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },
