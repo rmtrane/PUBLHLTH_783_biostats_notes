@@ -154,7 +154,7 @@ We're $95\%$ confident that the true difference in means lies in the interval [`
 Say we want a confidence interval for the difference in the proportion of obese people (BMI $\ge 30$) between those that are married, and those that are unmarried. The table below shows proportions (numbers) of married and unmarried that are obese. 
 
 ```{r}
-diff_in_props <- round(0.4084357 - 0.3937381 + c(-1,1)*1.96*0.4031431*sqrt(1/765 + 1/415), digits = 3)
+diff_in_props <- round(0.4084357 - 0.3937381 + c(-1,1)*1.96*sqrt(0.4031431*(1-0.4031431)*(1/765 + 1/415)), digits = 3)
 
 full_show %>% 
   select(marital, obesity) %>% 
@@ -175,8 +175,8 @@ To find the $95\%$ confidence interval for the difference, we need to calculate 
 
 \begin{align*}
   (\hat{p}_\text{married} - \hat{p}_\text{unmarried}) &\pm 1.96 \cdot \sqrt{\hat{p}_0(1-\hat{p}_0)\left(\frac{1}{n_\text{married}} + \frac{1}{n_\text{unmarried}}\right)} \\
-  &= (0.408 - 0.394) \pm 1.96 \cdot 0.403\cdot \sqrt{1/765 + 1/415} \\
-  &=  `r 0.408 - 0.394` \pm `r 1.96 * 0.403*sqrt(1/765 + 1/415)`\\
+  &= (0.408 - 0.394) \pm 1.96 \cdot \sqrt{0.403\cdot (1 - 0.403\cdot)(1/765 + 1/415)} \\
+  &=  `r 0.408 - 0.394` \pm `r 1.96 * sqrt(0.403*(1-0.403)*(1/765 + 1/415))`\\
   &= [`r paste(diff_in_props, collapse = ", ")`]
 \end{align*}
 
