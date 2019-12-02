@@ -1,0 +1,472 @@
+---
+title: "Biostats Lecture 10: Introduction to Regression"
+subtitle: "Public Health 783"
+author: "Ralph Trane"
+institute: "University of Wisconsin--Madison<br><br>"
+date: "Fall 2019"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [../css/uwmadison.css, default-fonts, ../css/extra-classes.css]
+    lib_dir: libs
+    nature:
+      titleSlideClass: [center, top, .title-slide]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      navigation:
+        scroll: false
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+                      #out.height = "500px", out.width = "643px", 
+                      dpi = 300)
+
+library(tidyverse)
+library(RefManageR)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+
+myBib <- ReadBib("./references.bib", check = TRUE)
+
+death_penalty <- tibble(victim = factor(rep(c("white", "black"), each = 2),
+                                        levels = c("white", "black")),
+                        defendant = factor(rep(c("white", "black"), times = 2),
+                                           levels = c("white", "black")),
+                        death_penalty = c(53, 11, 0, 4),
+                        no_death_penalty = c(414, 37, 16, 139)) %>%
+  gather(key = "verdict", value = "n", death_penalty, no_death_penalty)
+
+props_by_defendent <- death_penalty %>% 
+  group_by(defendant, verdict) %>% 
+  summarise(n = sum(n)) %>% 
+  group_by(defendant) %>% 
+  mutate(prop = n/sum(n))
+
+props_by_defendent_and_victim <- death_penalty %>% 
+  group_by(defendant, victim) %>% 
+  mutate(prop = n/sum(n))
+
+logistic <- glm(data = death_penalty %>%
+      mutate(verdict = as.numeric(verdict == "death_penalty")),
+    verdict ~ defendant, weights = n,
+    family = "binomial")
+
+logistic_victim <- glm(data = death_penalty %>%
+                  mutate(verdict = as.numeric(verdict == "death_penalty")),
+                verdict ~ defendant + victim, weights = n,
+                family = "binomial")
+```
+
+layout: true
+
+# Introduction to Regression
+
+## Motivating Example: Death Penalty in Florida
+
+---
+
+In 1991, Radelet and Pierce wrote a paper titled "Choosing Those Who Will Die: Race and the Death Penalty in Florida". 
+
+Hypothesis: race influences how likely you are to receive the death penalty. 
+
+They obtained data on homicides and death sentences from Florida in the period 1976 through 1987.
+
+Data from `r Citet(myBib, "agresti_introduction_2007")`, originally from http://www.ncjrs.gov/App/publications/abstract.aspx?ID=134288.
+
+---
+
+Results you are more likely to receive the death penalty if you are white. 
+
+In fact, $`r round(filter(props_by_defendent, defendant == "white", verdict == "death_penalty")[["prop"]], digits = 4)*100`\%$ of white defendants got the death penalty, while only $`r round(filter(props_by_defendent, defendant == "black", verdict == "death_penalty")[["prop"]], digits = 4)*100`\%$ of black defendants received the same verdict.
+
+This is of course not enough to convince you, so let's consider a test for difference in proportions and corresponding CI:
+
+```{r}
+#props_by_defendent
+prop.test(props_by_defendent %>% select(-prop) %>% pivot_wider(names_from = verdict, values_from = n) %>% column_to_rownames(var = "defendant") %>% as.matrix()) %>% 
+  broom::tidy() %>% 
+  select(white = estimate1, black = estimate2, 
+         statistic, p.value, conf.low, conf.high) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  knitr::kable(format = "html")
+```
+
+
+---
+
+In a picture: 
+
+.center[
+```{r fig.width = 4, fig.height = 3.6, out.width = 400, out.height = 360}
+props_by_defendent %>% 
+  filter(verdict == "death_penalty") %>%
+  ggplot(aes(x = defendant,
+             y = prop,
+             color = "overall")) +
+    geom_point() +
+    geom_line(aes(group = 1)) +
+    scale_y_continuous("Proportion getting the death penalty", limits = c(0, 0.25)) +
+    scale_color_manual("", values = "black", labels = "") +
+    theme_bw() +
+    theme(legend.position = "top")
+```
+]
+
+However, this is not the full story. There is one really strong confounding variable, which changes everything. Ideas?
+
+---
+
+Once we adjust for race of the victim, things change dramatically:
+
+.center[
+```{r fig.width = 4, fig.height = 3.6, out.width = 400, out.height = 360}
+props_by_defendent %>% 
+  filter(verdict == "death_penalty") %>%
+  ggplot(aes(x = defendant,
+             y = prop,
+             color = "overall")) +
+    geom_point() +
+    geom_line(aes(group = 1)) +
+    geom_point(data = props_by_defendent_and_victim %>% 
+                filter(verdict == "death_penalty"),
+               aes(color = victim)) + 
+    geom_line(data = props_by_defendent_and_victim %>% 
+                filter(verdict == "death_penalty"),
+              aes(color = victim,
+                  group = victim)) +
+    scale_y_continuous("Proportion getting the death penalty", limits = c(0, 0.25)) +
+    scale_color_manual("Victim", values = c("red", "black", "blue")) +
+    theme_bw() +
+    theme(legend.position = "top")
+```
+]
+
+---
+
+Full data (counts)
+
+
+```{r}
+death_penalty %>% 
+  spread(verdict, n) %>% 
+  select(defendant, everything()) %>% 
+  janitor::as_tabyl() %>% 
+  janitor::adorn_totals(where = c("row", "col")) %>% 
+  janitor::adorn_percentages() %>% 
+  janitor::adorn_pct_formatting() %>% 
+  janitor::adorn_ns(position = "front") %>% 
+  mutate(victim = str_remove_all(victim, " \\([a-z,-]+\\)")) %>% 
+  knitr::kable(format = "html")
+```
+
+---
+
+Issue: race of victim is a strong confounder. I.e. the race of victim influences both race of defendant **and** change of receiving the death penalty. 
+
+This is a very simple example, where a regression might not be necessary, but the idea remains: there are situations where you need to correct for confounders. Regression provides a way to do just that. 
+
+Result of logistic regression *without* correction:
+
+```{r}
+broom::tidy(logistic, conf.int = TRUE) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  knitr::kable(format = "html")
+```
+
+Outcome: chance of receiving death penalty.
+
+Interpretation of coefficients: if negative, chance decreases. If positive, chance increases.
+
+Though not "statistically significant", it suggests black defendants less likely to receive death penalty, or at least not more likely.
+
+---
+
+Result of logistic regression *with* correction:
+
+```{r}
+broom::tidy(logistic_victim, conf.int = TRUE) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  knitr::kable(format = "html")
+```
+
+Suggests (and achieves "statistical significance") that defendants who are black are *more* likely to achieve the death penalty, and if the victim was black, the defendant is *less* likely to achieve the death penalty. 
+
+A quite different result...
+
+---
+layout: true
+
+# Introduction to Regression
+
+---
+
+We have talked about how to look for association between two binary variables (difference in proportions), one binary variable and a continous variable (difference in means), and even two categorical variables ( $\chi^2$ test).
+
+Initially, linear regression was introduced to look for an association between two continuous variables.
+
+Say we are looking at two continuous variables (height and weight, for example). What kind of plot would you consider?
+
+---
+
+Are the two variables related? What does that even mean?
+
+.center[
+```{r out.width = "500px", out.height = "500px"}
+show_data <- read_csv(paste(here::here(), "data/SHOW_subset_of_vars.csv", sep = "/"))
+
+show_subset <- sample_frac(show_data, size = 0.1)
+
+base_height_weight <- ggplot(show_subset,
+       aes(x = height, y = weight)) + 
+  geom_point() + 
+  theme_bw()
+
+base_height_weight
+```
+]
+
+---
+
+Examples of unrelated variables:
+
+.center[
+```{r out.width = "500px", out.height = "500px"}
+library(patchwork)
+
+no_assoc <- tibble(x = runif(50),
+                   x1 = 0.5,
+                   y = runif(50),
+                   y1 = 0.5)
+
+base_no_assoc <- ggplot(data = no_assoc) +
+  theme_bw()
+
+two_unif <- base_no_assoc + 
+  geom_point(aes(x = x, y = y))
+
+constant_y <- base_no_assoc + 
+  geom_point(aes(x = x, y = y1))
+
+
+constant_x <- base_no_assoc + 
+  geom_point(aes(x = x1, y = y))
+
+two_unif / {constant_y + constant_x}
+```
+]
+
+---
+
+What are we looking for? If "x" gives us any information about "y"
+
+.center[
+```{r out.width = "500px", out.height = "500px", fig.width = 6, fig.height = 6}
+some_assoc <- tibble(x = runif(30),
+                     y = -0.2 + x + rnorm(30, 0, 0.05),
+                     y1 = 0.8 - x + rnorm(30, 0, 0.05),
+                     y2 = 3*(x-0.5)^2 - 0.2 + rnorm(30, 0, 0.01)) %>% 
+  pivot_longer(cols = c(y, y1, y2))
+
+ggplot(data = some_assoc,
+       aes(x = x, y = value)) +
+  geom_point() +
+  facet_wrap(~name, ncol = 2) +
+  theme_bw()
+```
+]
+
+---
+
+## Simple Linear Regression
+
+The goals is to find "best straight line" to relate $Y$ and $X$
+
+In math, we assume that $Y = \beta_0 + \beta_1\cdot X + \text{noise}$. 
+
+Assumptions:
+
+* Observations are independent
+* The noise is normally distributed with mean $0$, and it is independent of $Y, X$. 
+* There's a linear relationship between $X$ and $Y$.
+
+Interpretation: 
+
+* $\beta_0$ is the intercept. I.e. this is the value of $Y$ when $X = 0$. 
+* $\beta_1$ is the slope. When $X$ changes by one unit, $Y$ changes by $\beta_1$ units.
+
+Given $\beta_0, \beta_1$, and a value for $X$, we can find the expected value of $Y$: $E(Y) = E(\beta_0 + \beta_1\cdot X + \text{noise}) = \beta_0 + \beta_1\cdot X + E(\text{noise})$. Since the noise is assumed to have mean $0$, this is simply $\beta_0 + \beta_1 \cdot X$. 
+
+---
+
+## Simple Linear Regression
+
+How do we find good values for $\beta_0, \beta_1$?
+
+Say our "best guesses" are $\hat{\beta}_0, \hat{\beta}_1$. Then our best guess for $Y$ is $\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 \cdot X$. We want $Y - \hat{Y}$ to be as smalle as possible. 
+
+If we have $n$ pairs of observations, $(X_1, Y_1), ..., (X_n, Y_n)$, then we find $\hat{\beta}_0, \hat{\beta}_1$ such that the squared error is as small as possible. I.e., find $\hat{\beta}_0, \hat{\beta}_1$ such that 
+
+\begin{equation}
+\sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1\cdot X_i)^2
+\end{equation}
+
+is small. 
+
+---
+
+## Simple Linear Regression
+
+.center[
+```{r out.width = "300px"}
+weight_height_lm <- lm(weight ~ height, data = show_subset)
+broom::tidy(weight_height_lm, conf.int = TRUE) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  knitr::kable(format = "html")
+```
+]
+
+
+.pull-left[
+```{r out.width = "300px", out.height = "300px", fig.height=3, fig.width=3}
+base_height_weight +
+  geom_smooth(method = "lm", se = FALSE)
+```
+]
+
+.pull-right[
+
+$\hat{Y} = `r round(coef(weight_height_lm)[1], digits = 3)` `r ifelse(round(coef(weight_height_lm)[2], digits = 3) < 0, round(coef(weight_height_lm)[2], digits = 3), paste("+", round(coef(weight_height_lm)[2], digits = 3)))`\cdot X$
+
+]
+
+
+
+---
+
+## Multiple Linear Regression
+
+The big seeling point for regression is the ability to adjust for different variables. 
+
+To do so, we simply add these to the model: $Y = \beta_0 + \beta_1\cdot X_1 + \beta_2 \cdot X_2 + \text{noise}$. 
+
+How do we find $\hat{\beta}_0, \hat{\beta}_1, \hat{\beta}_2$? Exactly the same as before! Minimize
+
+\begin{equation}
+\sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1\cdot X_{1,i} - \hat{\beta}_2 \cdot X_{2,i})^2
+\end{equation}
+
+---
+
+## Multiple Linear Regression
+
+.center[
+```{r out.width = "300px"}
+weight_height_gender_lm <- lm(weight ~ height + gender, data = show_subset)
+broom::tidy(weight_height_gender_lm, conf.int = TRUE) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  mutate(term = if_else(str_detect(term, "gender"), "female", term)) %>% 
+  knitr::kable(format = "html")
+```
+]
+
+
+.pull-left[
+```{r out.width = "300px", out.height = "300px", fig.height=3, fig.width=3}
+base_height_weight +
+  aes(color = gender) +
+  scale_color_viridis_d() +
+  geom_line(data = broom::augment(weight_height_gender_lm),
+            aes(x = height, y = .fitted, color = gender)) + 
+  theme(legend.position = "top")
+```
+]
+
+.pull-right[
+
+\begin{align}
+\hat{Y} &= `r round(coef(weight_height_gender_lm)[1], digits = 3)` `r ifelse(round(coef(weight_height_gender_lm)[2], digits = 3) < 0, round(coef(weight_height_gender_lm)[2], digits = 3), paste("+", round(coef(weight_height_gender_lm)[2], digits = 3)))`\cdot \text{height} \\
+&\qquad `r ifelse(round(coef(weight_height_gender_lm)[2], digits = 3) < 0, round(coef(weight_height_gender_lm)[3], digits = 3), paste("+", round(coef(weight_height_gender_lm)[3], digits = 3)))`\cdot \text{gender}
+\end{align}
+
+]
+
+---
+
+Remember, this is a model. As George Box is often quoted for saying: "All models are wrong, but some are useful."
+
+How do we know if this is useful? A minimal requirement is that our assumptions aren't way off.  
+
+* Observations are independent
+    - usually by study design
+
+* There's a linear relationship between $X$ and $Y$.
+    - look at noise plotted against variables. Want it to look "random".
+
+---
+
+* The noise is normally distributed with mean $0$, and is independent of $Y, X$. 
+
+For normality, look at QQ-plot. If normal, straight line. For independence, plot noise against variables.
+
+.center[
+```{r fig.width = 6, fig.height = 4.5, out.width = "600px", out.height = "450px"}
+(
+  broom::augment(weight_height_gender_lm) %>% 
+    ggplot(aes(sample = .std.resid)) + 
+      geom_qq() + 
+      geom_qq_line() + 
+      coord_equal() +
+      theme_bw()
+) / (
+  broom::augment(weight_height_gender_lm) %>% 
+    mutate(gender = str_extract(gender, "[1-2]") %>% as.numeric) %>% 
+    pivot_longer(cols = c(.fitted, height, gender)) %>% 
+    ggplot(aes(x = value, y = .std.resid)) + 
+      geom_point() + 
+      facet_grid(~name, scales = "free") + 
+      theme_bw()
+)
+```
+]
+
+
+---
+
+## Multiple Linear Regression
+
+Interpretations: coefficient is effect of "one unit increase, all else being equal". 
+
+Effect is after adjusting for other covariates. 
+
+```{r}
+broom::tidy(weight_height_gender_lm, conf.int = TRUE) %>% 
+  mutate_if(is.numeric, round, digits = 3) %>% 
+  mutate(term = if_else(str_detect(term, "gender"), "female", term)) %>% 
+  knitr::kable(format = "html")
+```
+
+What is the expected/estimated weight of a male subject that is 180cm tall?
+
+\begin{align*}
+  \hat{Y} &= \hat{\beta}_0 + \hat{\beta}_1\cdot \text{height} + \hat{\beta}_2 \cdot \text{female} \\
+          &= `r round(coef(weight_height_gender_lm)[1], digits = 2)` `r ifelse(coef(weight_height_gender_lm)[2] < 0, round(coef(weight_height_gender_lm)[2], digits = 2), paste("+", round(coef(weight_height_gender_lm)[2], digits = 2)))` 180 `r ifelse(coef(weight_height_gender_lm)[3] < 0, round(coef(weight_height_gender_lm)[3], digits = 2), paste("+", round(coef(weight_height_gender_lm)[3], digits = 2)))` \cdot 0 \\
+          &= `r (round(coef(weight_height_gender_lm)[1], digits = 2) + round(coef(weight_height_gender_lm)[2], digits = 2)*180)[[1]]`.
+\end{align*}
+
+Word of caution: we cannot extrapolate this outside of the range of the data. For example, it makes no sense to use this model to predict the weight of someone who is `r round(max(show_subset$height, na.rm = T), digits = 0) + 5` cm tall, as the tallest subject in our data set is `r max(show_subset$height, na.rm = T)` cm tall.
+
+---
+layout: false
+
+# References
+
+```{r refs, echo=FALSE, results="asis"}
+PrintBibliography(myBib)
+```
