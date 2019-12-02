@@ -20,4 +20,7 @@
 
 **Lecture 9 (11/14)** [slides](./lectures/lecture09/lec09_slides.html)
 
+**Lecture 10 (11/26)** [slides](./lectures/lecture10/lec10_slides.html)
+
+
 # References {-}
