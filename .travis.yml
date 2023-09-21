@@ -45,3 +45,6 @@ addons:
       - cargo
       - libharfbuzz-dev
       - libfribidi-dev
+
+
+install: travis_wait 60 mvn install
