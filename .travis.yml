@@ -43,3 +43,5 @@ addons:
       - r-cran-rgdal
       - libfftw3-dev
       - cargo
+      - libharfbuzz-dev
+      - libfribidi-dev
