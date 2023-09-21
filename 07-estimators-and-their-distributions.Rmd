@@ -347,7 +347,7 @@ if(file.exists('data/R_output/samples_RR.Rds')){
       sample_n(size = sample_size_RR) %>% 
       mutate(i = x)
   })
-  write_rds(x = samples_RR, path = 'data/R_output/samples_RR.Rds')
+  write_rds(x = samples_RR, file = 'data/R_output/samples_RR.Rds')
 }
 
 if(!file.exists('data/R_output/RRs.Rds')){
@@ -359,9 +359,9 @@ if(!file.exists('data/R_output/RRs.Rds')){
                                                 depression_severity_binary = factor(depression_severity_binary)), 
                                   gender, depression_severity_binary)))
 
-  readr::write_rds(RRs, path = 'data/R_output/RRs.Rds')
+  readr::write_rds(RRs, file = 'data/R_output/RRs.Rds')
 } else {
-  RRs <- readr::read_rds(path = 'data/R_output/RRs.Rds')
+  RRs <- readr::read_rds(file = 'data/R_output/RRs.Rds')
 }
 
 ```
@@ -456,9 +456,9 @@ if(!file.exists('data/R_output/ORs.Rds')){
     mutate(OR = map_dbl(data, ~OR(.x, trt = gender, out = depression_severity_binary))) %>% 
     ungroup()
   
-  readr::write_rds(ORs, path = 'data/R_output/ORs.Rds')
+  readr::write_rds(ORs, file = 'data/R_output/ORs.Rds')
 } else {
-  ORs <- readr::read_rds(path = 'data/R_output/ORs.Rds')
+  ORs <- readr::read_rds(file = 'data/R_output/ORs.Rds')
 }
 
 ORs %>% 

@@ -413,7 +413,7 @@ if(!file.exists("data/R_output/binom_outcomes.Rds")){
                            Y = map_dbl(Numeric, sum)) %>% 
     select(i, HTs, Numeric, Y)
   
-  readr::write_rds(binom_outcomes, path = "data/R_output/binom_outcomes.Rds")
+  readr::write_rds(binom_outcomes, file = "data/R_output/binom_outcomes.Rds")
 } else {
    binom_outcomes <- readr::read_rds("data/R_output/binom_outcomes.Rds")
 }

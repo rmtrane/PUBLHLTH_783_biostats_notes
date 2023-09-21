@@ -19,7 +19,7 @@ tibble(x = seq(-4, 4, by = 0.01),
     geom_vline(data = data.frame(), aes(xintercept = c(-1.5, 1.5)),
                linetype = 'dashed', color = 'red') + 
     scale_x_continuous(breaks = c(seq(-4, 4, by = 2), -1.5, 1.5),
-                       labels = c(seq(-4, 4, by = 2), bquote(-z[obs]), bquote(z[obs]))) +
+                       labels = c(seq(-4, 4, by = 2), parse(text = bquote(-z[obs])), bquote(z[obs]))) +
     geom_ribbon(aes(ymin = 0, ymax = if_else(abs(x) > 1.5, y, 0)),
                 alpha = 0.5) +
     labs(x = '', y = '',
@@ -39,7 +39,7 @@ tibble(x = seq(-4, 4, by = 0.01),
     geom_vline(data = data.frame(), aes(xintercept = c(-1.96, 1.96)),
                linetype = 'dashed', color = 'red') + 
     scale_x_continuous(breaks = c(seq(-3, 3, by = 2), 0, -1.96, 1.96),
-                       labels = c(seq(-3, 3, by = 2), 0, bquote(-z[crit1]), bquote(z[crit2]))) +
+                       labels = c(seq(-3, 3, by = 2), 0, parse(text = bquote(-z[crit1])), bquote(z[crit2]))) +
     geom_ribbon(aes(ymin = 0, ymax = if_else(abs(x) > 1.96, y, 0)),
                 alpha = 0.5) +
     geom_text(data = data.frame(),
