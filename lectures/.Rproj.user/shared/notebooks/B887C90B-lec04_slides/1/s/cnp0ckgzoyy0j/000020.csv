@@ -1,0 +1,21 @@
+"0","samples %>%
+  mutate(mean = map(.x = data,
+                    ~.x %>% group_by(depression) %>% summarize(m = mean(bmi, na.rm = TRUE)))) %>%
+  unnest(col = 'mean') %>% 
+  group_by(depression) %>% 
+  left_join(show %>% 
+              group_by(depression) %>% 
+              summarize(overall_m = mean(bmi, na.rm = T),
+                        sd = sd(bmi, na.rm = T))) %>% 
+  mutate(y = dnorm(x = m, mean = overall_m, sd = sd/sqrt(50))) %>% 
+  ggplot(aes(x = m)) + 
+    geom_histogram(aes(y = ..density..),
+                   binwidth = 1, boundary = 0) +
+    geom_line(aes(y = y)) +
+    facet_grid(depression~.) +
+    geom_vline(aes(xintercept = overall_m),
+               color = 'red', linetype = 'dashed') +
+    scale_color_discrete()
+"
+"2","Joining, by = ""depression""
+"

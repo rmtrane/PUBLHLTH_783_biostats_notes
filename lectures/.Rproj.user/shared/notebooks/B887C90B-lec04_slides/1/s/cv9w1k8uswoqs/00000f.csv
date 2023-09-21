@@ -1,0 +1,7 @@
+"0","ggplot(data = tibble(x = 11:50, y = dbinom(x = 11:50, size = 50, prob = 0.106)),
+       aes(x = x, y = y)) +
+  geom_bar(stat='identity', width = 1, center = 0.5) +
+  geom_bar(data = tibble(x = 0:10, y = dbinom(x = 0:10, size = 50, prob = 0.106)),
+           fill = 'red', stat = 'identity', alpha = 0.5, color = NA)
+"
+"2","Ignoring unknown parameters: center"

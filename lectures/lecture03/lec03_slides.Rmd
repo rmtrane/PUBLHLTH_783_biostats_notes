@@ -679,7 +679,6 @@ ggplot(data = tibble(x = seq(-5, 8, by = 0.01)),
                 args = list(mean = 0, sd = sqrt(5))) +
   scale_color_discrete("")
 ```
-
 ]
 
 

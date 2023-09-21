@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>14 Introduction to Confidence Intervals | Biostatistics in Public Health</title>
   <meta name="description" content="14 Introduction to Confidence Intervals | Biostatistics in Public Health" />
-  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="14 Introduction to Confidence Intervals | Biostatistics in Public Health" />
   <meta property="og:type" content="book" />
-  
   
   
   
@@ -32,7 +31,8 @@
   
 <link rel="prev" href="examples-of-statistical-tests.html"/>
 <link rel="next" href="examples-of-confidence-intervals.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -48,21 +48,50 @@
 
 
 
-
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.2/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.10/datatables.js"></script>
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="libs/datatables-binding-0.29/datatables.js"></script>
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
 
 
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="css/extra.css" type="text/css" />
 </head>
@@ -80,38 +109,48 @@
 <li><a href="./" style="font-size: 19px;"><i>Biostatistics in PUBLHLTH 783</i></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction to Notes</a>
+<ul>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#bounty-program"><i class="fa fa-check"></i>Bounty Program</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a><ul>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction to Biostatistics</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="intro.html"><a href="intro.html#what-is-biostatistics"><i class="fa fa-check"></i><b>2.1</b> What is Biostatistics?</a></li>
 <li class="chapter" data-level="2.2" data-path="intro.html"><a href="intro.html#biostatistics-in-publhlth-783"><i class="fa fa-check"></i><b>2.2</b> Biostatistics in PUBLHLTH 783</a></li>
 </ul></li>
 <li class="part"><span><b>I Data Types and Descriptive Statistics</b></span></li>
 <li class="chapter" data-level="3" data-path="before-we-get-started.html"><a href="before-we-get-started.html"><i class="fa fa-check"></i><b>3</b> Before we get started…</a></li>
 <li class="chapter" data-level="4" data-path="why-descriptive-statistics.html"><a href="why-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Why Descriptive Statistics?</a></li>
-<li class="chapter" data-level="5" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>5</b> Discrete Data</a><ul>
-<li class="chapter" data-level="5.1" data-path="discrete.html"><a href="discrete.html#categorical"><i class="fa fa-check"></i><b>5.1</b> Categorical data</a><ul>
+<li class="chapter" data-level="5" data-path="discrete.html"><a href="discrete.html"><i class="fa fa-check"></i><b>5</b> Discrete Data</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="discrete.html"><a href="discrete.html#categorical"><i class="fa fa-check"></i><b>5.1</b> Categorical data</a>
+<ul>
 <li class="chapter" data-level="5.1.1" data-path="discrete.html"><a href="discrete.html#examples-categorical-data"><i class="fa fa-check"></i><b>5.1.1</b> Examples – categorical data</a></li>
 <li class="chapter" data-level="5.1.2" data-path="discrete.html"><a href="discrete.html#binarydichotomous-data"><i class="fa fa-check"></i><b>5.1.2</b> Binary/Dichotomous Data</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>5.2</b> How to describe categorical data</a><ul>
+<li class="chapter" data-level="5.2" data-path="discrete.html"><a href="discrete.html#how-to-describe-categorical-data"><i class="fa fa-check"></i><b>5.2</b> How to describe categorical data</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="discrete.html"><a href="discrete.html#examples"><i class="fa fa-check"></i><b>5.2.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="5.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>5.3</b> Ordinal Data</a><ul>
+<li class="chapter" data-level="5.3" data-path="discrete.html"><a href="discrete.html#ordinal-data"><i class="fa fa-check"></i><b>5.3</b> Ordinal Data</a>
+<ul>
 <li class="chapter" data-level="5.3.1" data-path="discrete.html"><a href="discrete.html#examples-1"><i class="fa fa-check"></i><b>5.3.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="5.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>5.4</b> How to visualize discrete data</a><ul>
+<li class="chapter" data-level="5.4" data-path="discrete.html"><a href="discrete.html#how-to-visualize-discrete-data"><i class="fa fa-check"></i><b>5.4</b> How to visualize discrete data</a>
+<ul>
 <li class="chapter" data-level="5.4.1" data-path="discrete.html"><a href="discrete.html#bar-charts"><i class="fa fa-check"></i><b>5.4.1</b> Bar Charts</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>6</b> Continuous Data</a><ul>
+<li class="chapter" data-level="6" data-path="continuous.html"><a href="continuous.html"><i class="fa fa-check"></i><b>6</b> Continuous Data</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="continuous.html"><a href="continuous.html#examples-2"><i class="fa fa-check"></i><b>6.1</b> Examples</a></li>
-<li class="chapter" data-level="6.2" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>6.2</b> How to describe continuous data</a><ul>
+<li class="chapter" data-level="6.2" data-path="continuous.html"><a href="continuous.html#how-to-describe-continuous-data"><i class="fa fa-check"></i><b>6.2</b> How to describe continuous data</a>
+<ul>
 <li class="chapter" data-level="6.2.1" data-path="continuous.html"><a href="continuous.html#location"><i class="fa fa-check"></i><b>6.2.1</b> Location</a></li>
 <li class="chapter" data-level="6.2.2" data-path="continuous.html"><a href="continuous.html#spread"><i class="fa fa-check"></i><b>6.2.2</b> Spread</a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>6.3</b> How to visualize continuous data</a><ul>
+<li class="chapter" data-level="6.3" data-path="continuous.html"><a href="continuous.html#how-to-visualize-continuous-data"><i class="fa fa-check"></i><b>6.3</b> How to visualize continuous data</a>
+<ul>
 <li class="chapter" data-level="6.3.1" data-path="continuous.html"><a href="continuous.html#scatter-plots"><i class="fa fa-check"></i><b>6.3.1</b> Scatter Plots</a></li>
 <li class="chapter" data-level="6.3.2" data-path="continuous.html"><a href="continuous.html#boxplots"><i class="fa fa-check"></i><b>6.3.2</b> Boxplots</a></li>
 <li class="chapter" data-level="6.3.3" data-path="continuous.html"><a href="continuous.html#histogram"><i class="fa fa-check"></i><b>6.3.3</b> Histogram</a></li>
@@ -119,8 +158,10 @@
 </ul></li>
 <li class="chapter" data-level="7" data-path="grey-areas.html"><a href="grey-areas.html"><i class="fa fa-check"></i><b>7</b> Grey areas</a></li>
 <li class="part"><span><b>II Introduction to Probability &amp; Random Variables</b></span></li>
-<li class="chapter" data-level="8" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>8</b> What is “probability”?</a><ul>
-<li class="chapter" data-level="8.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>8.1</b> Definitions</a><ul>
+<li class="chapter" data-level="8" data-path="what-is-probability.html"><a href="what-is-probability.html"><i class="fa fa-check"></i><b>8</b> What is “probability”?</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="what-is-probability.html"><a href="what-is-probability.html#definitions"><i class="fa fa-check"></i><b>8.1</b> Definitions</a>
+<ul>
 <li class="chapter" data-level="8.1.1" data-path="what-is-probability.html"><a href="what-is-probability.html#examples-3"><i class="fa fa-check"></i><b>8.1.1</b> Examples</a></li>
 <li class="chapter" data-level="8.1.2" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status"><i class="fa fa-check"></i><b>8.1.2</b> Example: disease status</a></li>
 <li class="chapter" data-level="8.1.3" data-path="what-is-probability.html"><a href="what-is-probability.html#example-coin-flip-revisited"><i class="fa fa-check"></i><b>8.1.3</b> Example: coin flip (revisited)</a></li>
@@ -128,34 +169,42 @@
 <li class="chapter" data-level="8.1.5" data-path="what-is-probability.html"><a href="what-is-probability.html#example-disease-status-1"><i class="fa fa-check"></i><b>8.1.5</b> Example: disease status</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>9</b> Conditional Probability</a><ul>
+<li class="chapter" data-level="9" data-path="conditional-probability.html"><a href="conditional-probability.html"><i class="fa fa-check"></i><b>9</b> Conditional Probability</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-roll-a-die"><i class="fa fa-check"></i><b>9.1</b> Example: roll a die</a></li>
 <li class="chapter" data-level="9.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-disease-status-2"><i class="fa fa-check"></i><b>9.2</b> Example: disease status</a></li>
 <li class="chapter" data-level="9.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-sensitivityspecificity"><i class="fa fa-check"></i><b>9.3</b> Example: Sensitivity/specificity</a></li>
 <li class="chapter" data-level="9.4" data-path="conditional-probability.html"><a href="conditional-probability.html#example-positivenegative-predictive-value"><i class="fa fa-check"></i><b>9.4</b> Example: positive/negative predictive value</a></li>
-<li class="chapter" data-level="9.5" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>9.5</b> Bayes’ Theorem</a><ul>
-<li class="chapter" data-level="9.5.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-5.8-in-ls-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i><b>9.5.1</b> Example (5.8 in <span class="citation">Sullivan (<span>2017</span>)</span>): positive predictive value from sensitivity</a></li>
+<li class="chapter" data-level="9.5" data-path="conditional-probability.html"><a href="conditional-probability.html#bayes-theorem"><i class="fa fa-check"></i><b>9.5</b> Bayes’ Theorem</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-5.8-in-ls-positive-predictive-value-from-sensitivity"><i class="fa fa-check"></i><b>9.5.1</b> Example (5.8 in <span class="citation">Sullivan (2017)</span>): positive predictive value from sensitivity</a></li>
 </ul></li>
-<li class="chapter" data-level="9.6" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>9.6</b> Independence</a><ul>
+<li class="chapter" data-level="9.6" data-path="conditional-probability.html"><a href="conditional-probability.html#independence"><i class="fa fa-check"></i><b>9.6</b> Independence</a>
+<ul>
 <li class="chapter" data-level="9.6.1" data-path="conditional-probability.html"><a href="conditional-probability.html#example-independent-events"><i class="fa fa-check"></i><b>9.6.1</b> Example: independent events</a></li>
 <li class="chapter" data-level="9.6.2" data-path="conditional-probability.html"><a href="conditional-probability.html#example-dependent-events"><i class="fa fa-check"></i><b>9.6.2</b> Example: dependent events</a></li>
 <li class="chapter" data-level="9.6.3" data-path="conditional-probability.html"><a href="conditional-probability.html#example-are-depression-severity-mild-depression-and-marital-status-divorced-independent"><i class="fa fa-check"></i><b>9.6.3</b> Example: are “depression severity = mild depression” and “marital status = divorced” independent?</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>10</b> Random Variables and Distributions</a><ul>
-<li class="chapter" data-level="10.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>10.1</b> Random Variables</a><ul>
+<li class="chapter" data-level="10" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html"><i class="fa fa-check"></i><b>10</b> Random Variables and Distributions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#random-variables"><i class="fa fa-check"></i><b>10.1</b> Random Variables</a>
+<ul>
 <li class="chapter" data-level="10.1.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#examples-random-variables"><i class="fa fa-check"></i><b>10.1.1</b> Examples: random variables</a></li>
 </ul></li>
-<li class="chapter" data-level="10.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#distributions"><i class="fa fa-check"></i><b>10.2</b> Distributions</a><ul>
+<li class="chapter" data-level="10.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#distributions"><i class="fa fa-check"></i><b>10.2</b> Distributions</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#discrete-distributions"><i class="fa fa-check"></i><b>10.2.1</b> Discrete Distributions</a></li>
 <li class="chapter" data-level="10.2.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#continuous-distributions"><i class="fa fa-check"></i><b>10.2.2</b> Continuous distributions</a></li>
 </ul></li>
-<li class="chapter" data-level="10.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#prop-of-RVs"><i class="fa fa-check"></i><b>10.3</b> Properties of Random Variables</a><ul>
+<li class="chapter" data-level="10.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#prop-of-RVs"><i class="fa fa-check"></i><b>10.3</b> Properties of Random Variables</a>
+<ul>
 <li class="chapter" data-level="10.3.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#expected-values-of-random-variables"><i class="fa fa-check"></i><b>10.3.1</b> Expected Values of Random Variables</a></li>
 <li class="chapter" data-level="10.3.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#variancestandard-deviation-of-random-variables"><i class="fa fa-check"></i><b>10.3.2</b> Variance/Standard Deviation of Random Variables</a></li>
 <li class="chapter" data-level="10.3.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#things-to-remember-when-working-with-random-variables"><i class="fa fa-check"></i><b>10.3.3</b> Things to remember when working with random variables</a></li>
 </ul></li>
-<li class="chapter" data-level="10.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>10.4</b> A Few Important Distributions</a><ul>
+<li class="chapter" data-level="10.4" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#a-few-important-distributions"><i class="fa fa-check"></i><b>10.4</b> A Few Important Distributions</a>
+<ul>
 <li class="chapter" data-level="10.4.1" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-bernoulli-distribution"><i class="fa fa-check"></i><b>10.4.1</b> The Bernoulli Distribution</a></li>
 <li class="chapter" data-level="10.4.2" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#the-binomial-distribution"><i class="fa fa-check"></i><b>10.4.2</b> The Binomial Distribution</a></li>
 <li class="chapter" data-level="10.4.3" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#normal-distribution"><i class="fa fa-check"></i><b>10.4.3</b> Normal Distribution</a></li>
@@ -163,24 +212,30 @@
 <li class="chapter" data-level="10.4.5" data-path="random-variables-and-distributions.html"><a href="random-variables-and-distributions.html#other-distribution"><i class="fa fa-check"></i><b>10.4.5</b> Other Distribution</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>11</b> Estimators and their distributions</a><ul>
+<li class="chapter" data-level="11" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html"><i class="fa fa-check"></i><b>11</b> Estimators and their distributions</a>
+<ul>
 <li class="chapter" data-level="11.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#what-is-an-estimator"><i class="fa fa-check"></i><b>11.1</b> What is an Estimator?</a></li>
-<li class="chapter" data-level="11.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>11.2</b> Common Estimators</a><ul>
+<li class="chapter" data-level="11.2" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#common-estimators"><i class="fa fa-check"></i><b>11.2</b> Common Estimators</a>
+<ul>
 <li class="chapter" data-level="11.2.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#estimators-examples"><i class="fa fa-check"></i><b>11.2.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>11.3</b> Deriving Distributions in Practice</a><ul>
+<li class="chapter" data-level="11.3" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#deriving-distributions-in-practice"><i class="fa fa-check"></i><b>11.3</b> Deriving Distributions in Practice</a>
+<ul>
 <li class="chapter" data-level="11.3.1" data-path="estimators-and-their-distributions.html"><a href="estimators-and-their-distributions.html#CLT"><i class="fa fa-check"></i><b>11.3.1</b> The Central Limit Theorem</a></li>
 </ul></li>
 </ul></li>
 <li class="part"><span><b>III Statistical Hypothesis Testing</b></span></li>
-<li class="chapter" data-level="12" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html"><i class="fa fa-check"></i><b>12</b> Introduction to Statistical Hypothesis Testing</a><ul>
+<li class="chapter" data-level="12" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html"><i class="fa fa-check"></i><b>12</b> Introduction to Statistical Hypothesis Testing</a>
+<ul>
 <li class="chapter" data-level="12.1" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#strategy-overview-the-lingo"><i class="fa fa-check"></i><b>12.1</b> Strategy Overview &amp; The Lingo</a></li>
 <li class="chapter" data-level="12.2" data-path="introduction-to-statistical-hypothesis-testing.html"><a href="introduction-to-statistical-hypothesis-testing.html#when-we-dont-know-sigma2"><i class="fa fa-check"></i><b>12.2</b> When we don’t know <span class="math inline">\(\sigma^2\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html"><i class="fa fa-check"></i><b>13</b> Examples of Statistical Tests</a><ul>
+<li class="chapter" data-level="13" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html"><i class="fa fa-check"></i><b>13</b> Examples of Statistical Tests</a>
+<ul>
 <li class="chapter" data-level="13.1" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#one-sample-z-test"><i class="fa fa-check"></i><b>13.1</b> One Sample z-test</a></li>
 <li class="chapter" data-level="13.2" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#one-sample-t-test"><i class="fa fa-check"></i><b>13.2</b> One Sample t-test</a></li>
-<li class="chapter" data-level="13.3" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#two-sample-t-test"><i class="fa fa-check"></i><b>13.3</b> Two Sample t-test</a><ul>
+<li class="chapter" data-level="13.3" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#two-sample-t-test"><i class="fa fa-check"></i><b>13.3</b> Two Sample t-test</a>
+<ul>
 <li class="chapter" data-level="13.3.1" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#equal-variance"><i class="fa fa-check"></i><b>13.3.1</b> Equal Variance</a></li>
 <li class="chapter" data-level="13.3.2" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#unequal-variance"><i class="fa fa-check"></i><b>13.3.2</b> Unequal Variance</a></li>
 </ul></li>
@@ -189,15 +244,18 @@
 <li class="chapter" data-level="13.6" data-path="examples-of-statistical-tests.html"><a href="examples-of-statistical-tests.html#stat-tests-overview"><i class="fa fa-check"></i><b>13.6</b> Summary</a></li>
 </ul></li>
 <li class="part"><span><b>IV Confidence Intervals</b></span></li>
-<li class="chapter" data-level="14" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html"><i class="fa fa-check"></i><b>14</b> Introduction to Confidence Intervals</a><ul>
-<li class="chapter" data-level="14.1" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#faq"><i class="fa fa-check"></i><b>14.1</b> FAQ</a><ul>
+<li class="chapter" data-level="14" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html"><i class="fa fa-check"></i><b>14</b> Introduction to Confidence Intervals</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#faq"><i class="fa fa-check"></i><b>14.1</b> FAQ</a>
+<ul>
 <li class="chapter" data-level="14.1.1" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#youre-telling-me-there-are-two-critical-values"><i class="fa fa-check"></i><b>14.1.1</b> You’re telling me there are <strong>TWO</strong> critical values?</a></li>
 <li class="chapter" data-level="14.1.2" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#where-does-the-95-come-from"><i class="fa fa-check"></i><b>14.1.2</b> Where does the “95%” come from?</a></li>
 <li class="chapter" data-level="14.1.3" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#FAQprob"><i class="fa fa-check"></i><b>14.1.3</b> Why can’t we say there’s a 95% chance that the true value is in a 95% Confidence Interval?</a></li>
 <li class="chapter" data-level="14.1.4" data-path="introduction-to-confidence-intervals.html"><a href="introduction-to-confidence-intervals.html#follow-up-but-why-even-bother-with-a-confidence-interval-then"><i class="fa fa-check"></i><b>14.1.4</b> Follow-up: But why even bother with a confidence interval, then?!?!?!</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html"><i class="fa fa-check"></i><b>15</b> Examples of Confidence Intervals</a><ul>
+<li class="chapter" data-level="15" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html"><i class="fa fa-check"></i><b>15</b> Examples of Confidence Intervals</a>
+<ul>
 <li class="chapter" data-level="15.1" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#difference-in-means"><i class="fa fa-check"></i><b>15.1</b> Difference in Means</a></li>
 <li class="chapter" data-level="15.2" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#difference-in-proportions"><i class="fa fa-check"></i><b>15.2</b> Difference in Proportions</a></li>
 <li class="chapter" data-level="15.3" data-path="examples-of-confidence-intervals.html"><a href="examples-of-confidence-intervals.html#relative-risk"><i class="fa fa-check"></i><b>15.3</b> Relative Risk</a></li>
@@ -225,8 +283,8 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction-to-confidence-intervals" class="section level1">
-<h1><span class="header-section-number">14</span> Introduction to Confidence Intervals</h1>
+<div id="introduction-to-confidence-intervals" class="section level1 hasAnchor" number="14">
+<h1><span class="header-section-number">14</span> Introduction to Confidence Intervals<a href="introduction-to-confidence-intervals.html#introduction-to-confidence-intervals" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The statistical hypothesis test approach to trying to answer research questions is in many ways a rather destructive and inefficient approach – destructive as we can only reject hypotheses in favor of another, and inefficient as the rejection is based on a single possible value. A <em>confidence interval</em>, although related to the hypothesis tests seen in the previous <a href="#statistical-tests">section</a>, is a much more useful way of answering research questions. Here, we do not seek to reject any particular potential value, but rather provide a range of values that, given the data, we think includes the true value.</p>
 <p>The backbone of the confidence interval is a statistical test. In fact, most confidence intervals (at least all that we will see in this class) is “simply” the range of values that the corresponding test would NOT reject. To see how this works, we will consider the simplest test, the one-sample z-test, but note that the procedure is the same for all the tests.</p>
 <p>In the one-sample z-test, we assume that we have a sample of independent observations of continuous random variables for which we know the true standard deviation <span class="math inline">\(\sigma\)</span>. Furthermore, we need the sample average <span class="math inline">\(\bar{X}\)</span> to be normally distributed. (This happens if a) the data itself is normally distributed, or b) the sample size is greater than <span class="math inline">\(30\)</span>.) Since <span class="math inline">\(\bar{X}\)</span> is normally distributed, we know that <span class="math inline">\(Z = \frac{\bar{X} - E(\bar{X})}{\text{SD}(\bar{X})} \sim N(0,1)\)</span>. Since <span class="math inline">\(\sigma\)</span> is known, we know that <span class="math inline">\(\text{SD}(\bar{X}) = \frac{\sigma}{\sqrt{n}}\)</span>. We are interested in testing the null hypothesis <span class="math inline">\(H_0: \mu = \mu_0\)</span> against the alternative <span class="math inline">\(H_A: \mu \neq \mu_0\)</span>. Assuming that the null hypothesis is true, <span class="math inline">\(E(\bar{X}) = E(X_i) = \mu_0\)</span>, and so <span class="math inline">\(Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)\)</span> <strong>IF</strong> <span class="math inline">\(H_0\)</span> is true.</p>
@@ -241,7 +299,7 @@
   z_\text{crit,1} &amp; &lt; \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} &amp;\iff \\
   z_\text{crit,1}\sigma/\sqrt{n} &amp; &lt; \bar{x} - \mu_0 &amp;\iff \\
   \mu_0 + z_\text{crit,1}\sigma/\sqrt{n} &amp; &lt; \bar{x} &amp;\iff \\
-  \mu_0 &lt; \bar{x} - z_\text{crit,1}\sigma/\sqrt{n} &amp; 
+  \mu_0 &lt; \bar{x} - z_\text{crit,1}\sigma/\sqrt{n} &amp;
 \end{align*}\]</span></p>
 <p>Looking at the second inequality, i.e. <span class="math inline">\(z_\text{obs} &lt; z_\text{crit,2}\)</span>, we see that <span class="math inline">\(\mu_0\)</span> must be satisfy the following:</p>
 <p><span class="math display">\[\begin{align*}
@@ -249,20 +307,20 @@
   \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} &amp;&lt; z_\text{crit,2} &amp;\iff \\
   \bar{x} - \mu_0 &amp;&lt; z_\text{crit,2} \sigma/\sqrt{n} &amp;\iff \\
   \bar{x} &amp;&lt; \mu_0 + z_\text{crit,2} \sigma/\sqrt{n} &amp;\iff \\
-  \bar{x} - z_\text{crit,2} \sigma/\sqrt{n} &amp;&lt; \mu_0 &amp; 
+  \bar{x} - z_\text{crit,2} \sigma/\sqrt{n} &amp;&lt; \mu_0 &amp;
 \end{align*}\]</span></p>
 <p>So all values of <span class="math inline">\(\mu_0\)</span> that fall between <span class="math inline">\(\bar{x} - z_\text{crit,2} \sigma/\sqrt{n}\)</span> and <span class="math inline">\(\bar{x} - z_\text{crit,1} \sigma/\sqrt{n}\)</span> would not be rejected. We call this interval a <span class="math inline">\((1-\alpha)\cdot 100 \%\)</span> <em>Confidence Interval</em>. If <span class="math inline">\(\alpha = 0.05\)</span>, as it often is, then this turns out to be a <span class="math inline">\(95\%\)</span> Confidence Interval for <span class="math inline">\(\mu\)</span> (the true population mean). We say that we are <span class="math inline">\(95\%\)</span> <em>confident</em> that the true value is in this interval.</p>
-<div id="faq" class="section level2">
-<h2><span class="header-section-number">14.1</span> FAQ</h2>
-<div id="youre-telling-me-there-are-two-critical-values" class="section level3">
-<h3><span class="header-section-number">14.1.1</span> You’re telling me there are <strong>TWO</strong> critical values?</h3>
+<div id="faq" class="section level2 hasAnchor" number="14.1">
+<h2><span class="header-section-number">14.1</span> FAQ<a href="introduction-to-confidence-intervals.html#faq" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="youre-telling-me-there-are-two-critical-values" class="section level3 hasAnchor" number="14.1.1">
+<h3><span class="header-section-number">14.1.1</span> You’re telling me there are <strong>TWO</strong> critical values?<a href="introduction-to-confidence-intervals.html#youre-telling-me-there-are-two-critical-values" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Yes, there are actually two critical values. However, whenever the distribution we’re looking at is symmetrical, the two critical values are actually just plus/minus one value. For example, if we’re constructing a one-sample z confidence interval with confidence <span class="math inline">\(95\%\)</span>, the critical values are <span class="math inline">\(\pm 1.96\)</span>. This also means that the confidence interval takes on a bit simpler form: <span class="math inline">\(\bar{x} \pm 1.96\cdot \sigma/\sqrt{n}\)</span>.</p>
 </div>
-<div id="where-does-the-95-come-from" class="section level3">
-<h3><span class="header-section-number">14.1.2</span> Where does the “95%” come from?</h3>
+<div id="where-does-the-95-come-from" class="section level3 hasAnchor" number="14.1.2">
+<h3><span class="header-section-number">14.1.2</span> Where does the “95%” come from?<a href="introduction-to-confidence-intervals.html#where-does-the-95-come-from" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Remember how the sample average <span class="math inline">\(\bar{X}\)</span> is a random variable with a distribution? In the same vein, you can consider the confidence interval as a random variable. Again, we’ll use the one sample Z confidence interval as an example: <span class="math inline">\((\bar{X} - 1.96 \cdot \sigma/\sqrt{n},\ \bar{X} - 1.96 \cdot \sigma/\sqrt{n})\)</span>. You can then ask, <em>before performing the experiment</em>, what is the probability the true value <span class="math inline">\(\mu\)</span> is contained in the interval?</p>
 <p><span class="math display">\[\begin{align*}
-  P(\bar{X} - 1.96 \cdot \sigma/\sqrt{n} &amp;&lt; \mu &lt; \bar{X} + 1.96 \cdot \sigma/\sqrt{n}) \\ 
+  P(\bar{X} - 1.96 \cdot \sigma/\sqrt{n} &amp;&lt; \mu &lt; \bar{X} + 1.96 \cdot \sigma/\sqrt{n}) \\
                   &amp;= P(\mu &lt; \bar{X} + 1.96 \cdot \sigma/\sqrt{n}) - P(\mu &lt; \bar{X} &lt; 1.96 \cdot \sigma/\sqrt{n}) \\
                   &amp;= P(\mu - 1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X}) - P(\mu - 1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X}) \\
                   &amp;= P(-1.96 \cdot \sigma/\sqrt{n} &lt; \bar{X} - \mu) - P(\bar{X} - \mu &lt;  1.96 \cdot \sigma/\sqrt{n}) \\
@@ -274,14 +332,14 @@
 <p>So the probability that a confidence interval constructed in this way contains the true value is <span class="math inline">\(1-\alpha\)</span>. If <span class="math inline">\(\alpha = 0.05\)</span>, then
 <span class="math inline">\(P(\text{CI contains true value}) = 0.95\)</span>. Hence, we call it a <span class="math inline">\(95\%\)</span> Confidence Interval, and say “we are 95% sure the true value lies in the confidence interval”.</p>
 </div>
-<div id="FAQprob" class="section level3">
-<h3><span class="header-section-number">14.1.3</span> Why can’t we say there’s a 95% chance that the true value is in a 95% Confidence Interval?</h3>
+<div id="FAQprob" class="section level3 hasAnchor" number="14.1.3">
+<h3><span class="header-section-number">14.1.3</span> Why can’t we say there’s a 95% chance that the true value is in a 95% Confidence Interval?<a href="introduction-to-confidence-intervals.html#FAQprob" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This is one excellent question! We just saw above that the probability that a confidence interval constructed in this way contains the true value is <span class="math inline">\(1-\alpha\)</span>, so why not say the true value is in the confidence interval with probability <span class="math inline">\(1-\alpha\)</span>?</p>
 <p>Any statement about probabilities has to deal with some randomness. Once you’ve conducted your experiment, all the randomness is gone. You have one fixed value for your lower bound, and one fixed value for your upper bound. I.e. nothing is random anymore. And although we do not know what the true value is, it is a fixed value, and not random.</p>
 <p>Say you performed your experiment and got a confidence interval for <span class="math inline">\(\mu\)</span> of <span class="math inline">\((26, 35)\)</span>. If you were to think about something like <span class="math inline">\(P(26 &lt; \mu &lt; 35)\)</span>, you would run into the exact problem mentioned above: there are no random variables involved. Actually, this probability is either <span class="math inline">\(1\)</span> (<span class="math inline">\(\mu\)</span> happens to be in the interval), or <span class="math inline">\(0\)</span> (<span class="math inline">\(\mu\)</span> happens to NOT be in the interval), but we will never know if it’s one of the other.</p>
 </div>
-<div id="follow-up-but-why-even-bother-with-a-confidence-interval-then" class="section level3">
-<h3><span class="header-section-number">14.1.4</span> Follow-up: But why even bother with a confidence interval, then?!?!?!</h3>
+<div id="follow-up-but-why-even-bother-with-a-confidence-interval-then" class="section level3 hasAnchor" number="14.1.4">
+<h3><span class="header-section-number">14.1.4</span> Follow-up: But why even bother with a confidence interval, then?!?!?!<a href="introduction-to-confidence-intervals.html#follow-up-but-why-even-bother-with-a-confidence-interval-then" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Although we cannot say anything about one single confidence interval, we still know that <em>if</em> we were to repeat the experiment many, many times constructing confidence intervals in this way each time, (and our assumptions are correct) then <span class="math inline">\(95\%\)</span> of the constructed confidence intervals will contain the true value! Yet another reason to repeat experiments rather than draw conclusions based on a single one.</p>
 </div>
 </div>
@@ -296,7 +354,6 @@
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -315,6 +372,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -334,7 +392,11 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["783_biostats.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section"
 }
@@ -348,7 +410,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

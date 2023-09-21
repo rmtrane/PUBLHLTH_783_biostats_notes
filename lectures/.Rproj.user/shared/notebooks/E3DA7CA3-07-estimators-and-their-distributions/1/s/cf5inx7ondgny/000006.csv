@@ -1,0 +1,10 @@
+"0","  RRs <- samples_RR %>% 
+    group_by(i) %>% 
+    nest() %>%
+    ungroup() %>% 
+    mutate(RR = map_dbl(data, ~RR(.x, # %>% mutate(gender = factor(gender), 
+                                      #          depression_severity_binary = factor(depression_severity_binary)), 
+                                  gender, depression_severity_binary)))
+"
+"2","Error: Result 11 must be a single double, not a double vector of length 0
+"

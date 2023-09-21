@@ -1,0 +1,25 @@
+"0","## create boxplot with means from student samples"
+"0","student_boxplot <- samples %>%"
+"0","  mutate(mean = map(.x = data,"
+"0","                    ~.x %>% group_by(depression) %>% summarize(m = mean(bmi, na.rm = TRUE)))) %>%"
+"0","  unnest(col = 'mean') %>%"
+"0","  ggplot(aes(x = depression, y = m)) +"
+"0","    geom_boxplot() +"
+"0","    geom_jitter(width = 0.2, height = 0, aes(label = Student)) +"
+"0","    labs(y = 'Mean BMI')"
+"2","Ignoring unknown aesthetics: label"
+"0","plotly::ggplotly(student_boxplot)"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"2","Registered S3 methods overwritten by 'htmltools':
+  method               from         
+  print.html           tools:rstudio
+  print.shiny.tag      tools:rstudio
+  print.shiny.tag.list tools:rstudio
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"

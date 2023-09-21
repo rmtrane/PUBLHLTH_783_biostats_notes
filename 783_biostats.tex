@@ -85,7 +85,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Fall 2019(last compiled: 2019-10-22)}
+    \date{Fall 2019(last compiled: 2019-10-21)}
 
 
 \usepackage{amsthm}
@@ -1043,11 +1043,11 @@ Discrete data is often best presented using a bar chart of either frequency coun
 
 Below is a bar chart of the frequency counts of the marital status varaible from the SHOW data.
 
-\includegraphics{figures/marital_hist.png}
+\includegraphics[width=27.08in]{figures/marital_hist}
 
 This can easily be turned into a bar chart of the relative frequencies.
 
-\includegraphics{figures/show_martial_rel.png}
+\includegraphics[width=27.08in]{figures/show_martial_rel}
 
 \hypertarget{continuous}{%
 \chapter{Continuous Data}\label{continuous}}
@@ -1143,15 +1143,15 @@ My favorite graphs to use with continuous data are scatter plots, boxplots, and 
 
 A scatter plot is only really useful when you are considering the relationship between two variables where at least one is continuous. For example, consider the variables \texttt{height} and \texttt{weight} from the SHOW data. A scatter plot shows potential relationships between the two. Unsurprisingly, it seems that there is a positive correlation between the two -- i.e.~when one goes up, so does the other.
 
-\includegraphics{figures/scatter_height_weight.png}
+\includegraphics[width=27.08in]{figures/scatter_height_weight}
 
 You can also utilize scatter plots when one of the variables is categorical. For example, we could be interested in the relationship between height and gender.
 
-\includegraphics{figures/scatter_gender_height.png}
+\includegraphics[width=27.08in]{figures/scatter_gender_height}
 
 In this case, it can be beneficial to add a bit of jitter to the plot in the direction of the categorical variable.
 
-\includegraphics{figures/jitter_gender_height.png}
+\includegraphics[width=27.08in]{figures/jitter_gender_height}
 
 Even with a bit of jitter, it might be really hard to make anything of a scatter plot in this case, simply because we have ``too much'' data. In such a case, a boxplot might be a better choice.
 
@@ -1160,11 +1160,11 @@ Even with a bit of jitter, it might be really hard to make anything of a scatter
 
 Boxplots are great when you have a lot of data. They show the data through a set of summaries, namely the quartiles, and indicates if there are any \emph{outliers}. Below are boxplots for the height of the SHOW population by gender.
 
-\includegraphics{figures/boxplot_gender_height.png}
+\includegraphics[width=27.08in]{figures/boxplot_gender_height}
 
 You can use the figure below to decipher the box plot:
 
-\includegraphics{figures/boxplot_explanation.png}
+\includegraphics[width=27.08in]{figures/boxplot_explanation}
 
 As you see on the boxplots of the SHOW data, it is a great tool to visualize continuous data when you have a lot of it. In a simple figure we can see that
 
@@ -1187,7 +1187,7 @@ One thing I haven't told you is the answer to a very important, very hard questi
 
 At first, the \emph{histogram} looks a lot like a bar chart, but there are a few very important differences. Before we go into details, lets take a look at a histogram. Below is a histogram of the depression scores in the SHOW data set.
 
-\includegraphics{figures/bmi_hist.png}
+\includegraphics[width=27.08in]{figures/bmi_hist}
 
 The main differences from a bar chart is that
 
@@ -3000,7 +3000,7 @@ We see that the true proportion of the population that are men is 0.44.
 
 Next, let's take a look at the distribution of sample proportions.
 
-\includegraphics{figures/gender_props_histogram.png}
+\includegraphics[width=27.08in]{figures/gender_props_histogram}
 
 Again, it looks pretty normal! How can that be?!
 
@@ -3036,20 +3036,20 @@ Total\strut
 \begin{minipage}[t]{0.36\columnwidth}\centering
 0\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
-24\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
-31\strut
-\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
-55\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.36\columnwidth}\centering
-1\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
 12\strut
 \end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
 8\strut
 \end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
 20\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.36\columnwidth}\centering
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\centering
+24\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+31\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+55\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.36\columnwidth}\centering
 Total\strut
@@ -3066,7 +3066,7 @@ Total\strut
 The relative risk is then calculated as
 
 \begin{align*}
-  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx 0.62.
+  \frac{\text{proportion of males with severe depression}}{\text{proportion of women with severe depression}} &= \frac{17/29}{11/21} \\ & \approx 1.19.
 \end{align*}
 
 As before, we repeat this many, many times, and plot the results as a histogram, which gives us an approximate distribution of the relative risk in a sample of 75 subjects.
